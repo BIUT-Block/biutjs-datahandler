@@ -1,0 +1,24 @@
+{
+  "name": "secjs-database",
+  "version": "1.0.0",
+  "description": "输入：\r 整条区块链/单个区块的信息(json格式？)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/MongoX-SEC/secjs-database.git"
+  },
+  "keywords": [
+    "sec",
+    "blockchain",
+    "database"
+  ],
+  "author": "Weihan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/MongoX-SEC/secjs-database/issues"
+  },
+  "homepage": "https://gitlab.com/MongoX-SEC/secjs-database#README"
+}
