@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://gitlab.com/MongoX-SEC/secjs-datahandler/issues"
   },
-  "homepage": "https://gitlab.com/MongoX-SEC/secjs-datahandler#README"
+  "homepage": "https://gitlab.com/MongoX-SEC/secjs-datahandler#README",
+  "dependencies": {
+    "level": "^4.0.0"
+  }
 }

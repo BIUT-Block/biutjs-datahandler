@@ -5,7 +5,7 @@ class SECDataHandler {
   
   constructor (config) {
     this.path_db = config.path
-    this.create_load_db()
+    this._create_load_db()
   }
   
   _create_load_db () {
@@ -45,7 +45,6 @@ class SECDataHandler {
       console.log('Great success dear leader!')
     })
   }
-
 }
 
 module.exports = SECDataHandler
