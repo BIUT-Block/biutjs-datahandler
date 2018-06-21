@@ -1,4 +1,4 @@
 const expect = require('chai').expect
-const secjsDataHandler = require('../src/index')
+const SecjsDataHandler = require('../src/index')
 
-secData = new secjsDataHandler()
+const secData = new SecjsDataHandler()
