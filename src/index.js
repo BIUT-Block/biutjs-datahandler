@@ -2,24 +2,57 @@ const level = require('level')
 
 class SECDataHandler {
   constructor (config) {
-    this.path_db = config.path
+    this.DBPath = config.DBPath
+    this.userDBPath = config.DBPath + '/user/'
+    this.productDBPath = config.DBPath + '/product/'
+    this.txBlockChainDBPath = config.DBPath + '/txBlockChain/'
+    this.tokenBlockChainDBPath = config.DBPath + '/tokenBlockChain/'
+    
     this._createLoadDB()
   }
+  
+   _createLoadDB () {
+    this.userDB = level(this.userDBPath)
+    this.productDB = level(this.productDBPath)
+    this.txBlockChainDB = level(this.txBlockChainDBPath)
+    this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
+  }
+  
+  writeTokenChainJsonToDB (jsonFile) {
+    let self = this
 
-  _createLoadDB () {
-    this.db = level(this.path_db)
+    if (this._jsonTypeCheck(jsonFile)) {
+      let tokenChain = JSON.parse(jsonFile)
+    }
+
+    Object.keys(tokenChain).foreach(function (blockHeight) {
+      self._putDB(self.tokenBlockChainDB, blockHeight, tokenChain[blockHeight])
+      self.writeTokenChainBlockJsonToDB(tokenChain[blockHeight])
+    })
+    
+  }
+  
+  writeTokenChainBlockJsonToDB () {
+    
+  }
+  
+  // writeTxChainJsonToDB () {}
+  // writeTxChainBlockJsonToDB () {}
+  
+  getUserPreviousTx (address) {
+    
   }
 
-  _putDB (key, value) {
-    this.db.put(key, value, function (err) {
+  _putDB (DB, key, value) {
+    DB.put(key, value, function (err) {
       if (err) {
         return console.log('Ooops!', err)
       }
     })
   }
 
-  _getDB (key) {
-    this.db.get(key, function (err, value) {
+  _getDB (DB, key) {
+    DB.get(key, function (err, value) {
       if (err) {
         return console.log('Ooops!', err)
       }
@@ -27,21 +60,31 @@ class SECDataHandler {
     })
   }
 
-  _delDB (key) {
-    this.db.del(key, function (err) {
+  _delDB (DB, key) {
+    DB.del(key, function (err) {
       if (err) {
         return console.log('Ooops!', err)
       }
     })
   }
 
-  _batchArrayDB (array) {
-    this.db.batch(array, function (err) {
+  _batchArrayDB (DB, array) {
+    DB.batch(array, function (err) {
       if (err) {
         return console.log('Ooops!', err)
       }
       console.log('Great success dear leader!')
     })
+  }
+  
+  _jsonTypeCheck (json_file) {
+    try {
+      JSON.parse(json_file)
+    } catch (e) {
+      throw new TypeError('Invalid json file')
+    }
+
+    return true
   }
 }
 
