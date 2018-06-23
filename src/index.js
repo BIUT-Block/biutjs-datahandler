@@ -43,10 +43,10 @@ class SECDataHandler {
     let self = this
 
     // token database operations
-    this._putDB(self.tokenBlockChainDB, [blockInfo.Height, 'chain'], 'token')
+    this._putDB(self.tokenBlockChainDB, this._combineStrings(blockInfo.Height, 'chain'), 'token')
 
     Object.keys(blockInfo).forEach(function (key) {
-      let putKey = [blockInfo.Height, key]
+      let putKey = self._combineStrings(blockInfo.Height, key)
       if (key !== 'Transactions') {
         self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key])
       } else {
@@ -57,10 +57,15 @@ class SECDataHandler {
     // user database operations
     blockInfo.Transactions.forEach(function (transaction) {
       // very limited data is stored in user db, more information about the transaction can be found in token database
-      let value = {}
-      value[transaction.TxHash] = blockInfo.Height
-      self._putDB(self.userDB, [transaction.TxFrom, 'payer'], JSON.stringify(value))
-      self._putDB(self.userDB, [transaction.TxTo, 'payee'], JSON.stringify(value))
+      if (!self._jsonTypeCheck(transaction)) {
+        throw new TypeError('Invalid json file')
+      }
+      transaction = JSON.parse(transaction)
+
+      if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
+        self._putDB(self.userDB, self._combineStrings(transaction.TxFrom, 'payer'), self._combineStrings(transaction.TxHash, blockInfo.Height))
+        self._putDB(self.userDB, self._combineStrings(transaction.TxTo, 'payee'), self._combineStrings(transaction.TxHash, blockInfo.Height))
+      }
     })
 
     // product database operations
@@ -77,18 +82,19 @@ class SECDataHandler {
       throw new TypeError('Invalid user address')
     }
 
-    this.userDB.get([address, 'payer'], function (err, value) {
+    let self = this
+    this.userDB.createReadStream({
+      gte: self._combineStrings(address, 'payer'),
+      lte: self._combineStrings(address, 'payer')
+    }).on('data', function (data, err) {
       if (err) {
         return console.log('Ooops! Sth wrong with getUserTx function', err)
       }
 
-      let transaction = JSON.parse(value)
-      console.log('User address "' + address + '" as a payer:')
-      Object.keys(transaction).forEach(function (tx) {
-        console.log('--------------------------')
-        console.log('transaction hash is: ' + tx)
-        console.log('transaction located block height is: ' + transaction[tx])
-      })
+      let output = self._separateStrings(data.value)
+      console.log('--------------------------')
+      console.log('transaction hash is: ' + output[0])
+      console.log('transaction located block height is: ' + output[1])
     })
   }
 
@@ -136,6 +142,38 @@ class SECDataHandler {
     output['type'] = type
     output['key'] = key
     output['value'] = value
+
+    return output
+  }
+
+  _combineStrings (input1, input2, input3 = '') {
+    if (input3 !== '') {
+      return (input1.toString() + '!' + input2.toString() + '!' + input3.toString())
+    }
+
+    return (input1.toString() + '!' + input2.toString())
+  }
+
+  _separateStrings (input) {
+    if (typeof input !== 'string') {
+      console.log(input)
+      throw new TypeError('Invalid input data type to be separated')
+    }
+
+    let buffer = ''
+    let output = []
+    for (let i = 0; i < input.length; i++) {
+      if (input.charAt(i) === '!') {
+        output.push(buffer)
+        buffer = ''
+      } else if (i === input.length - 1) {
+        buffer += input.charAt(i)
+        output.push(buffer)
+        buffer = ''
+      } else {
+        buffer += input.charAt(i)
+      }
+    }
 
     return output
   }
