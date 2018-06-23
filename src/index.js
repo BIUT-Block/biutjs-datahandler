@@ -63,8 +63,8 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self._putDB(self.userDB, self._combineStrings(transaction.TxFrom, 'payer'), self._combineStrings(transaction.TxHash, blockInfo.Height))
-        self._putDB(self.userDB, self._combineStrings(transaction.TxTo, 'payee'), self._combineStrings(transaction.TxHash, blockInfo.Height))
+        self._putDB(self.userDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height)
+        self._putDB(self.userDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height)
       }
     })
 
@@ -84,17 +84,17 @@ class SECDataHandler {
 
     let self = this
     this.userDB.createReadStream({
-      gte: self._combineStrings(address, 'payer'),
-      lte: self._combineStrings(address, 'payer')
+      gte: self._combineStrings(address, 'payer')
     }).on('data', function (data, err) {
       if (err) {
         return console.log('Ooops! Sth wrong with getUserTx function', err)
       }
 
-      let output = self._separateStrings(data.value)
+      let transactionHash = self._separateStrings(data.key)[2]
+      let transactionBlock = data.value
       console.log('--------------------------')
-      console.log('transaction hash is: ' + output[0])
-      console.log('transaction located block height is: ' + output[1])
+      console.log('transaction hash is: ' + transactionHash)
+      console.log('transaction located block height is: ' + transactionBlock)
     }).on('error', function (err) {
       console.log('Stream occurs an error!', err)
     }).on('close', function () {
