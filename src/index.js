@@ -95,6 +95,12 @@ class SECDataHandler {
       console.log('--------------------------')
       console.log('transaction hash is: ' + output[0])
       console.log('transaction located block height is: ' + output[1])
+    }).on('error', function (err) {
+      console.log('Stream occurs an error!', err)
+    }).on('close', function () {
+      console.log('Stream closed')
+    }).on('end', function () {
+      console.log('Stream ended')
     })
   }
 
