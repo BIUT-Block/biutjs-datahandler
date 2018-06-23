@@ -1,4 +1,15 @@
 const expect = require('chai').expect
+const fs = require('fs')
 const SecjsDataHandler = require('../src/index')
 
-const secData = new SecjsDataHandler()
+let jsonPath = './blockchain.json'
+
+const config = {
+  'DBPath': '../data/'
+}
+const secData = new SecjsDataHandler(config)
+
+secData.writeTokenChainToDB(fs.readFileSync(jsonPath, 'utf8'))
+
+// secData._getDB(secData.tokenBlockChainDB, [2, 'Transactions'])
+secData.getUserTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi')

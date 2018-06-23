@@ -1,0 +1,17 @@
+This repository uses "leveldb" to store data locally.
+There are four databases created: user_db, product_db, token_db, transaction_db
+The default path is in './data' folder
+
+
+user_db:
+product_db:
+
+token_db:
+This database is used to store token block chain data.
+This database contains many tables, and the name of each table is its corresponding block height.
+All tables share one table structure, which is also the model of one tokenchain block.
+
+"Here should have a figure to explain"
+
+
+transaction_db

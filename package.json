@@ -25,6 +25,8 @@
   },
   "homepage": "https://gitlab.com/MongoX-SEC/secjs-datahandler#README",
   "dependencies": {
+    "chai": "^4.1.2",
+    "fs": "0.0.1-security",
     "level": "^4.0.0"
   }
 }
