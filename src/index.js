@@ -83,6 +83,7 @@ class SECDataHandler {
     }
 
     let self = this
+    console.log('User address "' + address + '" plays payer role in the following transactions: ')
     this.userDB.createReadStream({
       gte: self._combineStrings(address, 'payer')
     }).on('data', function (data, err) {
