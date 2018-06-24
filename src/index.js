@@ -69,7 +69,7 @@ class SECDataHandler {
     })
 
     // product database operations
-    // token chain has no product info, so no updates on this database?
+    // as token chain has no product info, no data needs to be written to priduction database
     // transaction database operations
     // transaction database does not need to be updated as well
   }
@@ -105,15 +105,10 @@ class SECDataHandler {
     })
   }
 
-  // _getDBKeyList (DB)
-  // _removeDuplicatedBlock()
-  // _removeDuplicatedUser()
-  // _removeDuplicatedProduct()
-
   _putDB (DB, key, value) {
     DB.put(key, value, function (err) {
       if (err) {
-        return console.log('Ooops!', err)
+        return console.log('_putDB function gets an errpr!', err)
       }
     })
   }
@@ -121,7 +116,7 @@ class SECDataHandler {
   _getDB (DB, key) {
     DB.get(key, function (err, value) {
       if (err) {
-        return console.log('Ooops!', err)
+        return console.log('_getDB function gets an errpr!', err)
       }
       console.log(key + '=' + value)
     })
@@ -130,7 +125,7 @@ class SECDataHandler {
   _delDB (DB, key) {
     DB.del(key, function (err) {
       if (err) {
-        return console.log('Ooops!', err)
+        return console.log('_delDB function gets an errpr!', err)
       }
     })
   }
@@ -138,9 +133,8 @@ class SECDataHandler {
   _batchArrayDB (DB, array) {
     DB.batch(array, function (err) {
       if (err) {
-        return console.log('Ooops!', err)
+        return console.log('_batchArrayDB function gets an errpr!', err)
       }
-      console.log('Great success dear leader!')
     })
   }
 
