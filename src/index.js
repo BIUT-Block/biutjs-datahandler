@@ -1,4 +1,5 @@
 const level = require('level')
+const promise = require('promise')
 
 class SECDataHandler {
   constructor (config) {
@@ -11,7 +12,7 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
-    this.userDBPath = config.DBPath + 'user/'
+    this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
     this.tokenBlockChainDBPath = config.DBPath + 'tokenBlockChain/'
@@ -20,7 +21,7 @@ class SECDataHandler {
   }
 
   _createLoadDB () {
-    this.userDB = level(this.userDBPath)
+    this.accountDB = level(this.accountDBPath)
     this.productDB = level(this.productDBPath)
     this.txBlockChainDB = level(this.txBlockChainDBPath)
     this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
@@ -54,17 +55,17 @@ class SECDataHandler {
       }
     })
 
-    // user database operations
+    // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
-      // very limited data is stored in user db, more information about the transaction can be found in token database
+      // very limited data is stored in account db, more information about the transaction can be found in token database
       if (!self._jsonTypeCheck(transaction)) {
         throw new TypeError('Invalid json file')
       }
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self._putDB(self.userDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height)
-        self._putDB(self.userDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height)
+        self._putDB(self.accountDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height)
+        self._putDB(self.accountDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height)
       }
     })
 
@@ -77,18 +78,18 @@ class SECDataHandler {
   // writeTxChainToDB () {}
   // writeTxBlockToDB () {}
 
-  getUserTx (address) {
+  getAccountTx (address) {
     if (typeof address !== 'string') {
-      throw new TypeError('Invalid user address')
+      throw new TypeError('Invalid account address')
     }
 
     let self = this
-    console.log('User address "' + address + '" plays payer role in the following transactions: ')
-    this.userDB.createReadStream({
+    console.log('Account address "' + address + '" plays payer role in the following transactions: ')
+    this.accountDB.createReadStream({
       gte: self._combineStrings(address, 'payer')
     }).on('data', function (data, err) {
       if (err) {
-        return console.log('Ooops! Sth wrong with getUserTx function', err)
+        return console.log('Ooops! Sth wrong with getAccountTx function', err)
       }
 
       let transactionHash = self._separateStrings(data.key)[2]
