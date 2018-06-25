@@ -49,12 +49,9 @@ class SECDataHandler {
     })
 
     Promise.all(this.asyncList).then(function () {
-      self.asyncList.forEach(function (async) {
-        async.catch(function (rej) {
-          callback(rej)
-        })
-      })
       callback()
+    }).catch(function (err) {
+      callback(err)
     })
   }
 
