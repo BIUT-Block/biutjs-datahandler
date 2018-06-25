@@ -4,7 +4,7 @@ const promise = require('promise')
 class SECDataHandler {
   constructor (config) {
     if (typeof config.DBPath !== 'string' || config.DBPath === '') {
-      throw new Error('Needs a valid config input for SECDataHandler class construction')
+      throw new Error('Needs a valid config input for creating or loading db')
     }
 
     this.DBPath = config.DBPath
@@ -20,13 +20,20 @@ class SECDataHandler {
     this._createLoadDB()
   }
 
+  // load the databases or create new databases if they are not existing
   _createLoadDB () {
-    this.accountDB = level(this.accountDBPath)
-    this.productDB = level(this.productDBPath)
-    this.txBlockChainDB = level(this.txBlockChainDBPath)
-    this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
+    try {
+      this.accountDB = level(this.accountDBPath)
+      this.productDB = level(this.productDBPath)
+      this.txBlockChainDB = level(this.txBlockChainDBPath)
+      this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
+    } catch (error) {
+      // Could be invalid db path
+      throw new Error(error)
+    }
   }
 
+  // update token chain json file to database
   writeTokenChainToDB (jsonFile) {
     if (!this._jsonTypeCheck(jsonFile)) {
       throw new TypeError('Invalid json file')
@@ -40,6 +47,7 @@ class SECDataHandler {
     })
   }
 
+  // update a single token chain block into database
   writeTokenBlockToDB (blockInfo) {
     let self = this
 
@@ -78,6 +86,7 @@ class SECDataHandler {
   // writeTxChainToDB () {}
   // writeTxBlockToDB () {}
 
+  // get db recorded transactions for an account address
   getAccountTx (address) {
     if (typeof address !== 'string') {
       throw new TypeError('Invalid account address')
@@ -106,6 +115,7 @@ class SECDataHandler {
     })
   }
 
+  // put a key-value pair to db
   _putDB (DB, key, value) {
     DB.put(key, value, function (err) {
       if (err) {
@@ -114,6 +124,7 @@ class SECDataHandler {
     })
   }
 
+  // get a value from the db according to the "key" input
   _getDB (DB, key) {
     DB.get(key, function (err, value) {
       if (err) {
@@ -123,6 +134,7 @@ class SECDataHandler {
     })
   }
 
+  // delete a key-value pair from db
   _delDB (DB, key) {
     DB.del(key, function (err) {
       if (err) {
@@ -131,6 +143,7 @@ class SECDataHandler {
     })
   }
 
+  // do a serie of operations to db, the operations are defined in the input "array"
   _batchArrayDB (DB, array) {
     DB.batch(array, function (err) {
       if (err) {
@@ -139,6 +152,7 @@ class SECDataHandler {
     })
   }
 
+  // convert a put/get/del/.. operation into batch function input format
   _convertToBatchInput (type, key, value) {
     let output = {}
     output['type'] = type
@@ -148,6 +162,7 @@ class SECDataHandler {
     return output
   }
 
+  // combine strings with '!' in between
   _combineStrings (input1, input2, input3 = '') {
     if (input3 !== '') {
       return (input1.toString() + '!' + input2.toString() + '!' + input3.toString())
@@ -156,6 +171,7 @@ class SECDataHandler {
     return (input1.toString() + '!' + input2.toString())
   }
 
+  // remove the '!' symbols in the string and separate it to several strings
   _separateStrings (input) {
     if (typeof input !== 'string') {
       console.log(input)
@@ -180,6 +196,7 @@ class SECDataHandler {
     return output
   }
 
+  // convert each item (here is json format) of a list to string format
   _txStringify (transactionList) {
     if (!Array.isArray(transactionList) && Object.keys(transactionList).length) {
       throw new TypeError('Invalid transactionList input')
@@ -194,6 +211,7 @@ class SECDataHandler {
     return transactionList
   }
 
+  // validate input is json format string
   _jsonTypeCheck (jsonFile) {
     try {
       JSON.parse(jsonFile)
