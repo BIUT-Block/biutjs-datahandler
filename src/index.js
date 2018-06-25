@@ -12,7 +12,6 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
-    this.asyncList = []
     this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
