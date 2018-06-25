@@ -45,21 +45,21 @@ class SECDataHandler {
     this.asyncList = []
 
     Object.keys(tokenChain).forEach(function (blockHeight) {
-      self.writeTokenBlockToDB(tokenChain[blockHeight])
+      self._writeTokenBlockToDB(tokenChain[blockHeight])
     })
 
     Promise.all(this.asyncList).then(function () {
-      /* this.asyncList.forEach(function (async) {
-        if (async.isrejected) {
-          callback(error)
-        }
-      }) */
+      self.asyncList.forEach(function (async) {
+        async.catch(function (rej) {
+          callback(rej)
+        })
+      })
       callback()
     })
   }
 
   // update a single token chain block into database
-  writeTokenBlockToDB (blockInfo) {
+  _writeTokenBlockToDB (blockInfo) {
     let self = this
 
     // token database operations
@@ -95,7 +95,7 @@ class SECDataHandler {
   }
 
   // writeTxChainToDB () {}
-  // writeTxBlockToDB () {}
+  // _writeTxBlockToDB () {}
 
   // get db recorded transactions for an account address
   getAccountTx (address) {
