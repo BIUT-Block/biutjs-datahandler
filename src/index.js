@@ -1,5 +1,5 @@
+const Promise = require('promise')
 const level = require('level')
-const promise = require('promise')
 
 class SECDataHandler {
   constructor (config) {
@@ -12,6 +12,7 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
+    this.asyncList = []
     this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
@@ -34,16 +35,26 @@ class SECDataHandler {
   }
 
   // update token chain json file to database
-  writeTokenChainToDB (jsonFile) {
+  writeTokenChainToDB (jsonFile, callback) {
     if (!this._jsonTypeCheck(jsonFile)) {
       throw new TypeError('Invalid json file')
     }
 
     let self = this
     let tokenChain = JSON.parse(jsonFile)
+    this.asyncList = []
 
     Object.keys(tokenChain).forEach(function (blockHeight) {
       self.writeTokenBlockToDB(tokenChain[blockHeight])
+    })
+
+    Promise.all(this.asyncList).then(function () {
+      /* this.asyncList.forEach(function (async) {
+        if (async.isrejected) {
+          callback(error)
+        }
+      }) */
+      callback()
     })
   }
 
@@ -52,14 +63,14 @@ class SECDataHandler {
     let self = this
 
     // token database operations
-    this._putDB(self.tokenBlockChainDB, this._combineStrings(blockInfo.Height, 'chain'), 'token')
+    this.asyncList.push(this._putDB(self.tokenBlockChainDB, this._combineStrings(blockInfo.Height, 'chain'), 'token'))
 
     Object.keys(blockInfo).forEach(function (key) {
       let putKey = self._combineStrings(blockInfo.Height, key)
       if (key !== 'Transactions') {
-        self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key])
+        self.asyncList.push(self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key]))
       } else {
-        self._putDB(self.tokenBlockChainDB, putKey, self._txStringify(blockInfo[key]))
+        self.asyncList.push(self._putDB(self.tokenBlockChainDB, putKey, self._txStringify(blockInfo[key])))
       }
     })
 
@@ -72,8 +83,8 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self._putDB(self.accountDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height)
-        self._putDB(self.accountDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height)
+        self.asyncList.push(self._putDB(self.accountDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
+        self.asyncList.push(self._putDB(self.accountDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
       }
     })
 
@@ -117,10 +128,14 @@ class SECDataHandler {
 
   // put a key-value pair to db
   _putDB (DB, key, value) {
-    DB.put(key, value, function (err) {
-      if (err) {
-        return console.log('_putDB function gets an errpr!', err)
-      }
+    return new Promise(function (resolve, reject) {
+      DB.put(key, value, function (err) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
     })
   }
 
@@ -215,7 +230,7 @@ class SECDataHandler {
   _jsonTypeCheck (jsonFile) {
     try {
       JSON.parse(jsonFile)
-    } catch (e) {
+    } catch (error) {
       return false
     }
 

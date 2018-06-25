@@ -9,7 +9,10 @@ const config = {
 }
 const secData = new SecjsDataHandler(config)
 
-secData.writeTokenChainToDB(fs.readFileSync(jsonPath, 'utf8'))
-
-// secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Transactions'))
-secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi')
+secData.writeTokenChainToDB(fs.readFileSync(jsonPath, 'utf8'), function (err) {
+  if (err) {
+    throw new Error(err)
+  }
+  // secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Transactions'))
+  secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi')
+})
