@@ -2,6 +2,9 @@ const Promise = require('promise')
 const level = require('level')
 
 class SECDataHandler {
+  /**
+   * @param  {Object} config - contains the path for storing database
+   */
   constructor (config) {
     if (typeof config.DBPath !== 'string' || config.DBPath === '') {
       throw new Error('Needs a valid config input for creating or loading db')
@@ -20,7 +23,10 @@ class SECDataHandler {
     this._createLoadDB()
   }
 
-  // load the databases or create new databases if they are not existing
+  /**
+   * Load or create databases
+   * @return {None}
+   */
   _createLoadDB () {
     try {
       this.accountDB = level(this.accountDBPath)
@@ -33,7 +39,11 @@ class SECDataHandler {
     }
   }
 
-  // update token chain json file to database
+  /**
+   * Update token chain json file to database
+   * @param  {String} jsonFile - string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...)
+   * @callback {err} - returns error if exist
+   */
   writeTokenChainToDB (jsonFile, callback) {
     if (!this._jsonTypeCheck(jsonFile)) {
       throw new TypeError('Invalid json file')
@@ -54,7 +64,11 @@ class SECDataHandler {
     })
   }
 
-  // update a single token chain block into database
+  /**
+   * Update a single token chain block into database
+   * @param  {Object} blockInfo - format define in "tokenchain-block-model.js" (in "secjs-block" project)
+   * @return {None}
+   */
   _writeTokenBlockToDB (blockInfo) {
     let self = this
 
@@ -93,7 +107,11 @@ class SECDataHandler {
   // writeTxChainToDB () {}
   // _writeTxBlockToDB () {}
 
-  // get db recorded transactions for an account address
+  /**
+   * Get DB recorded transactions for an account address
+   * @param  {String} address - account address which is searched
+   * @return {None}
+   */
   getAccountTx (address) {
     if (typeof address !== 'string') {
       throw new TypeError('Invalid account address')
@@ -122,7 +140,13 @@ class SECDataHandler {
     })
   }
 
-  // put a key-value pair to db
+  /**
+   * Put a key-value pair to db
+   * @param  {leveldb} DB - database which will be operated
+   * @param  {String} key - 'key' for the key-value pair
+   * @param  {String, Array, Object} value - 'value' for the key-value pair
+   * @return {Promise Object} - a promise object which can indicate the async function is finished or not
+   */
   _putDB (DB, key, value) {
     return new Promise(function (resolve, reject) {
       DB.put(key, value, function (err) {
@@ -135,7 +159,7 @@ class SECDataHandler {
     })
   }
 
-  // get a value from the db according to the "key" input
+  // get a value from the DB according to the "key" input (never used, for testing purpose)
   _getDB (DB, key) {
     DB.get(key, function (err, value) {
       if (err) {
@@ -145,7 +169,7 @@ class SECDataHandler {
     })
   }
 
-  // delete a key-value pair from db
+  // delete a key-value pair from DB (never used, for testing purpose)
   _delDB (DB, key) {
     DB.del(key, function (err) {
       if (err) {
@@ -154,7 +178,7 @@ class SECDataHandler {
     })
   }
 
-  // do a serie of operations to db, the operations are defined in the input "array"
+  // do a serie of operations to DB, the operations are defined in the input "array" (never used, for testing purpose)
   _batchArrayDB (DB, array) {
     DB.batch(array, function (err) {
       if (err) {
@@ -163,7 +187,7 @@ class SECDataHandler {
     })
   }
 
-  // convert a put/get/del/.. operation into batch function input format
+  // convert a put/get/del/.. operation into batch function input format (never used, for testing purpose)
   _convertToBatchInput (type, key, value) {
     let output = {}
     output['type'] = type
@@ -173,7 +197,13 @@ class SECDataHandler {
     return output
   }
 
-  // combine strings with '!' in between
+  /**
+   * Combine strings with '!' in between, the combined string is used for DB key index
+   * @param  {String} input1 - first string
+   * @param  {String} input2 - second string
+   * @param  {String} input3 - third string (optional)
+   * @return {String} - combined string
+   */
   _combineStrings (input1, input2, input3 = '') {
     if (input3 !== '') {
       return (input1.toString() + '!' + input2.toString() + '!' + input3.toString())
@@ -182,7 +212,11 @@ class SECDataHandler {
     return (input1.toString() + '!' + input2.toString())
   }
 
-  // remove the '!' symbols in the string and separate it to several strings
+  /**
+   * remove the '!' symbols in the string and separate it to several strings
+   * @param  {String} input - input string which would be separated
+   * @return {Array}
+   */
   _separateStrings (input) {
     if (typeof input !== 'string') {
       console.log(input)
@@ -207,7 +241,11 @@ class SECDataHandler {
     return output
   }
 
-  // convert each item (here is json format) of a list to string format
+  /**
+   * Convert each item within an array (object format) to string format
+   * @param  {Array} transactionList - input array
+   * @return {Array}
+   */
   _txStringify (transactionList) {
     if (!Array.isArray(transactionList) && Object.keys(transactionList).length) {
       throw new TypeError('Invalid transactionList input')
@@ -222,7 +260,11 @@ class SECDataHandler {
     return transactionList
   }
 
-  // validate input is json format string
+  /**
+   * Validate input is json format string
+   * @param  {String} jsonFile - json format string
+   * @return {Boolean}
+   */
   _jsonTypeCheck (jsonFile) {
     try {
       JSON.parse(jsonFile)
