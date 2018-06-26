@@ -112,12 +112,13 @@ class SECDataHandler {
    * @param  {String} address - account address which is searched
    * @return {None}
    */
-  getAccountTx (address) {
-    if (typeof address !== 'string') {
+  getAccountTx (address, callback) {
+    if (!this._accAddrValidate(address)) {
       throw new TypeError('Invalid account address')
     }
 
     let self = this
+    let output = {}
     console.log('Account address "' + address + '" plays payer role in the following transactions: ')
     this.accountDB.createReadStream({
       gte: self._combineStrings(address, 'payer')
@@ -128,6 +129,8 @@ class SECDataHandler {
 
       let transactionHash = self._separateStrings(data.key)[2]
       let transactionBlock = data.value
+      output[transactionHash] = transactionBlock
+
       console.log('--------------------------')
       console.log('transaction hash is: ' + transactionHash)
       console.log('transaction located block height is: ' + transactionBlock)
@@ -137,6 +140,7 @@ class SECDataHandler {
       console.log('Stream closed')
     }).on('end', function () {
       console.log('Stream ended')
+      callback(output)
     })
   }
 
@@ -160,12 +164,13 @@ class SECDataHandler {
   }
 
   // get a value from the DB according to the "key" input (never used, for testing purpose)
-  _getDB (DB, key) {
+  _getDB (DB, key, callback) {
     DB.get(key, function (err, value) {
       if (err) {
         return console.log('_getDB function gets an errpr!', err)
       }
-      console.log(key + '=' + value)
+      // console.log(key + '=' + value)
+      callback(value)
     })
   }
 
@@ -258,6 +263,23 @@ class SECDataHandler {
     }
 
     return transactionList
+  }
+
+  /**
+   * Validate the account address is legal
+   * @param  {String} accAddr - Account address
+   * @return {Boolean}
+   */
+  _accAddrValidate (accAddr) {
+    if (typeof accAddr !== 'string') {
+      return false
+    }
+
+    if (accAddr.length !== this.accAddrLength) {
+      return false
+    }
+
+    return true
   }
 
   /**
