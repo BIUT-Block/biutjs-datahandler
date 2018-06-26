@@ -2,3 +2,4 @@ node_modules
 .nyc_output
 data
 database-intro.txt
+src/test.md

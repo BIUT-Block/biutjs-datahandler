@@ -110,7 +110,7 @@ class SECDataHandler {
   /**
    * Get DB recorded transactions for an account address
    * @param  {String} address - account address which is searched
-   * @return {None}
+   * @callback {Object} output - account address previous transaction list
    */
   getAccountTx (address, callback) {
     if (!this._accAddrValidate(address)) {
@@ -148,8 +148,8 @@ class SECDataHandler {
    * Put a key-value pair to db
    * @param  {leveldb} DB - database which will be operated
    * @param  {String} key - 'key' for the key-value pair
-   * @param  {String, Array, Object} value - 'value' for the key-value pair
-   * @return {Promise Object} - a promise object which can indicate the async function is finished or not
+   * @param  {String | Array | Object} value - 'value' for the key-value pair
+   * @return {PromiseObject} - a promise object which can indicate the async function is finished or not
    */
   _putDB (DB, key, value) {
     return new Promise(function (resolve, reject) {

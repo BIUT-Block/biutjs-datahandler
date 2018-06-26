@@ -1,16 +1,37 @@
-输入：
-整条区块链/单个区块的信息(json格式？)
+<a name="SECDataHandler"></a>
+
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard) 
+
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)]
+
+## SECDataHandler
+
+This package uses leveldb to store and handle data from SEC blockchain
+
+* [SECDataHandler](#SECDataHandler)
+    * [new SECDataHandler(config)](#new_SECDataHandler_new)
+    * [.writeTokenChainToDB](#SECDataHandler+writeTokenChainToDB) : <code>function</code>
+    * [.getAccountTx](#SECDataHandler+getAccountTx) : <code>function</code>
+
+<a name="SECDataHandler+writeTokenChainToDB"></a>
+
+### secDataHandler.writeTokenChainToDB : <code>function</code>
+Update token chain json file to database
+
+**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsonFile | <code>String</code> | string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...) |
 
 
-要实现的功能：
-1. 用户登录后可以查询自己地址之前的交易记录（交易链？token链？），以及其他相应信息
-2. 可以根据商品查询相关交易情况
-3. ...
+<a name="SECDataHandler+getAccountTx"></a>
 
+### secDataHandler.getAccountTx : <code>function</code>
+Get DB recorded transactions for an account address
 
-大概思想：
-sql数据库，存储更新索引信息
-可能的包含的function:
-1. 解析区块链信息，创建数据库
-2. 解析区块信息，更新数据库
-3. 数据库的常规操作：read, write, search, ...
+**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| address | <code>String</code> | account address which is searched |
