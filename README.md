@@ -11,6 +11,7 @@ This package uses leveldb to store and handle data from SEC blockchain
 * [SECDataHandler](#SECDataHandler)
     * [new SECDataHandler(config)](#new_SECDataHandler_new)
     * [.writeTokenChainToDB](#SECDataHandler+writeTokenChainToDB) : <code>function</code>
+    * [.writeTxChainToDB](#SECDataHandler+writeTxChainToDB) : <code>function</code>
     * [.getAccountTx](#SECDataHandler+getAccountTx) : <code>function</code>
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
@@ -35,3 +36,14 @@ Get DB recorded transactions for an account address
 | Param | Type | Description |
 | --- | --- | --- |
 | address | <code>String</code> | account address which is searched |
+
+<a name="SECDataHandler+writeTxChainToDB"></a>
+
+### secDataHandler.writeTxChainToDB : <code>function</code>
+Update transaction chain json file to database
+
+**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsonFile | <code>String</code> | string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...) |

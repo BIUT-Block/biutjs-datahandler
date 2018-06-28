@@ -15,7 +15,7 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
-    this.accAddrLength = 34
+    this.accAddrLength = 34 // config.path
     this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
@@ -101,6 +101,11 @@ class SECDataHandler {
     // as token chain has no product info, no data needs to be written to priduction database
   }
 
+  /**
+   * Update transaction chain json file to database
+   * @param  {String} jsonFile - string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...)
+   * @callback {err} - returns error if exist
+   */
   writeTxChainToDB (jsonFile, callback) {
     if (!this._jsonTypeCheck(jsonFile)) {
       throw new TypeError('Invalid json file')
@@ -121,6 +126,11 @@ class SECDataHandler {
     })
   }
 
+  /**
+   * Update a single transaction chain block into database
+   * @param  {Object} blockInfo - format define in "transactionchain-block-model.js" (in "secjs-block" project)
+   * @return {None}
+   */
   _writeTxBlockToDB (blockInfo) {
     let self = this
 
