@@ -10,10 +10,11 @@ const secData = new SecjsDataHandler(config)
 
 secData.writeTokenChainToDB(fs.readFileSync(jsonPath, 'utf8'), function (err) {
   if (err) {
-    console.log('this is in test.js file')
     console.log(err)
+    throw new Error('Something wrong with writeTokenChainToDB function')
   } else {
-    // secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Transactions'))
-    secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi')
+    secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi', function (output) {
+      console.log(output)
+    })
   }
 })

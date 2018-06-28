@@ -51,6 +51,7 @@ describe('SecjsDataHandler', () => {
           expect.fail()
         } else {
           secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi', function (output) {
+            console.log(output)
             expect(output).to.have.any.keys('b02e70fabaebe94f1ba63dc522dc9fa131b9ee482262f2f5df3ebecc8148dacd')
             expect(output).to.have.any.keys('d1f94b5dd3f349d9e1e62c426f1afa832b3ac0535012e092189a557dd4fea033')
             expect(output).to.have.any.keys('0ee60812875c62888714a19bfe1eb065b720fb639ff637f1e97509fa85b6784c')

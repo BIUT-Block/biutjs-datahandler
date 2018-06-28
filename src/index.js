@@ -15,6 +15,7 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
+    this.accAddrLength = 34
     this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
@@ -51,13 +52,13 @@ class SECDataHandler {
 
     let self = this
     let tokenChain = JSON.parse(jsonFile)
-    this.asyncList = []
+    this.tokenAsyncList = []
 
     Object.keys(tokenChain).forEach(function (blockHeight) {
       self._writeTokenBlockToDB(tokenChain[blockHeight])
     })
 
-    Promise.all(this.asyncList).then(function () {
+    Promise.all(this.tokenAsyncList).then(function () {
       callback()
     }).catch(function (err) {
       callback(err)
@@ -73,14 +74,12 @@ class SECDataHandler {
     let self = this
 
     // token database operations
-    this.asyncList.push(this._putDB(self.tokenBlockChainDB, this._combineStrings(blockInfo.Height, 'chain'), 'token'))
-
     Object.keys(blockInfo).forEach(function (key) {
       let putKey = self._combineStrings(blockInfo.Height, key)
       if (key !== 'Transactions') {
-        self.asyncList.push(self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key]))
+        self.tokenAsyncList.push(self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key]))
       } else {
-        self.asyncList.push(self._putDB(self.tokenBlockChainDB, putKey, self._txStringify(blockInfo[key])))
+        self.tokenAsyncList.push(self._putDB(self.tokenBlockChainDB, putKey, self._txStringify(blockInfo[key])))
       }
     })
 
@@ -93,22 +92,78 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self.asyncList.push(self._putDB(self.accountDB, self._combineStrings(transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
-        self.asyncList.push(self._putDB(self.accountDB, self._combineStrings(transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
+        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
+        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
       }
     })
 
     // product database operations
     // as token chain has no product info, no data needs to be written to priduction database
-    // transaction database operations
-    // transaction database does not need to be updated as well
   }
 
-  // writeTxChainToDB () {}
-  // _writeTxBlockToDB () {}
+  writeTxChainToDB (jsonFile, callback) {
+    if (!this._jsonTypeCheck(jsonFile)) {
+      throw new TypeError('Invalid json file')
+    }
+
+    let self = this
+    let txChain = JSON.parse(jsonFile)
+    this.txAsyncList = []
+
+    Object.keys(txChain).forEach(function (blockHeight) {
+      self._writeTxBlockToDB(txChain[blockHeight])
+    })
+
+    Promise.all(this.txAsyncList).then(function () {
+      callback()
+    }).catch(function (err) {
+      callback(err)
+    })
+  }
+
+  _writeTxBlockToDB (blockInfo) {
+    let self = this
+
+    // tx database operations
+    Object.keys(blockInfo).forEach(function (key) {
+      let putKey = self._combineStrings(blockInfo.Height, key)
+      if (key !== 'Transactions') {
+        self.txAsyncList.push(self._putDB(self.txBlockChainDBPath, putKey, blockInfo[key]))
+      } else {
+        self.txAsyncList.push(self._putDB(self.txBlockChainDBPath, putKey, self._txStringify(blockInfo[key])))
+      }
+    })
+
+    // account database operations
+    blockInfo.Transactions.forEach(function (transaction) {
+      // very limited data is stored in account db, more information about the transaction can be found in transaction database
+      if (!self._jsonTypeCheck(transaction)) {
+        throw new TypeError('Invalid json file')
+      }
+      transaction = JSON.parse(transaction)
+
+      if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
+        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash), transaction.BlockHeight))
+        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash), transaction.BlockHeight))
+      }
+    })
+
+    // product database operations
+    blockInfo.Transactions.forEach(function (transaction) {
+      // very limited data is stored in product db, more information about the transaction can be found in transaction database
+      if (!self._jsonTypeCheck(transaction)) {
+        throw new TypeError('Invalid json file')
+      }
+      transaction = JSON.parse(transaction)
+
+      if (typeof transaction.ProductInfo.Name !== 'undefined') {
+        self.txAsyncList.push(self._putDB(self.productDB, self._combineStrings(transaction.ProductInfo.Name, 'name', transaction.TxHash), transaction.BlockHeight))
+      }
+    })
+  }
 
   /**
-   * Get DB recorded transactions for an account address
+   * Get account DB recorded token chain transactions for an account address
    * @param  {String} address - account address which is searched
    * @callback {Object} output - account address previous transaction list
    */
@@ -121,13 +176,13 @@ class SECDataHandler {
     let output = {}
     console.log('Account address "' + address + '" plays payer role in the following transactions: ')
     this.accountDB.createReadStream({
-      gte: self._combineStrings(address, 'payer')
+      gte: self._combineStrings('token', address, 'payer')
     }).on('data', function (data, err) {
       if (err) {
         return console.log('Ooops! Sth wrong with getAccountTx function', err)
       }
 
-      let transactionHash = self._separateStrings(data.key)[2]
+      let transactionHash = self._separateStrings(data.key)[3]
       let transactionBlock = data.value
       output[transactionHash] = transactionBlock
 
@@ -209,8 +264,10 @@ class SECDataHandler {
    * @param  {String} input3 - third string (optional)
    * @return {String} - combined string
    */
-  _combineStrings (input1, input2, input3 = '') {
-    if (input3 !== '') {
+  _combineStrings (input1, input2, input3 = '', input4 = '') {
+    if (input4 !== '') {
+      return (input1.toString() + '!' + input2.toString() + '!' + input3.toString() + '!' + input4.toString())
+    } else if (input3 !== '') {
       return (input1.toString() + '!' + input2.toString() + '!' + input3.toString())
     }
 
