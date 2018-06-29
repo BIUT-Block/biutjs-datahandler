@@ -15,7 +15,10 @@ class SECDataHandler {
       this.DBPath += '/'
     }
 
-    this.accAddrLength = 34 // config.path
+    this.accAddrLength = 34 // config.addrLength
+    this.tokenAccBalance = {}
+    this.txAccBalance = {}
+
     this.accountDBPath = config.DBPath + 'account/'
     this.productDBPath = config.DBPath + 'product/'
     this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
