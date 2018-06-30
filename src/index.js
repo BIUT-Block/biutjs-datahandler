@@ -12,6 +12,7 @@ class SECDataHandler {
       throw new Error('Needs a valid config input for creating or loading db')
     }
 
+    this.accAddrLength = 34 // config.addrLength
     this.DBPath = path.join(__dirname, config.DBPath)
     if (this.DBPath.slice(-1) !== '/') {
       this.DBPath += '/'
@@ -21,7 +22,6 @@ class SECDataHandler {
       fs.mkdirSync(this.DBPath)
     }
 
-    this.accAddrLength = 34 // config.addrLength
     this.tokenAccBalance = {}
     this.txAccBalance = {}
 
