@@ -1,28 +1,34 @@
+const fs = require('fs')
+const path = require('path')
 const Promise = require('promise')
 const level = require('level')
 
 class SECDataHandler {
   /**
-   * @param  {Object} config - contains the path for storing database
+   * @param  {Object} config - contains the relative path for storing database
    */
   constructor (config) {
     if (typeof config.DBPath !== 'string' || config.DBPath === '') {
       throw new Error('Needs a valid config input for creating or loading db')
     }
 
-    this.DBPath = config.DBPath
+    this.DBPath = path.join(__dirname, config.DBPath)
     if (this.DBPath.slice(-1) !== '/') {
       this.DBPath += '/'
+    }
+
+    if (!fs.existsSync(this.DBPath)) {
+      fs.mkdirSync(this.DBPath)
     }
 
     this.accAddrLength = 34 // config.addrLength
     this.tokenAccBalance = {}
     this.txAccBalance = {}
 
-    this.accountDBPath = config.DBPath + 'account/'
-    this.productDBPath = config.DBPath + 'product/'
-    this.txBlockChainDBPath = config.DBPath + 'txBlockChain/'
-    this.tokenBlockChainDBPath = config.DBPath + 'tokenBlockChain/'
+    this.accountDBPath = this.DBPath + 'account/'
+    this.productDBPath = this.DBPath + 'product/'
+    this.txBlockChainDBPath = this.DBPath + 'txBlockChain/'
+    this.tokenBlockChainDBPath = this.DBPath + 'tokenBlockChain/'
 
     this._createLoadDB()
   }

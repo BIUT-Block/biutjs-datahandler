@@ -1,10 +1,11 @@
 const expect = require('chai').expect
 const fs = require('fs')
+const path = require('path')
 const SecjsDataHandler = require('../src/index')
 const rimraf = require('rimraf')
 
 describe('SecjsDataHandler', () => {
-  let jsonPath = './blockchain.json'
+  let jsonPath = path.join(__dirname, './blockchain.json')
   const config = {
     'DBPath': '../data/'
   }
@@ -23,7 +24,7 @@ describe('SecjsDataHandler', () => {
           expect.fail()
         } else {
           secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (value) {
-            expect(value).to.equal(1529288258)
+            expect(value).to.equal('1529288258')
           })
           secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Parent_Hash'), function (value) {
             expect(value).to.equal('13765ba66cf8997b5fc65167eb50b3e323f6df35c53762696e797535c1abc7e3')
