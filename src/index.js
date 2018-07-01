@@ -26,6 +26,7 @@ class SECDataHandler {
     this.productDBPath = path.join(this.DBPath, './product')
     this.txBlockChainDBPath = path.join(this.DBPath, './txBlockChain')
     this.tokenBlockChainDBPath = path.join(this.DBPath, './tokenBlockChain')
+    this.accountBalanceDBPath = path.join(this.DBPath, './accountBalance')
 
     this._createLoadDB()
   }
@@ -40,6 +41,7 @@ class SECDataHandler {
       this.productDB = level(this.productDBPath)
       this.txBlockChainDB = level(this.txBlockChainDBPath)
       this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
+      this.accountBalanceDB = level(this.accountBalanceDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -213,6 +215,15 @@ class SECDataHandler {
       console.log('Stream ended')
       callback(output)
     })
+  }
+
+  updateAccBalance (address, balanceChange) {
+    let self = this
+    if (!this._accAddrValidate(address)) {
+      throw new TypeError('Invalid account address')
+    }
+
+    this._getDB(this.accountBalanceDBPath)
   }
 
   /**
