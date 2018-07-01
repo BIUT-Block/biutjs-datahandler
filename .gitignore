@@ -3,4 +3,3 @@ node_modules
 data
 database-intro.txt
 src/test.md
-package-lock.json
