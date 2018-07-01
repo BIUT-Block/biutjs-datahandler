@@ -223,7 +223,14 @@ class SECDataHandler {
       throw new TypeError('Invalid account address')
     }
 
-    this._getDB(this.accountBalanceDBPath)
+    this._getDB(this.accountBalanceDBPath, address, (err, balance) => {
+      if (err) {
+        self._putDB(this.accountBalanceDBPath, address, balanceChange)
+      } else {
+        balance += balanceChange
+        self._putDB(this.accountBalanceDBPath, address, balance)
+      }
+    })
   }
 
   /**
@@ -249,10 +256,10 @@ class SECDataHandler {
   _getDB (DB, key, callback) {
     DB.get(key, function (err, value) {
       if (err) {
-        return console.log('_getDB function gets an errpr!', err)
+        callback(err, null)
       }
       // console.log(key + '=' + value)
-      callback(value)
+      callback(null, value)
     })
   }
 
