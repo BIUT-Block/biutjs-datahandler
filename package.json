@@ -1,14 +1,14 @@
 {
-  "name": "secjs-datahandler",
+  "name": "@sec-block/secjs-datahandler",
   "version": "1.0.0",
-  "description": "输入：\r 整条区块链/单个区块的信息(json格式？)",
-  "main": "index.js",
+  "description": "sec blockchain data handler lib",
+  "main": "src/index.js",
   "directories": {
     "example": "example",
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/test.js"
   },
   "repository": {
     "type": "git",

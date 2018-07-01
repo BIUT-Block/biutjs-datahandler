@@ -47,7 +47,7 @@ class SECDataHandler {
   }
 
   /**
-   * Update token chain json file to database
+   * Update token chain data to database
    * @param  {String} jsonFile - token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @callback {err} - returns error if exist
    */
@@ -108,7 +108,7 @@ class SECDataHandler {
   }
 
   /**
-   * Update transaction chain json file to database
+   * Update transaction chain data to database
    * @param  {String} jsonFile - transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @callback {err} - returns error if exist
    */

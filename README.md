@@ -17,13 +17,25 @@ This package uses leveldb to store and handle data from SEC blockchain
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
 ### secDataHandler.writeTokenChainToDB : <code>function</code>
-Update token chain json file to database
+Update token chain data to database
 
 **Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| jsonFile | <code>String</code> | string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...) |
+| jsonFile | <code>String</code> | token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+
+
+<a name="SECDataHandler+writeTxChainToDB"></a>
+
+### secDataHandler.writeTxChainToDB : <code>function</code>
+Update transaction chain data to database
+
+**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| jsonFile | <code>String</code> | transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
 
 
 <a name="SECDataHandler+getAccountTx"></a>
@@ -36,14 +48,3 @@ Get DB recorded transactions for an account address
 | Param | Type | Description |
 | --- | --- | --- |
 | address | <code>String</code> | account address which is searched |
-
-<a name="SECDataHandler+writeTxChainToDB"></a>
-
-### secDataHandler.writeTxChainToDB : <code>function</code>
-Update transaction chain json file to database
-
-**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| jsonFile | <code>String</code> | string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...) |
