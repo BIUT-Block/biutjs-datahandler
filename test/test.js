@@ -19,18 +19,19 @@ describe('SecjsDataHandler', () => {
       }
     })
 
-    it('functionality correctness test', () => {
+    it('functionality correctness test', (done) => {
       secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
         if (err) {
           expect.fail()
         } else {
           secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (value) {
-            expect(value).to.equal('1529288258')
+            expect(value).to.equal('1530297318')
           })
           secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Parent_Hash'), function (value) {
-            expect(value).to.equal('13765ba66cf8997b5fc65167eb50b3e323f6df35c53762696e797535c1abc7e3')
+            expect(value).to.equal('d30e75b804fa4ca0b10a5556ef96a51f968509efb3a3edfdd2f478bc8656aa6d')
           })
         }
+        done()
       })
     })
 
@@ -47,18 +48,19 @@ describe('SecjsDataHandler', () => {
       }
     })
 
-    it('functionality correctness test', () => {
+    it('functionality correctness test', (done) => {
       secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
         if (err) {
           expect.fail()
         } else {
           secData._getDB(secData.txBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (value) {
-            expect(value).to.equal('1530297311')
+            expect(value).to.equal('1530297318')
           })
           secData._getDB(secData.txBlockChainDB, secData._combineStrings(2, 'Parent_Hash'), function (value) {
             expect(value).to.equal('85aec575af965c0f6daa3179152be5f37977968882a6f48f952fca790305265f')
           })
         }
+        done()
       })
     })
 
@@ -75,16 +77,17 @@ describe('SecjsDataHandler', () => {
       }
     })
 
-    it('functionality correctness test', () => {
+    it('functionality correctness test', (done) => {
       secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
         if (err) {
           expect.fail()
         } else {
           secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
-            expect(output).to.have.any.keys('b02e70fabaebe94f1ba63dc522dc9fa131b9ee482262f2f5df3ebecc8148dacd')
-            expect(output).to.have.any.keys('d1f94b5dd3f349d9e1e62c426f1afa832b3ac0535012e092189a557dd4fea033')
-            expect(output).to.have.any.keys('0ee60812875c62888714a19bfe1eb065b720fb639ff637f1e97509fa85b6784c')
-            expect(output).to.have.any.keys('218d52ad040d1dc2b25950b2f88243f55438f977ca03f0415a7167e6d01db95d')
+            expect(output).to.have.any.keys('401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d')
+            expect(output).to.have.any.keys('415a66de24c5396d3a4cefb90caafd984a6212b0b1e919b15c728df608c6b0cf')
+            expect(output).to.have.any.keys('c538faf86e45519070bb199ccb68ad567e64118509129701a0e2087175b78c6a')
+            expect(output).to.have.any.keys('6913ceef69c42d178f7e42aa7249208c7d3969e03f292127dbb3ed4d67fd2313')
+            done()
           })
         }
       })

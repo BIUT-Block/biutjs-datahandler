@@ -14,9 +14,6 @@ class SECDataHandler {
 
     this.accAddrLength = 34 // config.addrLength
     this.DBPath = path.join(__dirname, config.DBPath)
-    if (this.DBPath.slice(-1) !== '/') {
-      this.DBPath += '/'
-    }
 
     if (!fs.existsSync(this.DBPath)) {
       fs.mkdirSync(this.DBPath)
@@ -25,10 +22,10 @@ class SECDataHandler {
     this.tokenAccBalance = {}
     this.txAccBalance = {}
 
-    this.accountDBPath = this.DBPath + 'account/'
-    this.productDBPath = this.DBPath + 'product/'
-    this.txBlockChainDBPath = this.DBPath + 'txBlockChain/'
-    this.tokenBlockChainDBPath = this.DBPath + 'tokenBlockChain/'
+    this.accountDBPath = path.join(this.DBPath, './account')
+    this.productDBPath = path.join(this.DBPath, './product')
+    this.txBlockChainDBPath = path.join(this.DBPath, './txBlockChain')
+    this.tokenBlockChainDBPath = path.join(this.DBPath, './tokenBlockChain')
 
     this._createLoadDB()
   }
@@ -147,9 +144,9 @@ class SECDataHandler {
     Object.keys(blockInfo).forEach(function (key) {
       let putKey = self._combineStrings(blockInfo.Height, key)
       if (key !== 'Transactions') {
-        self.txAsyncList.push(self._putDB(self.txBlockChainDBPath, putKey, blockInfo[key]))
+        self.txAsyncList.push(self._putDB(self.txBlockChainDB, putKey, blockInfo[key]))
       } else {
-        self.txAsyncList.push(self._putDB(self.txBlockChainDBPath, putKey, self._txStringify(blockInfo[key])))
+        self.txAsyncList.push(self._putDB(self.txBlockChainDB, putKey, self._txStringify(blockInfo[key])))
       }
     })
 
@@ -193,7 +190,7 @@ class SECDataHandler {
 
     let self = this
     let output = {}
-    console.log('Account address "' + address + '" plays payer role in the following transactions: ')
+    // console.log('Account address "' + address + '" plays payer role in the following transactions: ')
     this.accountDB.createReadStream({
       gte: self._combineStrings('token', address, 'payer')
     }).on('data', function (data, err) {
@@ -205,9 +202,9 @@ class SECDataHandler {
       let transactionBlock = data.value
       output[transactionHash] = transactionBlock
 
-      console.log('--------------------------')
-      console.log('transaction hash is: ' + transactionHash)
-      console.log('transaction located block height is: ' + transactionBlock)
+      // console.log('--------------------------')
+      // console.log('transaction hash is: ' + transactionHash)
+      // console.log('transaction located block height is: ' + transactionBlock)
     }).on('error', function (err) {
       console.log('Stream occurs an error!', err)
     }).on('close', function () {
