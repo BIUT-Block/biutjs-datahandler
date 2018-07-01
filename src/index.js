@@ -51,7 +51,7 @@ class SECDataHandler {
   /**
    * Update token chain data to database
    * @param  {String} jsonFile - token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
-   * @callback {err} - returns error if exist
+   * @param  {Function} callback - callback function, returns error if exist
    */
   writeTokenChainToDB (jsonFile, callback) {
     if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
@@ -102,6 +102,8 @@ class SECDataHandler {
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
+        self._updateAccBalance(transaction.TxFrom, -(transaction.Value + transaction.GasPrice + transaction.TxFee))
+        self._updateAccBalance(transaction.TxTo, transaction.Value)
       }
     })
 
@@ -112,7 +114,7 @@ class SECDataHandler {
   /**
    * Update transaction chain data to database
    * @param  {String} jsonFile - transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
-   * @callback {err} - returns error if exist
+   * @param  {Function} callback - callback function, returns error if exist
    */
   writeTxChainToDB (jsonFile, callback) {
     if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
@@ -183,7 +185,7 @@ class SECDataHandler {
   /**
    * Get account DB recorded token chain transactions for an account address
    * @param  {String} address - account address which is searched
-   * @callback {Object} output - account address previous transaction list
+   * @param  {Function} callback - callback function, returns account address previous transaction list
    */
   getAccountTx (address, callback) {
     if (!this._accAddrValidate(address)) {
@@ -217,18 +219,23 @@ class SECDataHandler {
     })
   }
 
-  updateAccBalance (address, balanceChange) {
+  /**
+   * Update user account balance (this function is called only if/when token database is updated)
+   * @param  {String} address - account address
+   * @param  {Number} balanceChange - balance changing amount, can be positive(balance increased) or negative(balance decreased)
+   */
+  _updateAccBalance (address, balanceChange) {
     let self = this
     if (!this._accAddrValidate(address)) {
       throw new TypeError('Invalid account address')
     }
 
-    this._getDB(this.accountBalanceDBPath, address, (err, balance) => {
+    this._getDB(this.accountBalanceDB, address, (err, balance) => {
       if (err) {
-        self._putDB(this.accountBalanceDBPath, address, balanceChange)
+        self.tokenAsyncList.push(self._putDB(this.accountBalanceDBPath, address, balanceChange))
       } else {
         balance += balanceChange
-        self._putDB(this.accountBalanceDBPath, address, balance)
+        self.tokenAsyncList.push(self._putDB(this.accountBalanceDBPath, address, balance))
       }
     })
   }
@@ -252,14 +259,20 @@ class SECDataHandler {
     })
   }
 
-  // get a value from the DB according to the "key" input (never used, for testing purpose)
+  /**
+   * Get a value from the DB according to the "key" input
+   * @param  {leveldb} DB - database which will be operated
+   * @param  {String} key - 'key' for the key-value pair
+   * @param  {Function} callback - callback function, returns an error(if exists) and the get value
+   */
   _getDB (DB, key, callback) {
     DB.get(key, function (err, value) {
       if (err) {
         callback(err, null)
+      } else {
+        // console.log(key + '=' + value)
+        callback(null, value)
       }
-      // console.log(key + '=' + value)
-      callback(null, value)
     })
   }
 

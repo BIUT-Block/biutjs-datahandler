@@ -2,26 +2,33 @@ const fs = require('fs')
 const path = require('path')
 const SecjsDataHandler = require('../src/index')
 
-// let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
-let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
+let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+// let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
 
 const config = {
   'DBPath': '../data/'
 }
 const secData = new SecjsDataHandler(config)
 
-/* secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
+secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)
     throw new Error('Something wrong with writeTokenChainToDB function')
   } else {
     secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
-      console.log(output)
+      // console.log(output)
+    })
+    secData._getDB(secData.accountBalanceDB, '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (err, value) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(value)
+      }
     })
   }
-}) */
+})
 
-secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
+/* secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)
     throw new Error('Something wrong with writeTxChainToDB function')
@@ -30,4 +37,4 @@ secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
       console.log(value)
     })
   }
-})
+}) */
