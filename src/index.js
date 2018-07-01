@@ -51,20 +51,20 @@ class SECDataHandler {
 
   /**
    * Update token chain json file to database
-   * @param  {String} jsonFile - string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...)
+   * @param  {String} jsonFile - token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @callback {err} - returns error if exist
    */
   writeTokenChainToDB (jsonFile, callback) {
-    if (!this._jsonTypeCheck(jsonFile)) {
-      throw new TypeError('Invalid json file')
+    if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
+      throw new TypeError('Invalid imported block chain file')
     }
 
     let self = this
     let tokenChain = JSON.parse(jsonFile)
     this.tokenAsyncList = []
 
-    Object.keys(tokenChain).forEach(function (blockHeight) {
-      self._writeTokenBlockToDB(tokenChain[blockHeight])
+    tokenChain.forEach(function (blockInfo) {
+      self._writeTokenBlockToDB(blockInfo)
     })
 
     Promise.all(this.tokenAsyncList).then(function () {
@@ -112,20 +112,20 @@ class SECDataHandler {
 
   /**
    * Update transaction chain json file to database
-   * @param  {String} jsonFile - string which is in json format. E.g, '{"1": {"TimeStamp": 1529288258, ...}}' (blockHeight: {block}, ...)
+   * @param  {String} jsonFile - transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @callback {err} - returns error if exist
    */
   writeTxChainToDB (jsonFile, callback) {
-    if (!this._jsonTypeCheck(jsonFile)) {
-      throw new TypeError('Invalid json file')
+    if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
+      throw new TypeError('Invalid imported block chain file')
     }
 
     let self = this
     let txChain = JSON.parse(jsonFile)
     this.txAsyncList = []
 
-    Object.keys(txChain).forEach(function (blockHeight) {
-      self._writeTxBlockToDB(txChain[blockHeight])
+    txChain.forEach(function (blockInfo) {
+      self._writeTxBlockToDB(blockInfo)
     })
 
     Promise.all(this.txAsyncList).then(function () {

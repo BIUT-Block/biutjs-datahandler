@@ -1,7 +1,8 @@
 const fs = require('fs')
+const path = require('path')
 const SecjsDataHandler = require('../src/index')
 
-let jsonPath = '../test/blockchain.json'
+let jsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
 
 const config = {
   'DBPath': '../data/'
@@ -13,7 +14,7 @@ secData.writeTokenChainToDB(fs.readFileSync(jsonPath, 'utf8'), function (err) {
     console.log(err)
     throw new Error('Something wrong with writeTokenChainToDB function')
   } else {
-    secData.getAccountTx('1H1qVxChYmjnNxCTmK2JwHcaA2zwUn6XSi', function (output) {
+    secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
       console.log(output)
     })
   }
