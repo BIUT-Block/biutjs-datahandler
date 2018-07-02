@@ -26,7 +26,6 @@ class SECDataHandler {
     this.productDBPath = path.join(this.DBPath, './product')
     this.txBlockChainDBPath = path.join(this.DBPath, './txBlockChain')
     this.tokenBlockChainDBPath = path.join(this.DBPath, './tokenBlockChain')
-    this.accountBalanceDBPath = path.join(this.DBPath, './accountBalance')
 
     this._createLoadDB()
   }
@@ -41,7 +40,6 @@ class SECDataHandler {
       this.productDB = level(this.productDBPath)
       this.txBlockChainDB = level(this.txBlockChainDBPath)
       this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
-      this.accountBalanceDB = level(this.accountBalanceDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -230,12 +228,12 @@ class SECDataHandler {
       throw new TypeError('Invalid account address')
     }
 
-    this._getDB(this.accountBalanceDB, address, (err, balance) => {
+    this._getDB(this.accountDB, self._combineStrings('token', address, 'balance'), (err, balance) => {
       if (err) {
-        self.tokenAsyncList.push(self._putDB(this.accountBalanceDBPath, address, balanceChange))
+        self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balanceChange))
       } else {
-        balance += balanceChange
-        self.tokenAsyncList.push(self._putDB(this.accountBalanceDBPath, address, balance))
+        balance = parseInt(balance) + balanceChange
+        self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balance))
       }
     })
   }

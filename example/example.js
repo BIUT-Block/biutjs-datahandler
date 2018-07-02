@@ -18,7 +18,7 @@ secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (er
     secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
       // console.log(output)
     })
-    secData._getDB(secData.accountBalanceDB, '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (err, value) {
+    secData._getDB(secData.accountDB, secData._combineStrings('token', '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', 'balance'), function (err, value) {
       if (err) {
         console.log(err)
       } else {
