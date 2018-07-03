@@ -232,7 +232,7 @@ class SECDataHandler {
       if (err) {
         self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balanceChange))
       } else {
-        balance = parseInt(balance) + balanceChange
+        balance = parseFloat(balance) + balanceChange
         self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balance))
       }
     })
