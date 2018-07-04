@@ -61,10 +61,12 @@ class SECDataHandler {
     this.tokenAsyncList = []
 
     tokenChain.forEach(function (blockInfo) {
-      self._writeTokenBlockToDB(blockInfo)
+      self._writeTokenBlockToDB(blockInfo, () => {
+
+      })
     })
 
-    Promise.all(this.tokenAsyncList).then(function () {
+    Promise.all(self.tokenAsyncList).then(function () {
       callback()
     }).catch(function (err) {
       callback(err)
@@ -74,9 +76,10 @@ class SECDataHandler {
   /**
    * Update a single token chain block into database
    * @param  {Object} blockInfo - format define in "tokenchain-block-model.js" (in "secjs-block" project)
+   * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
-  _writeTokenBlockToDB (blockInfo) {
+  _writeTokenBlockToDB (blockInfo, callback) {
     let self = this
 
     // token database operations
@@ -100,13 +103,90 @@ class SECDataHandler {
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
-        self._updateAccBalance(transaction.TxFrom, -(transaction.Value + transaction.GasPrice + transaction.TxFee))
-        self._updateAccBalance(transaction.TxTo, transaction.Value)
+      }
+    })
+
+    // update account balance in account database
+    this._updateAccBalanceBlock(0, blockInfo, (err) => {
+      if (err) {
+        callback(err)
+      } else {
+        callback()
       }
     })
 
     // product database operations
     // as token chain has no product info, no data needs to be written to priduction database
+  }
+
+  /**
+   * Update user account balance for one block
+   * @param  {Number} transactionID - transaction index number
+   * @param  {Object} blockInfo - single block json format data
+   * @param  {Function} callback - callback function, returns error if exist
+   */
+  _updateAccBalanceBlock (transactionID, blockInfo, callback) {
+    if (blockInfo.Transactions.length === 0) {
+      return callback()
+    }
+
+    let self = this
+    let transaction = blockInfo.Transactions[transactionID]
+
+    if (!this._jsonTypeCheck(transaction)) {
+      throw new TypeError('Invalid json file')
+    }
+    transaction = JSON.parse(transaction)
+
+    if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
+      self._updateAccBalanceTx(transaction.TxFrom, -(transaction.Value + transaction.GasPrice + transaction.TxFee), (err) => {
+        if (err) {
+          callback(err)
+        } else {
+          self._updateAccBalanceTx(transaction.TxTo, transaction.Value, (err) => {
+            if (err) {
+              callback(err)
+            } else {
+              if (transactionID + 1 < blockInfo.Transactions.length) {
+                self._updateAccBalanceBlock(transactionID + 1, blockInfo, (err) => {
+                  if (err) {
+                    callback(err)
+                  } else {
+                    callback()
+                  }
+                })
+              } else {
+                callback()
+              }
+            }
+          })
+        }
+      })
+    }
+  }
+
+  /**
+   * Update user account balance for one transaction
+   * @param  {String} address - account address
+   * @param  {Number} balanceChange - balance changing amount, can be positive(balance increased) or negative(balance decreased)
+   * @param  {Function} callback - callback function, returns error if exist
+   */
+  _updateAccBalanceTx (address, balanceChange, callback) {
+    let self = this
+    if (!this._accAddrValidate(address)) {
+      throw new TypeError('Invalid account address')
+    }
+
+    this._getDB(this.accountDB, self._combineStrings('token', address, 'balance'), (err, balance) => {
+      if (err) {
+        let promise = self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balanceChange)
+        promise.then(callback()).catch((err) => { callback(err) })
+      } else {
+        balance = parseFloat(balance) + balanceChange
+        let promise = self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balance)
+        promise.then(callback()).catch((err) => { callback(err) })
+      }
+    })
   }
 
   /**
@@ -214,27 +294,6 @@ class SECDataHandler {
     }).on('end', function () {
       console.log('Stream ended')
       callback(output)
-    })
-  }
-
-  /**
-   * Update user account balance (this function is called only if/when token database is updated)
-   * @param  {String} address - account address
-   * @param  {Number} balanceChange - balance changing amount, can be positive(balance increased) or negative(balance decreased)
-   */
-  _updateAccBalance (address, balanceChange) {
-    let self = this
-    if (!this._accAddrValidate(address)) {
-      throw new TypeError('Invalid account address')
-    }
-
-    this._getDB(this.accountDB, self._combineStrings('token', address, 'balance'), (err, balance) => {
-      if (err) {
-        self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balanceChange))
-      } else {
-        balance = parseFloat(balance) + balanceChange
-        self.tokenAsyncList.push(self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balance))
-      }
     })
   }
 
