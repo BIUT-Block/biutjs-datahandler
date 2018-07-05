@@ -60,16 +60,43 @@ class SECDataHandler {
     let tokenChain = JSON.parse(jsonFile)
     this.tokenAsyncList = []
 
-    tokenChain.forEach(function (blockInfo) {
-      self._writeTokenBlockToDB(blockInfo, () => {
-
-      })
+    this._accountBalanceRecursive(0, tokenChain, (err) => {
+      if (err) {
+        callback(err)
+      } else {
+        Promise.all(self.tokenAsyncList).then(function () {
+          callback()
+        }).catch(function (err) {
+          callback(err)
+        })
+      }
     })
+  }
 
-    Promise.all(self.tokenAsyncList).then(function () {
-      callback()
-    }).catch(function (err) {
-      callback(err)
+  /**
+   * This function is used for recursive
+   * @param  {Number} index - token chain block index
+   * @param  {Array} tokenChain - token chain data
+   * @param  {Function} callback - callback function, returns error if exist
+   */
+  _accountBalanceRecursive (index, tokenChain, callback) {
+    let self = this
+    this._writeTokenBlockToDB(tokenChain[index], (err) => {
+      if (err) {
+        callback(err)
+      } else {
+        if (index + 1 < tokenChain.length) {
+          self._accountBalanceRecursive(index + 1, tokenChain, (err) => {
+            if (err) {
+              callback(err)
+            } else {
+              callback()
+            }
+          })
+        } else {
+          callback()
+        }
+      }
     })
   }
 
