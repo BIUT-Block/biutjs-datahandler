@@ -207,11 +207,11 @@ class SECDataHandler {
     this._getDB(this.accountDB, self._combineStrings('token', address, 'balance'), (err, balance) => {
       if (err) {
         let promise = self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balanceChange)
-        promise.then(callback()).catch((err) => { callback(err) })
+        promise.then(() => { callback() }).catch((err) => { callback(err) })
       } else {
         balance = parseFloat(balance) + balanceChange
         let promise = self._putDB(this.accountDB, self._combineStrings('token', address, 'balance'), balance)
-        promise.then(callback()).catch((err) => { callback(err) })
+        promise.then(() => { callback() }).catch((err) => { callback(err) })
       }
     })
   }
@@ -317,9 +317,9 @@ class SECDataHandler {
     }).on('error', function (err) {
       console.log('Stream occurs an error!', err)
     }).on('close', function () {
-      console.log('Stream closed')
+      // console.log('Stream closed')
     }).on('end', function () {
-      console.log('Stream ended')
+      // console.log('Stream ended')
       callback(output)
     })
   }
