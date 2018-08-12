@@ -115,7 +115,7 @@ class SECDataHandler {
 
     // token database operations
     this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Height, blockInfo))
-    this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
+    this.tokenAsyncList.push(this._putDB(this.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
 
     // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
@@ -538,11 +538,18 @@ class SECDataHandler {
   }
 
   _getTokenBlockFromDB (blockHash, callback) {
-    this._getJsonDB(this.tokenBlockChainDB, blockHash, (err, value) => {
+    let self = this
+    this._getDB(this.tokenBlockChainDB, blockHash, (err, value) => {
       if (err) {
         callback(err, null)
       } else {
-        callback(null, value)
+        self._getJsonDB(self.tokenBlockChainDB, value, (err, value) => {
+          if (err) {
+            callback(err, null)
+          } else {
+            callback(null, value)
+          }
+        })
       }
     })
   }
