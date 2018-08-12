@@ -24,18 +24,18 @@ describe('SecjsDataHandler', () => {
         if (err) {
           expect.fail()
         } else {
-          secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (err, value) {
+          secData._getJsonDB(secData.tokenBlockChainDB, 1, function (err, value) {
             if (err) {
               expect.fail()
             } else {
-              expect(value).to.equal('1530297318')
+              expect(value.TimeStamp).to.equal(1530297318)
             }
           })
-          secData._getDB(secData.tokenBlockChainDB, secData._combineStrings(2, 'Parent_Hash'), function (err, value) {
+          secData._getJsonDB(secData.tokenBlockChainDB, 'd30e75b804fa4ca0b10a5556ef96a51f968509efb3a3edfdd2f478bc8656aa6d', function (err, value) {
             if (err) {
               expect.fail()
             } else {
-              expect(value).to.equal('d30e75b804fa4ca0b10a5556ef96a51f968509efb3a3edfdd2f478bc8656aa6d')
+              expect(value).to.equal(1)
             }
           })
         }
@@ -61,18 +61,18 @@ describe('SecjsDataHandler', () => {
         if (err) {
           expect.fail()
         } else {
-          secData._getDB(secData.txBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (err, value) {
+          secData._getJsonDB(secData.txBlockChainDB, 1, function (err, value) {
             if (err) {
               expect.fail()
             } else {
-              expect(value).to.equal('1530297318')
+              expect(value.TimeStamp).to.equal(1530297318)
             }
           })
-          secData._getDB(secData.txBlockChainDB, secData._combineStrings(2, 'Parent_Hash'), function (err, value) {
+          secData._getJsonDB(secData.txBlockChainDB, '85aec575af965c0f6daa3179152be5f37977968882a6f48f952fca790305265f', function (err, value) {
             if (err) {
               expect.fail()
             } else {
-              expect(value).to.equal('85aec575af965c0f6daa3179152be5f37977968882a6f48f952fca790305265f')
+              expect(value).to.equal(1)
             }
           })
         }

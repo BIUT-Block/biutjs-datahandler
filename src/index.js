@@ -114,26 +114,12 @@ class SECDataHandler {
     let self = this
 
     // token database operations
-    // this.tokenAsyncList.push(this._putJsonDB(self.tokenBlockChainDB, blockInfo.Height, blockInfo))
-    // this.tokenAsyncList.push(this._putJsonDB(self.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
-
-    Object.keys(blockInfo).forEach(function (key) {
-      let putKey = self._combineStrings(blockInfo.Height, key)
-      if (key !== 'Transactions') {
-        self.tokenAsyncList.push(self._putDB(self.tokenBlockChainDB, putKey, blockInfo[key]))
-      } else {
-        self.tokenAsyncList.push(self._putDB(self.tokenBlockChainDB, putKey, self._txStringify(blockInfo[key])))
-      }
-    })
+    this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Height, blockInfo))
+    this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
 
     // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
       // very limited data is stored in account db, more information about the transaction can be found in token database
-      if (!self._jsonTypeCheck(transaction)) {
-        throw new TypeError('Invalid json file')
-      }
-      transaction = JSON.parse(transaction)
-
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
         self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
@@ -166,11 +152,6 @@ class SECDataHandler {
 
     let self = this
     let transaction = blockInfo.Transactions[transactionID]
-
-    if (!this._jsonTypeCheck(transaction)) {
-      throw new TypeError('Invalid json file')
-    }
-    transaction = JSON.parse(transaction)
 
     if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
       self._updateAccBalanceTx(transaction.TxFrom, -(transaction.Value + transaction.GasPrice + transaction.TxFee), (err) => {
@@ -257,23 +238,12 @@ class SECDataHandler {
     let self = this
 
     // tx database operations
-    Object.keys(blockInfo).forEach(function (key) {
-      let putKey = self._combineStrings(blockInfo.Height, key)
-      if (key !== 'Transactions') {
-        self.txAsyncList.push(self._putDB(self.txBlockChainDB, putKey, blockInfo[key]))
-      } else {
-        self.txAsyncList.push(self._putDB(self.txBlockChainDB, putKey, self._txStringify(blockInfo[key])))
-      }
-    })
+    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Height, blockInfo))
+    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Hash, blockInfo.Height))
 
     // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
       // very limited data is stored in account db, more information about the transaction can be found in transaction database
-      if (!self._jsonTypeCheck(transaction)) {
-        throw new TypeError('Invalid json file')
-      }
-      transaction = JSON.parse(transaction)
-
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
         self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash), transaction.BlockHeight))
         self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash), transaction.BlockHeight))
@@ -283,11 +253,6 @@ class SECDataHandler {
     // product database operations
     blockInfo.Transactions.forEach(function (transaction) {
       // very limited data is stored in product db, more information about the transaction can be found in transaction database
-      if (!self._jsonTypeCheck(transaction)) {
-        throw new TypeError('Invalid json file')
-      }
-      transaction = JSON.parse(transaction)
-
       if (typeof transaction.ProductInfo.Name !== 'undefined') {
         self.txAsyncList.push(self._putDB(self.productDB, self._combineStrings(transaction.ProductInfo.Name, 'name', transaction.TxHash), transaction.BlockHeight))
       }
