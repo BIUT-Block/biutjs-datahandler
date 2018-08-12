@@ -28,6 +28,31 @@ secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (er
   }
 })
 
+const blockHashArray = [
+  '5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f668448708e34c1',
+  'd30e75b804fa4ca0b10a5556ef96a51f968509efb3a3edfdd2f478bc8656aa6d'
+]
+
+secData.getTokenBlockFromDB(blockHashArray, (err, value) => {
+  if (err) {
+    console.log('error occurs')
+    console.log(err)
+  } else {
+    console.log('get token blocks from database has no error, result is:')
+    console.log(value)
+  }
+})
+
+secData.getTokenBlockFromDB('5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f668448708e34c1', (err, value) => {
+  if (err) {
+    console.log('error occurs')
+    console.log(err)
+  } else {
+    console.log('get token blocks from database has no error, result is:')
+    console.log(value)
+  }
+})
+
 /* secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)

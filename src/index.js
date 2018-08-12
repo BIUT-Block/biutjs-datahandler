@@ -494,6 +494,59 @@ class SECDataHandler {
     return true
   }
 
+  getTokenBlockFromDB (blockHashArray, callback) {
+    let self = this
+
+    let buffer = []
+    if (typeof blockHashArray === 'string') {
+      blockHashArray = [blockHashArray]
+    }
+
+    if (!Array.isArray(blockHashArray)) {
+      throw new Error('invalid blockHashArray input, should be an array')
+    }
+
+    self._getTokenBlockFromDBRecursive(0, blockHashArray, buffer, function (err) {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, buffer)
+      }
+    })
+  }
+
+  _getTokenBlockFromDBRecursive (index, array, buffer, callback) {
+    let self = this
+    this._getTokenBlockFromDB(array[index], (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        buffer.push(value)
+        if (index + 1 < array.length) {
+          self._getTokenBlockFromDBRecursive(index + 1, array, buffer, (err) => {
+            if (err) {
+              callback(err, null)
+            } else {
+              callback(null, buffer)
+            }
+          })
+        } else {
+          callback(null, buffer)
+        }
+      }
+    })
+  }
+
+  _getTokenBlockFromDB (blockHash, callback) {
+    this._getJsonDB(this.tokenBlockChainDB, blockHash, (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, value)
+      }
+    })
+  }
+
   /**
    * Get all token block chain data
    * @return {Array}
