@@ -12,6 +12,10 @@ class SECDataHandler {
       throw new Error('Needs a valid config input for creating or loading db')
     }
 
+    this.dbOpts = {
+      valueEncoding: 'json'
+    }
+
     this.accAddrLength = 34 // config.addrLength
     this.DBPath = path.join(__dirname, config.DBPath)
 
@@ -110,6 +114,9 @@ class SECDataHandler {
     let self = this
 
     // token database operations
+    // this.tokenAsyncList.push(this._putJsonDB(self.tokenBlockChainDB, blockInfo.Height, blockInfo))
+    // this.tokenAsyncList.push(this._putJsonDB(self.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
+
     Object.keys(blockInfo).forEach(function (key) {
       let putKey = self._combineStrings(blockInfo.Height, key)
       if (key !== 'Transactions') {
@@ -344,6 +351,26 @@ class SECDataHandler {
   }
 
   /**
+   * Put a key-jsonData pair to db
+   * @param  {leveldb} DB - database which will be operated
+   * @param  {String} key - 'key' for the key-value pair
+   * @param  {Object} value - 'value' for the key-value pair, json format
+   * @return {PromiseObject} - a promise object which can indicate the async function is finished or not
+   */
+  _putJsonDB (DB, key, value) {
+    let self = this
+    return new Promise(function (resolve, reject) {
+      DB.put(key, value, self.dbOpts, function (err) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  /**
    * Get a value from the DB according to the "key" input
    * @param  {leveldb} DB - database which will be operated
    * @param  {String} key - 'key' for the key-value pair
@@ -351,6 +378,23 @@ class SECDataHandler {
    */
   _getDB (DB, key, callback) {
     DB.get(key, function (err, value) {
+      if (err) {
+        callback(err, null)
+      } else {
+        // console.log(key + '=' + value)
+        callback(null, value)
+      }
+    })
+  }
+
+  /**
+   * Get a value which is in json format from the DB according to the "key" input
+   * @param  {leveldb} DB - database which will be operated
+   * @param  {String} key - 'key' for the key-value pair
+   * @param  {Function} callback - callback function, returns an error(if exists) and the get json format value
+   */
+  _getJsonDB (DB, key, callback) {
+    DB.get(key, this.dbOpts, function (err, value) {
       if (err) {
         callback(err, null)
       } else {
@@ -483,6 +527,22 @@ class SECDataHandler {
     }
 
     return true
+  }
+
+  /**
+   * Get all token block chain data
+   * @return {Array}
+   */
+  getTokenBlockChain () {
+    console.log('pass')
+  }
+
+  /**
+   * Get all transaction block chain data
+   * @return {Array}
+   */
+  getTxBlockChain () {
+    console.log('pass')
   }
 }
 

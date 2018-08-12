@@ -100,9 +100,9 @@ describe('SecjsDataHandler', () => {
         } else {
           secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
             expect(output).to.have.any.keys('401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d')
-            expect(output).to.have.any.keys('415a66de24c5396d3a4cefb90caafd984a6212b0b1e919b15c728df608c6b0cf')
-            expect(output).to.have.any.keys('c538faf86e45519070bb199ccb68ad567e64118509129701a0e2087175b78c6a')
-            expect(output).to.have.any.keys('6913ceef69c42d178f7e42aa7249208c7d3969e03f292127dbb3ed4d67fd2313')
+            expect(output).to.have.any.keys('8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374')
+            expect(output).to.have.any.keys('511570b94bcf98061265974f74b29fbe5e179c47fc22b1eb7505901fe97f8c3f')
+            expect(output).to.have.any.keys('adc1464538bb2ecbba627692d58db9958b76ed8bfdbc5b52d644596e9e3c3eec')
             done()
           })
         }
