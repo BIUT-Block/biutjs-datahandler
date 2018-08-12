@@ -53,6 +53,16 @@ secData.getTokenBlockFromDB('5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f6
   }
 })
 
+secData.getTokenChain(2, (err, value) => {
+  if (err) {
+    console.log('error occurs')
+    console.log(err)
+  } else {
+    console.log('Here are all the token chain blocks')
+    console.log(value)
+  }
+})
+
 /* secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)

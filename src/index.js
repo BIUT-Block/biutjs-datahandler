@@ -519,19 +519,19 @@ class SECDataHandler {
     let self = this
     this._getTokenBlockFromDB(array[index], (err, value) => {
       if (err) {
-        callback(err, null)
+        callback(err)
       } else {
         buffer.push(value)
         if (index + 1 < array.length) {
           self._getTokenBlockFromDBRecursive(index + 1, array, buffer, (err) => {
             if (err) {
-              callback(err, null)
+              callback(err)
             } else {
-              callback(null, buffer)
+              callback(null)
             }
           })
         } else {
-          callback(null, buffer)
+          callback(null)
         }
       }
     })
@@ -558,15 +558,54 @@ class SECDataHandler {
    * Get all token block chain data
    * @return {Array}
    */
-  getTokenBlockChain () {
-    console.log('pass')
+  getTokenChain (maxBlockHeight, callback) {
+    let buffer = []
+    this._getTokenChainRecursive(0, maxBlockHeight, buffer, (err) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, buffer)
+      }
+    })
+  }
+
+  _getTokenChainRecursive (index, maxBlockHeight, buffer, callback) {
+    let self = this
+    this._getTokenChain(index, (err, value) => {
+      if (err) {
+        callback(err)
+      } else {
+        buffer.push(value)
+        if (index < maxBlockHeight) {
+          self._getTokenChainRecursive(index + 1, maxBlockHeight, buffer, (err) => {
+            if (err) {
+              callback(err)
+            } else {
+              callback(null)
+            }
+          })
+        } else {
+          callback(null)
+        }
+      }
+    })
+  }
+
+  _getTokenChain (index, callback) {
+    this._getJsonDB(this.tokenBlockChainDB, index, (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, value)
+      }
+    })
   }
 
   /**
    * Get all transaction block chain data
    * @return {Array}
    */
-  getTxBlockChain () {
+  getTxChain () {
     console.log('pass')
   }
 }
