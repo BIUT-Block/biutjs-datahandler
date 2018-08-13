@@ -54,6 +54,7 @@ class SECDataHandler {
    * Update token chain data to database
    * @param  {String} jsonFile - token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
    */
   writeTokenChainToDB (jsonFile, callback) {
     if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
@@ -82,6 +83,7 @@ class SECDataHandler {
    * @param  {Number} index - token chain block index
    * @param  {Array} tokenChain - token chain data
    * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
    */
   _accountBalanceRecursive (index, tokenChain, callback) {
     let self = this
@@ -150,6 +152,7 @@ class SECDataHandler {
    * @param  {Number} transactionID - transaction index number
    * @param  {Object} blockInfo - single block json format data
    * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
    */
   _updateAccBalanceBlock (transactionID, blockInfo, callback) {
     if (blockInfo.Transactions.length === 0) {
@@ -196,6 +199,7 @@ class SECDataHandler {
    * @param  {String} address - account address
    * @param  {Number} balanceChange - balance changing amount, can be positive(balance increased) or negative(balance decreased)
    * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
    */
   _updateAccBalanceTx (address, balanceChange, callback) {
     let self = this
@@ -219,6 +223,7 @@ class SECDataHandler {
    * Update transaction chain data to database
    * @param  {String} jsonFile - transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
    */
   writeTxChainToDB (jsonFile, callback) {
     if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
@@ -285,6 +290,7 @@ class SECDataHandler {
    * Get account DB recorded token chain transactions for an account address
    * @param  {String} address - account address which is searched
    * @param  {Function} callback - callback function, returns account address previous transaction list
+   * @return {None}
    */
   getAccountTx (address, callback) {
     if (!this._accAddrValidate(address)) {
@@ -362,6 +368,7 @@ class SECDataHandler {
    * @param  {leveldb} DB - database which will be operated
    * @param  {String} key - 'key' for the key-value pair
    * @param  {Function} callback - callback function, returns an error(if exists) and the get value
+   * @return {None}
    */
   _getDB (DB, key, callback) {
     DB.get(key, function (err, value) {
@@ -379,6 +386,7 @@ class SECDataHandler {
    * @param  {leveldb} DB - database which will be operated
    * @param  {String} key - 'key' for the key-value pair
    * @param  {Function} callback - callback function, returns an error(if exists) and the get json format value
+   * @return {None}
    */
   _getJsonDB (DB, key, callback) {
     DB.get(key, this.dbOpts, function (err, value) {

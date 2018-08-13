@@ -20,38 +20,41 @@ This package uses leveldb to store and handle data from SEC blockchain
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
-### secDataHandler.writeTokenChainToDB : <code>function</code>
+### secDataHandler.writeTokenChainToDB(jsonFile, callback) => <code>None</code>
 Update token chain data to database
 
-**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | jsonFile | <code>String</code> | token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| callback | <code>function</code> | callback function, returns error if exist |
 
 
 <a name="SECDataHandler+writeTxChainToDB"></a>
 
-### secDataHandler.writeTxChainToDB : <code>function</code>
+### secDataHandler.writeTxChainToDB(jsonFile, callback) => <code>None</code>
 Update transaction chain data to database
 
-**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | jsonFile | <code>String</code> | transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| callback | <code>function</code> | callback function, returns error if exist |
 
 
 <a name="SECDataHandler+getAccountTx"></a>
 
-### secDataHandler.getAccountTx : <code>function</code>
-Get DB recorded transactions for an account address
+### secDataHandler.getAccountTx(address, callback) => <code>None</code>
+Get account DB recorded token chain transactions for an account address
 
-**Kind**: instance typedef of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | address | <code>String</code> | account address which is searched |
+| callback | <code>function</code> | callback function, returns account address previous transaction list |
 
 
 <a name="SECDataHandler+getTokenBlockFromDB"></a>
