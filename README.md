@@ -10,9 +10,9 @@ This package uses leveldb to store and handle data from SEC blockchain
 
 * [SECDataHandler](#SECDataHandler)
     * [new SECDataHandler(config)](#new_SECDataHandler_new)
-    * [.writeTokenChainToDB](#SECDataHandler+writeTokenChainToDB) : <code>function</code>
-    * [.writeTxChainToDB](#SECDataHandler+writeTxChainToDB) : <code>function</code>
-    * [.getAccountTx](#SECDataHandler+getAccountTx) : <code>function</code>
+    * [.writeTokenChainToDB(jsonFile, callback)](#SECDataHandler+writeTokenChainToDB) => <code>None</code>
+    * [.writeTxChainToDB(jsonFile, callback)](#SECDataHandler+writeTxChainToDB) => <code>None</code>
+    * [.getAccountTx(address, callback)](#SECDataHandler+getAccountTx) => <code>None</code>
     * [.getTokenBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTokenBlockFromDB) => <code>None</code>
     * [.getTokenChain(maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
     * [.getTxBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTxBlockFromDB) => <code>None</code>
