@@ -68,7 +68,7 @@ secData.getTokenChain(2, (err, value) => {
 
 
 
-/*
+
 secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)
@@ -114,7 +114,7 @@ secData.getTxChain(1, (err, value) => {
     console.log(value)
   }
 })
-
+/*
 secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)
