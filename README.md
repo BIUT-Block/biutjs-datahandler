@@ -13,6 +13,10 @@ This package uses leveldb to store and handle data from SEC blockchain
     * [.writeTokenChainToDB](#SECDataHandler+writeTokenChainToDB) : <code>function</code>
     * [.writeTxChainToDB](#SECDataHandler+writeTxChainToDB) : <code>function</code>
     * [.getAccountTx](#SECDataHandler+getAccountTx) : <code>function</code>
+    * [.getTokenBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTokenBlockFromDB) => <code>None</code>
+    * [.getTokenChain(maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
+    * [.getTxBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTxBlockFromDB) => <code>None</code>
+    * [.getTxChain(maxBlockHeight, callback)](#SECDataHandler+getTxChain) => <code>None</code>
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
@@ -48,3 +52,55 @@ Get DB recorded transactions for an account address
 | Param | Type | Description |
 | --- | --- | --- |
 | address | <code>String</code> | account address which is searched |
+
+
+<a name="SECDataHandler+getTokenBlockFromDB"></a>
+
+### secDataHandler.getTokenBlockFromDB(blockHashArray, callback) => <code>None</code>
+Get token block according to block hash value
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHashArray | <code>String</code> \| <code>Array</code> | block hash value string or array |
+| callback | <code>function</code> | callback function |
+
+
+<a name="SECDataHandler+getTokenChain"></a>
+
+### secDataHandler.getTokenChain(maxBlockHeight, callback) => <code>None</code>
+Get token block chain data, from height 0 to height 'maxBlockHeight'
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| maxBlockHeight | <code>Integer</code> | maximum block height |
+| callback | <code>function</code> | callback function |
+
+
+<a name="SECDataHandler+getTxBlockFromDB"></a>
+
+### secDataHandler.getTxBlockFromDB(blockHashArray, callback) => <code>None</code>
+Get transaction block according to block hash value
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHashArray | <code>String</code> \| <code>Array</code> | block hash value string or array |
+| callback | <code>function</code> | callback function |
+
+
+<a name="SECDataHandler+getTxChain"></a>
+
+### secDataHandler.getTxChain(maxBlockHeight, callback) => <code>None</code>
+Get transaction block chain data, from height 0 to height 'maxBlockHeight'
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| maxBlockHeight | <code>Integer</code> | maximum block height |
+| callback | <code>function</code> | callback function |
