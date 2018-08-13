@@ -494,6 +494,12 @@ class SECDataHandler {
     return true
   }
 
+  /**
+   * Get token block according to block hash value
+   * @param  {String | Array} blockHashArray - block hash value string or array
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
   getTokenBlockFromDB (blockHashArray, callback) {
     let self = this
 
@@ -515,6 +521,14 @@ class SECDataHandler {
     })
   }
 
+  /**
+   * This function is used for recursive
+   * @param  {Integer} index - recursive index
+   * @param  {Array} array - block hash array
+   * @param  {Array} buffer - buffer to store the result
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
   _getTokenBlockFromDBRecursive (index, array, buffer, callback) {
     let self = this
     this._getTokenBlockFromDB(array[index], (err, value) => {
@@ -537,6 +551,12 @@ class SECDataHandler {
     })
   }
 
+  /**
+   * Read corresponding block data(json format) from token database
+   * @param  {String} blockHash - block hash value
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
   _getTokenBlockFromDB (blockHash, callback) {
     let self = this
     this._getDB(this.tokenBlockChainDB, blockHash, (err, value) => {
@@ -555,8 +575,10 @@ class SECDataHandler {
   }
 
   /**
-   * Get all token block chain data
-   * @return {Array}
+   * Get token block chain data, from height 0 to height 'maxBlockHeight'
+   * @param {Integer} maxBlockHeight - maximum block height
+   * @param  {Function} callback - callback function
+   * @return {None}
    */
   getTokenChain (maxBlockHeight, callback) {
     let buffer = []
@@ -569,6 +591,14 @@ class SECDataHandler {
     })
   }
 
+  /**
+   * This function is used for recursive
+   * @param  {Integer} index - recursive index
+   * @param  {Integer} maxBlockHeight - maximum recursive index
+   * @param  {Array} buffer - buffer to store the result
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
   _getTokenChainRecursive (index, maxBlockHeight, buffer, callback) {
     let self = this
     this._getTokenChain(index, (err, value) => {
@@ -591,8 +621,14 @@ class SECDataHandler {
     })
   }
 
-  _getTokenChain (index, callback) {
-    this._getJsonDB(this.tokenBlockChainDB, index, (err, value) => {
+  /**
+   * Read corresponding block data(json format) from token database
+   * @param  {Integer} height - block height
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getTokenChain (height, callback) {
+    this._getJsonDB(this.tokenBlockChainDB, height, (err, value) => {
       if (err) {
         callback(err, null)
       } else {
@@ -602,11 +638,146 @@ class SECDataHandler {
   }
 
   /**
-   * Get all transaction block chain data
-   * @return {Array}
+   * Get transaction block according to block hash value
+   * @param  {String | Array} blockHashArray - block hash value string or array
+   * @param  {Function} callback - callback function
+   * @return {None}
    */
-  getTxChain () {
-    console.log('pass')
+  getTxBlockFromDB (blockHashArray, callback) {
+    let self = this
+
+    let buffer = []
+    if (typeof blockHashArray === 'string') {
+      blockHashArray = [blockHashArray]
+    }
+
+    if (!Array.isArray(blockHashArray)) {
+      throw new Error('invalid blockHashArray input, should be an array')
+    }
+
+    self._getTxBlockFromDBRecursive(0, blockHashArray, buffer, function (err) {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, buffer)
+      }
+    })
+  }
+
+  /**
+   * This function is used for recursive
+   * @param  {Integer} index - recursive index
+   * @param  {Array} array - block hash array
+   * @param  {Array} buffer - buffer to store the result
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getTxBlockFromDBRecursive (index, array, buffer, callback) {
+    let self = this
+    this._getTxBlockFromDB(array[index], (err, value) => {
+      if (err) {
+        callback(err)
+      } else {
+        buffer.push(value)
+        if (index + 1 < array.length) {
+          self._getTxBlockFromDBRecursive(index + 1, array, buffer, (err) => {
+            if (err) {
+              callback(err)
+            } else {
+              callback(null)
+            }
+          })
+        } else {
+          callback(null)
+        }
+      }
+    })
+  }
+
+  /**
+   * Read corresponding block data(json format) from transaction database
+   * @param  {String} blockHash - block hash value
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getTxBlockFromDB (blockHash, callback) {
+    let self = this
+    this._getDB(this.txBlockChainDB, blockHash, (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        self._getJsonDB(self.txBlockChainDB, value, (err, value) => {
+          if (err) {
+            callback(err, null)
+          } else {
+            callback(null, value)
+          }
+        })
+      }
+    })
+  }
+
+  /**
+   * Get transaction block chain data, from height 0 to height 'maxBlockHeight'
+   * @param {Integer} maxBlockHeight - maximum block height
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  getTxChain (maxBlockHeight, callback) {
+    let buffer = []
+    this._getTxChainRecursive(0, maxBlockHeight, buffer, (err) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, buffer)
+      }
+    })
+  }
+
+  /**
+   * This function is used for recursive
+   * @param  {Integer} index - recursive index
+   * @param  {Integer} maxBlockHeight - maximum recursive index
+   * @param  {Array} buffer - buffer to store the result
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getTxChainRecursive (index, maxBlockHeight, buffer, callback) {
+    let self = this
+    this._getTxChain(index, (err, value) => {
+      if (err) {
+        callback(err)
+      } else {
+        buffer.push(value)
+        if (index < maxBlockHeight) {
+          self._getTxChainRecursive(index + 1, maxBlockHeight, buffer, (err) => {
+            if (err) {
+              callback(err)
+            } else {
+              callback(null)
+            }
+          })
+        } else {
+          callback(null)
+        }
+      }
+    })
+  }
+
+  /**
+   * Read corresponding block data(json format) from transaction database
+   * @param  {Integer} height - block height
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getTxChain (height, callback) {
+    this._getJsonDB(this.txBlockChainDB, height, (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, value)
+      }
+    })
   }
 }
 
