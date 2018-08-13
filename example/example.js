@@ -53,7 +53,7 @@ secData.getTokenBlockFromDB('5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f6
   }
 })
 
-secData.getTokenChain(2, (err, value) => {
+secData.getTokenChain(1, 2, (err, value) => {
   if (err) {
     console.log('error occurs')
     console.log(err)

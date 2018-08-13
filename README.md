@@ -14,9 +14,9 @@ This package uses leveldb to store and handle data from SEC blockchain
     * [.writeTxChainToDB(jsonFile, callback)](#SECDataHandler+writeTxChainToDB) => <code>None</code>
     * [.getAccountTx(address, callback)](#SECDataHandler+getAccountTx) => <code>None</code>
     * [.getTokenBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTokenBlockFromDB) => <code>None</code>
-    * [.getTokenChain(maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
+    * [.getTokenChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
     * [.getTxBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTxBlockFromDB) => <code>None</code>
-    * [.getTxChain(maxBlockHeight, callback)](#SECDataHandler+getTxChain) => <code>None</code>
+    * [.getTxChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTxChain) => <code>None</code>
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
@@ -72,13 +72,14 @@ Get token block according to block hash value
 
 <a name="SECDataHandler+getTokenChain"></a>
 
-### secDataHandler.getTokenChain(maxBlockHeight, callback) => <code>None</code>
-Get token block chain data, from height 0 to height 'maxBlockHeight'
+### secDataHandler.getTokenChain(minBlockHeight, maxBlockHeight, callback) => <code>None</code>
+Get token block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
 
 **Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
+| minBlockHeight | <code>Integer</code> | minimum block height |
 | maxBlockHeight | <code>Integer</code> | maximum block height |
 | callback | <code>function</code> | callback function |
 
@@ -98,12 +99,13 @@ Get transaction block according to block hash value
 
 <a name="SECDataHandler+getTxChain"></a>
 
-### secDataHandler.getTxChain(maxBlockHeight, callback) => <code>None</code>
-Get transaction block chain data, from height 0 to height 'maxBlockHeight'
+### secDataHandler.getTxChain(minBlockHeight, maxBlockHeight, callback) => <code>None</code>
+Get transaction block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
 
 **Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
+| minBlockHeight | <code>Integer</code> | minimum block height |
 | maxBlockHeight | <code>Integer</code> | maximum block height |
 | callback | <code>function</code> | callback function |

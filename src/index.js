@@ -605,14 +605,19 @@ class SECDataHandler {
   }
 
   /**
-   * Get token block chain data, from height 0 to height 'maxBlockHeight'
+   * Get token block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
+   * @param {Integer} minBlockHeight - minimum block height
    * @param {Integer} maxBlockHeight - maximum block height
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTokenChain (maxBlockHeight, callback) {
+  getTokenChain (minBlockHeight, maxBlockHeight, callback) {
     let buffer = []
-    this._getTokenChainRecursive(0, maxBlockHeight, buffer, (err) => {
+    if (minBlockHeight > maxBlockHeight) {
+      throw new Error('invalid block heights')
+    }
+
+    this._getTokenChainRecursive(minBlockHeight, maxBlockHeight, buffer, (err) => {
       if (err) {
         callback(err, null)
       } else {
@@ -748,14 +753,19 @@ class SECDataHandler {
   }
 
   /**
-   * Get transaction block chain data, from height 0 to height 'maxBlockHeight'
+   * Get transaction block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
+   * @param {Integer} minBlockHeight - minimum block height
    * @param {Integer} maxBlockHeight - maximum block height
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTxChain (maxBlockHeight, callback) {
+  getTxChain (minBlockHeight, maxBlockHeight, callback) {
     let buffer = []
-    this._getTxChainRecursive(0, maxBlockHeight, buffer, (err) => {
+    if (minBlockHeight > maxBlockHeight) {
+      throw new Error('invalid block heights')
+    }
+
+    this._getTxChainRecursive(minBlockHeight, maxBlockHeight, buffer, (err) => {
       if (err) {
         callback(err, null)
       } else {
