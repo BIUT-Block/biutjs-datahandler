@@ -3,7 +3,7 @@ const path = require('path')
 const SecjsDataHandler = require('../src/index')
 
 let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
-let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
+// let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
 
 const config = {
   'DBPath': '../data/'
@@ -62,13 +62,7 @@ secData.getTokenChain(2, (err, value) => {
     console.log(value)
   }
 })
-
-
-
-
-
-
-
+/*
 secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)
@@ -114,7 +108,7 @@ secData.getTxChain(1, (err, value) => {
     console.log(value)
   }
 })
-/*
+
 secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
   if (err) {
     console.log(err)

@@ -63,7 +63,7 @@ Get token block according to block hash value
 
 | Param | Type | Description |
 | --- | --- | --- |
-| blockHashArray | <code>String</code> \| <code>Array</code> | block hash value string or array |
+| blockHashArray | <code>String, Array</code> | block hash value string or array |
 | callback | <code>function</code> | callback function |
 
 
@@ -89,7 +89,7 @@ Get transaction block according to block hash value
 
 | Param | Type | Description |
 | --- | --- | --- |
-| blockHashArray | <code>String</code> \| <code>Array</code> | block hash value string or array |
+| blockHashArray | <code>String, Array</code> | block hash value string or array |
 | callback | <code>function</code> | callback function |
 
 
