@@ -819,6 +819,120 @@ class SECDataHandler {
       }
     })
   }
+
+  /**
+   * Check whether the database is empty
+   * @param  {Object} db - database to be checked
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _isDBEmpty(db, callback) {
+    let emptyFlag = true
+    db.createReadStream().on('data', function (data) {
+      emptyFlag = false
+    }).on('error', function (err) {
+      // console.log('DB empty checking stream occurs an error!')
+      callback(err, null)
+    }).on('close', function () {
+      // console.log('Stream closed')
+    }).on('end', function () {
+      // console.log('Stream ended')
+      callback(null, emptyFlag)
+    })
+  }
+
+  /**
+   * Check whether the account database is empty
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  isAccountDBEmpty(callback) {
+    this._isDBEmpty(this.accountDB, callback)
+  }
+
+  /**
+   * Check whether the product database is empty
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  isProductDBEmpty() {
+    this._isDBEmpty(this.productDB, callback)
+  }
+
+  /**
+   * Check whether the token block chain database is empty
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  isTokenBlockChainDBEmpty() {
+    this._isDBEmpty(this.tokenBlockChainDB, callback)
+  }
+
+  /**
+   * Check whether the transaction block chain database is empty
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  isTxBlockChainDBEmpty() {
+    this._isDBEmpty(this.txBlockChainDB, callback)
+  }
+
+  /**
+   * Read all the data in a database
+   * @param  {Object} db - database to be checked
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  _getAllDataInDB(db, callback) {
+    let buffer = {}
+    db.createReadStream().on('data', function (data) {
+      buffer[data.key] = data.value
+    }).on('error', function (err) {
+      // console.log('Stream occurs an error when trying to read all data!')
+      callback(err, null)
+    }).on('close', function () {
+      // console.log('Stream closed')
+    }).on('end', function () {
+      // console.log('Stream ended')
+      callback(null, buffer)
+    })
+  }
+
+  /**
+   * Get all the data in account database
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  getAccountDB(callback) {
+    this._getAllDataInDB(this.accountDB, callback)
+  }
+
+  /**
+   * Get all the data in product database
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  getProductDB() {
+    this._getAllDataInDB(this.productDB, callback)
+  }
+
+  /**
+   * Get all the data in token block chain database
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  getTokenBlockChainDB() {
+    this._getAllDataInDB(this.tokenBlockChainDB, callback)
+  }
+
+  /**
+   * Get all the data in transaction block chain database
+   * @param  {Function} callback - callback function
+   * @return {None}
+   */
+  getTxBlockChainDB() {
+    this._getAllDataInDB(this.txBlockChainDB, callback)
+  }
 }
 
 module.exports = SECDataHandler

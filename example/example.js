@@ -99,7 +99,7 @@ secData.getTxBlockFromDB('a85e16c8a400ed6f4735a1ad9b747603844272ed63da69549bfe29
   }
 })
 
-secData.getTxChain(1, (err, value) => {
+secData.getTxChain(1, 2, (err, value) => {
   if (err) {
     console.log('error occurs')
     console.log(err)

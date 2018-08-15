@@ -17,6 +17,14 @@ This package uses leveldb to store and handle data from SEC blockchain
     * [.getTokenChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
     * [.getTxBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTxBlockFromDB) => <code>None</code>
     * [.getTxChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTxChain) => <code>None</code>
+    * [.isAccountDBEmpty(callback)](#SECDataHandler+isAccountDBEmpty) => <code>None</code>
+    * [.isProductDBEmpty(callback)](#SECDataHandler+isProductDBEmpty) => <code>None</code>
+    * [.isTokenBlockChainDBEmpty(callback)](#SECDataHandler+isTokenBlockChainDBEmpty) => <code>None</code>
+    * [.isTxBlockChainDBEmpty(callback)](#SECDataHandler+isTxBlockChainDBEmpty) => <code>None</code>
+    * [.getAccountDB(callback)](#SECDataHandler+getAccountDB) => <code>None</code>
+    * [.getProductDB(callback)](#SECDataHandler+getProductDB) => <code>None</code>
+    * [.getTokenBlockChainDB(callback)](#SECDataHandler+getTokenBlockChainDB) => <code>None</code>
+    * [.getTxBlockChainDB(callback)](#SECDataHandler+getTxBlockChainDB) => <code>None</code>
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
@@ -108,4 +116,94 @@ Get transaction block chain data, from height 'minBlockHeight' to height 'maxBlo
 | --- | --- | --- |
 | minBlockHeight | <code>Integer</code> | minimum block height |
 | maxBlockHeight | <code>Integer</code> | maximum block height |
+| callback | <code>function</code> | callback function |
+
+
+<a name="SECDataHandler+isAccountDBEmpty"></a>
+
+### secDataHandler.isAccountDBEmpty(callback) => <code>None</code>
+Check whether the account database is empty
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+isProductDBEmpty"></a>
+
+### secDataHandler.isProductDBEmpty(callback) => <code>None</code>
+Check whether the product database is empty
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+isTokenBlockChainDBEmpty"></a>
+
+### secDataHandler.isTokenBlockChainDBEmpty(callback) => <code>None</code>
+Check whether the token block chain database is empty
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+isTxBlockChainDBEmpty"></a>
+
+### secDataHandler.isTxBlockChainDBEmpty(callback) => <code>None</code>
+Check whether the transaction block chain database is empty
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+
+<a name="SECDataHandler+getAccountDB"></a>
+
+### secDataHandler.getAccountDB(callback) => <code>None</code>
+Get all the data in account database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+getProductDB"></a>
+
+### secDataHandler.getProductDB(callback) => <code>None</code>
+Get all the data in product database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+getTokenBlockChainDB"></a>
+
+### secDataHandler.getTokenBlockChainDB(callback) => <code>None</code>
+Get all the data in token block chain database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function |
+
+<a name="SECDataHandler+getTxBlockChainDB"></a>
+
+### secDataHandler.getTxBlockChainDB(callback) => <code>None</code>
+Get all the data in transaction block chain database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
 | callback | <code>function</code> | callback function |
