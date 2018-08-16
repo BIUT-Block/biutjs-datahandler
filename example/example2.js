@@ -1,7 +1,6 @@
-const path = require('path')
 const SecjsDataHandler = require('../src/index')
 
-let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+// let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
 // let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
 
 const config = {
