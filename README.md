@@ -11,7 +11,9 @@ This package uses leveldb to store and handle data from SEC blockchain
 * [SECDataHandler](#SECDataHandler)
     * [new SECDataHandler(config)](#new_SECDataHandler_new)
     * [.writeTokenChainToDB(jsonFile, callback)](#SECDataHandler+writeTokenChainToDB) => <code>None</code>
+    * [.writeSingleTokenBlockToDB(tokenBlock, callback)](#SECDataHandler+writeSingleTokenBlockToDB) => <code>None</code>
     * [.writeTxChainToDB(jsonFile, callback)](#SECDataHandler+writeTxChainToDB) => <code>None</code>
+    * [.writeSingleTxBlockToDB(txBlock, callback)](#SECDataHandler+writeSingleTxBlockToDB) => <code>None</code>
     * [.getAccountTx(address, callback)](#SECDataHandler+getAccountTx) => <code>None</code>
     * [.getTokenBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTokenBlockFromDB) => <code>None</code>
     * [.getTokenChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
@@ -28,27 +30,53 @@ This package uses leveldb to store and handle data from SEC blockchain
 
 <a name="SECDataHandler+writeTokenChainToDB"></a>
 
-### secDataHandler.writeTokenChainToDB(jsonFile, callback) => <code>None</code>
+### secDataHandler.writeTokenChainToDB(tokenChain, callback) => <code>None</code>
 Update token chain data to database
 
 **Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| jsonFile | <code>String</code> | token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| tokenChain | <code>Array</code> | token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+
+<a name="SECDataHandler+writeSingleTokenBlockToDB"></a>
+
+### secDataHandler.writeSingleTokenBlockToDB(tokenBlock, callback) => <code>None</code>
+Update a single token block to database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenBlock | <code>Object</code> | single token block data, json format |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 
 <a name="SECDataHandler+writeTxChainToDB"></a>
 
-### secDataHandler.writeTxChainToDB(jsonFile, callback) => <code>None</code>
+### secDataHandler.writeTxChainToDB(txChain, callback) => <code>None</code>
 Update transaction chain data to database
 
 **Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| jsonFile | <code>String</code> | transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| txChain | <code>Array</code> | transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+
+<a name="SECDataHandler+writeSingleTxBlockToDB"></a>
+
+### secDataHandler.writeSingleTxBlockToDB(txBlock, callback) => <code>None</code>
+Update a single transaction block to database
+
+**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txBlock | <code>Object</code> | single transaction block data, json format |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 

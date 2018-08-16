@@ -52,20 +52,39 @@ class SECDataHandler {
 
   /**
    * Update token chain data to database
-   * @param  {String} jsonFile - token block chain data in string format. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
+   * @param  {Array} tokenChain - token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
-  writeTokenChainToDB (jsonFile, callback) {
-    if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
-      throw new TypeError('Invalid imported block chain file')
-    }
-
+  writeTokenChainToDB (tokenChain, callback) {
     let self = this
-    let tokenChain = JSON.parse(jsonFile)
     this.tokenAsyncList = []
 
     this._accountBalanceRecursive(0, tokenChain, (err) => {
+      if (err) {
+        callback(err)
+      } else {
+        Promise.all(self.tokenAsyncList).then(function () {
+          callback()
+        }).catch(function (err) {
+          callback(err)
+        })
+      }
+    })
+  }
+
+  /**
+   * Update a single token block to database
+   * @param  {Object} tokenBlock - single token block data, json format
+   * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
+   */
+  writeSingleTokenBlockToDB (tokenBlock, callback) {
+    let self = this
+    tokenBlock = [tokenBlock]
+    this.tokenAsyncList = []
+
+    this._accountBalanceRecursive(0, tokenBlock, (err) => {
       if (err) {
         callback(err)
       } else {
@@ -221,17 +240,12 @@ class SECDataHandler {
 
   /**
    * Update transaction chain data to database
-   * @param  {String} jsonFile - transaction block chain data in string format.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
+   * @param  {Array} txChain - transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
-  writeTxChainToDB (jsonFile, callback) {
-    if (typeof jsonFile !== 'string' || jsonFile[0] !== '[') {
-      throw new TypeError('Invalid imported block chain file')
-    }
-
+  writeTxChainToDB (txChain, callback) {
     let self = this
-    let txChain = JSON.parse(jsonFile)
     this.txAsyncList = []
 
     txChain.forEach(function (blockInfo) {
@@ -242,6 +256,30 @@ class SECDataHandler {
       callback()
     }).catch(function (err) {
       callback(err)
+    })
+  }
+
+  /**
+   * Update a single transaction block to database
+   * @param  {Object} txBlock - single transaction block data, json format
+   * @param  {Function} callback - callback function, returns error if exist
+   * @return {None}
+   */
+  writeSingleTxBlockToDB (txBlock, callback) {
+    let self = this
+    txBlock = [txBlock]
+    this.tokenAsyncList = []
+
+    this._accountBalanceRecursive(0, txBlock, (err) => {
+      if (err) {
+        callback(err)
+      } else {
+        Promise.all(self.tokenAsyncList).then(function () {
+          callback()
+        }).catch(function (err) {
+          callback(err)
+        })
+      }
     })
   }
 
@@ -826,7 +864,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  _isDBEmpty(db, callback) {
+  _isDBEmpty (db, callback) {
     let emptyFlag = true
     db.createReadStream().on('data', function (data) {
       emptyFlag = false
@@ -846,7 +884,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isAccountDBEmpty(callback) {
+  isAccountDBEmpty (callback) {
     this._isDBEmpty(this.accountDB, callback)
   }
 
@@ -855,7 +893,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isProductDBEmpty(callback) {
+  isProductDBEmpty (callback) {
     this._isDBEmpty(this.productDB, callback)
   }
 
@@ -864,7 +902,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isTokenBlockChainDBEmpty(callback) {
+  isTokenBlockChainDBEmpty (callback) {
     this._isDBEmpty(this.tokenBlockChainDB, callback)
   }
 
@@ -873,7 +911,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isTxBlockChainDBEmpty(callback) {
+  isTxBlockChainDBEmpty (callback) {
     this._isDBEmpty(this.txBlockChainDB, callback)
   }
 
@@ -883,7 +921,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  _getAllDataInDB(db, callback) {
+  _getAllDataInDB (db, callback) {
     let buffer = {}
     db.createReadStream().on('data', function (data) {
       buffer[data.key] = data.value
@@ -903,7 +941,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getAccountDB(callback) {
+  getAccountDB (callback) {
     this._getAllDataInDB(this.accountDB, callback)
   }
 
@@ -912,7 +950,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getProductDB(callback) {
+  getProductDB (callback) {
     this._getAllDataInDB(this.productDB, callback)
   }
 
@@ -921,7 +959,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTokenBlockChainDB(callback) {
+  getTokenBlockChainDB (callback) {
     this._getAllDataInDB(this.tokenBlockChainDB, callback)
   }
 
@@ -930,7 +968,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTxBlockChainDB(callback) {
+  getTxBlockChainDB (callback) {
     this._getAllDataInDB(this.txBlockChainDB, callback)
   }
 }

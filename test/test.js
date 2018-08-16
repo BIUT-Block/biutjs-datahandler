@@ -20,7 +20,8 @@ describe('SecjsDataHandler', () => {
     })
 
     it('functionality correctness test', (done) => {
-      secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
+      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+      secData.writeTokenChainToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
@@ -42,11 +43,6 @@ describe('SecjsDataHandler', () => {
         done()
       })
     })
-
-    it('invalid input jsonfile test', () => {
-      expect(() => { secData.writeTokenChainToDB('1, 2, 3') }).to.throw('Invalid imported block chain file')
-      expect(() => { secData.writeTokenChainToDB([1, 2, 3]) }).to.throw('Invalid imported block chain file')
-    })
   })
 
   describe('writeTxChainToDB() function test', () => {
@@ -57,7 +53,8 @@ describe('SecjsDataHandler', () => {
     })
 
     it('functionality correctness test', (done) => {
-      secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
+      let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
+      secData.writeTxChainToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
@@ -79,11 +76,6 @@ describe('SecjsDataHandler', () => {
         done()
       })
     })
-
-    it('invalid input jsonfile test', () => {
-      expect(() => { secData.writeTxChainToDB('1, 2, 3') }).to.throw('Invalid imported block chain file')
-      expect(() => { secData.writeTxChainToDB([1, 2, 3]) }).to.throw('Invalid imported block chain file')
-    })
   })
 
   describe('getAccountTx() function test', () => {
@@ -94,7 +86,8 @@ describe('SecjsDataHandler', () => {
     })
 
     it('functionality correctness test', (done) => {
-      secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
+      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+      secData.writeTokenChainToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {

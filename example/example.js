@@ -10,7 +10,8 @@ const config = {
 }
 const secData = new SecjsDataHandler(config)
 
-secData.writeTokenChainToDB(fs.readFileSync(tokenJsonPath, 'utf8'), function (err) {
+let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+secData.writeTokenChainToDB(data, function (err) {
   if (err) {
     console.log(err)
     throw new Error('Something wrong with writeTokenChainToDB function')
@@ -62,60 +63,3 @@ secData.getTokenChain(1, 2, (err, value) => {
     console.log(value)
   }
 })
-/*
-secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
-  if (err) {
-    console.log(err)
-    throw new Error('Something wrong with writeTxChainToDB function')
-  } else {
-    secData.getAccountTx('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', function (output) {
-      // console.log(output)
-    })
-  }
-})
-
-const txBlockHashArray = [
-  '04c7123071429bbfcfb6ffd22501bdcc575f8df820041d63d8c16b94a9696ecf',
-  '11346530b890976525b1742c466600a4fa97c0b0a0bfcb6587fe9765f3fd7f7a'
-]
-
-secData.getTxBlockFromDB(txBlockHashArray, (err, value) => {
-  if (err) {
-    console.log('error occurs')
-    console.log(err)
-  } else {
-    console.log('get transaction blocks from database has no error, result is:')
-    console.log(value)
-  }
-})
-
-secData.getTxBlockFromDB('a85e16c8a400ed6f4735a1ad9b747603844272ed63da69549bfe29da2827da2c', (err, value) => {
-  if (err) {
-    console.log('error occurs')
-    console.log(err)
-  } else {
-    console.log('get transaction blocks from database has no error, result is:')
-    console.log(value)
-  }
-})
-
-secData.getTxChain(1, 2, (err, value) => {
-  if (err) {
-    console.log('error occurs')
-    console.log(err)
-  } else {
-    console.log('Here are all the transaction chain blocks')
-    console.log(value)
-  }
-})
-
-secData.writeTxChainToDB(fs.readFileSync(txJsonPath, 'utf8'), function (err) {
-  if (err) {
-    console.log(err)
-    throw new Error('Something wrong with writeTxChainToDB function')
-  } else {
-    secData._getDB(secData.txBlockChainDB, secData._combineStrings(1, 'TimeStamp'), function (value) {
-      console.log(value)
-    })
-  }
-}) */
