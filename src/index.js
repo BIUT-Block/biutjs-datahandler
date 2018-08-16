@@ -17,7 +17,7 @@ class SECDataHandler {
     }
 
     this.accAddrLength = 34 // config.addrLength
-    this.DBPath = path.join(__dirname, config.DBPath)
+    this.DBPath = config.DBPath
 
     if (!fs.existsSync(this.DBPath)) {
       fs.mkdirSync(this.DBPath)
