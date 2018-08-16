@@ -855,7 +855,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isProductDBEmpty() {
+  isProductDBEmpty(callback) {
     this._isDBEmpty(this.productDB, callback)
   }
 
@@ -864,7 +864,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isTokenBlockChainDBEmpty() {
+  isTokenBlockChainDBEmpty(callback) {
     this._isDBEmpty(this.tokenBlockChainDB, callback)
   }
 
@@ -873,7 +873,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  isTxBlockChainDBEmpty() {
+  isTxBlockChainDBEmpty(callback) {
     this._isDBEmpty(this.txBlockChainDB, callback)
   }
 
@@ -912,7 +912,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getProductDB() {
+  getProductDB(callback) {
     this._getAllDataInDB(this.productDB, callback)
   }
 
@@ -921,7 +921,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTokenBlockChainDB() {
+  getTokenBlockChainDB(callback) {
     this._getAllDataInDB(this.tokenBlockChainDB, callback)
   }
 
@@ -930,7 +930,7 @@ class SECDataHandler {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  getTxBlockChainDB() {
+  getTxBlockChainDB(callback) {
     this._getAllDataInDB(this.txBlockChainDB, callback)
   }
 }
