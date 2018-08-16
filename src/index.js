@@ -52,7 +52,7 @@ class SECDataHandler {
 
   /**
    * Update token chain data to database
-   * @param  {String} tokenChain - token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
+   * @param  {Array} tokenChain - token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
@@ -75,7 +75,7 @@ class SECDataHandler {
 
   /**
    * Update a single token block to database
-   * @param  {String} tokenBlock - single token block data, json format
+   * @param  {Object} tokenBlock - single token block data, json format
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
@@ -240,7 +240,7 @@ class SECDataHandler {
 
   /**
    * Update transaction chain data to database
-   * @param  {String} txChain - transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
+   * @param  {Array} txChain - transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]'
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
@@ -261,7 +261,7 @@ class SECDataHandler {
 
   /**
    * Update a single transaction block to database
-   * @param  {String} txBlock - single transaction block data, json format
+   * @param  {Object} txBlock - single transaction block data, json format
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */

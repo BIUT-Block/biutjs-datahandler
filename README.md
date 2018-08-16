@@ -37,7 +37,7 @@ Update token chain data to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenChain | <code>String</code> | token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| tokenChain | <code>Array</code> | token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 
@@ -50,7 +50,7 @@ Update a single token block to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenBlock | <code>String</code> | single token block data, json format |
+| tokenBlock | <code>Object</code> | single token block data, json format |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 
@@ -63,7 +63,7 @@ Update transaction chain data to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txChain | <code>String</code> | transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| txChain | <code>Array</code> | transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 
@@ -76,7 +76,7 @@ Update a single transaction block to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txBlock | <code>String</code> | single transaction block data, json format |
+| txBlock | <code>Object</code> | single transaction block data, json format |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 
