@@ -51,7 +51,7 @@ class ProductDB {
     txData.forEach(function (txBlock) {
       txBlock.Transactions.forEach(function (transaction) {
         if (typeof transaction.ProductInfo.Name !== 'undefined') {
-          pdPromiseList.push(dataHandlerUtil._putDB(self.productDB, dataHandlerUtil._combineStrings('Name', transaction.ProductInfo.Name, transaction.TxHash), transaction.BlockHeight))
+          pdPromiseList.push(dataHandlerUtil._putDB(self.productDB, dataHandlerUtil._combineStrings('Name', transaction.ProductInfo.Name, transaction.TxHash), transaction.BlockNumber))
         }
       })
     })

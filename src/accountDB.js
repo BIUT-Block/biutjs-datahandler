@@ -53,9 +53,9 @@ class AccountDB {
       txBlock.Transactions.forEach(function (transaction) {
         if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
           key = dataHandlerUtil._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockHeight))
+          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockNumber))
           key = dataHandlerUtil._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockHeight))
+          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockNumber))
         }
       })
     })
@@ -86,9 +86,9 @@ class AccountDB {
       tokenBlock.Transactions.forEach(function (transaction) {
         if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
           key = dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Height))
+          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Number))
           key = dataHandlerUtil._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Height))
+          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Number))
         }
       })
     })

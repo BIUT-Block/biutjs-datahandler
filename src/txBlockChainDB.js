@@ -50,8 +50,8 @@ class TxBlockChainDB {
 
     txData.forEach(function (txBlock) {
       txBlock.Transactions = dataHandlerUtil._txStringify(txBlock.Transactions)
-      txPromiseList.push(dataHandlerUtil._putJsonDB(self.txBlockChainDB, txBlock.Height, txBlock))
-      txPromiseList.push(dataHandlerUtil._putDB(self.txBlockChainDB, txBlock.Hash, txBlock.Height))
+      txPromiseList.push(dataHandlerUtil._putJsonDB(self.txBlockChainDB, txBlock.Number, txBlock))
+      txPromiseList.push(dataHandlerUtil._putDB(self.txBlockChainDB, txBlock.Hash, txBlock.Number))
     })
 
     Promise.all(txPromiseList).then(function () {
@@ -153,19 +153,19 @@ class TxBlockChainDB {
   }
 
   /**
-   * Get transaction block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
-   * @param {Integer} minBlockHeight - minimum block height
-   * @param {Integer} maxBlockHeight - maximum block height
+   * Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
+   * @param {Integer} minBlockNumber - minimum block number
+   * @param {Integer} maxBlockNumber - maximum block number
    * @param  {Function} callback - callback function, callback arguments (err, block object array)
    * @return {None}
    */
-  getTxChain (minBlockHeight, maxBlockHeight, callback) {
+  getTxChain (minBlockNumber, maxBlockNumber, callback) {
     let buffer = []
-    if (minBlockHeight > maxBlockHeight) {
-      throw new Error('invalid block heights')
+    if (minBlockNumber > maxBlockNumber) {
+      throw new Error('invalid block numbers')
     }
 
-    this._getTxChainRecursive(minBlockHeight, maxBlockHeight, buffer, (err) => {
+    this._getTxChainRecursive(minBlockNumber, maxBlockNumber, buffer, (err) => {
       if (err) {
         callback(err, null)
       } else {
@@ -177,15 +177,15 @@ class TxBlockChainDB {
   /**
    * This function is used for recursive
    */
-  _getTxChainRecursive (index, maxBlockHeight, buffer, callback) {
+  _getTxChainRecursive (index, maxBlockNumber, buffer, callback) {
     let self = this
     this._getTxChain(index, (err, value) => {
       if (err) {
         callback(err)
       } else {
         buffer.push(value)
-        if (index < maxBlockHeight) {
-          self._getTxChainRecursive(index + 1, maxBlockHeight, buffer, (err) => {
+        if (index < maxBlockNumber) {
+          self._getTxChainRecursive(index + 1, maxBlockNumber, buffer, (err) => {
             if (err) {
               callback(err)
             } else {
@@ -202,8 +202,8 @@ class TxBlockChainDB {
   /**
    * Read corresponding block data(json format) from transaction database
    */
-  _getTxChain (height, callback) {
-    dataHandlerUtil._getJsonDB(this.txBlockChainDB, height, (err, value) => {
+  _getTxChain (number, callback) {
+    dataHandlerUtil._getJsonDB(this.txBlockChainDB, number, (err, value) => {
       if (err) {
         callback(err, null)
       } else {

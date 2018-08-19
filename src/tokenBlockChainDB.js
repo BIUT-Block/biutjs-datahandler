@@ -50,8 +50,8 @@ class TokenBlockChainDB {
 
     tokenData.forEach(function (tokenBlock) {
       tokenBlock.Transactions = dataHandlerUtil._txStringify(tokenBlock.Transactions)
-      tokenPromiseList.push(dataHandlerUtil._putJsonDB(self.tokenBlockChainDB, tokenBlock.Height, tokenBlock))
-      tokenPromiseList.push(dataHandlerUtil._putDB(self.tokenBlockChainDB, tokenBlock.Hash, tokenBlock.Height))
+      tokenPromiseList.push(dataHandlerUtil._putJsonDB(self.tokenBlockChainDB, tokenBlock.Number, tokenBlock))
+      tokenPromiseList.push(dataHandlerUtil._putDB(self.tokenBlockChainDB, tokenBlock.Hash, tokenBlock.Number))
     })
 
     Promise.all(tokenPromiseList).then(function () {
@@ -153,19 +153,19 @@ class TokenBlockChainDB {
   }
 
   /**
-   * Get token block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
-   * @param {Integer} minBlockHeight - minimum block height
-   * @param {Integer} maxBlockHeight - maximum block height
+   * Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
+   * @param {Integer} minBlockNumber - minimum block number
+   * @param {Integer} maxBlockNumber - maximum block number
    * @param  {Function} callback - callback function, callback arguments (err, block object array)
    * @return {None}
    */
-  getTokenChain (minBlockHeight, maxBlockHeight, callback) {
+  getTokenChain (minBlockNumber, maxBlockNumber, callback) {
     let buffer = []
-    if (minBlockHeight > maxBlockHeight) {
-      throw new Error('invalid block heights')
+    if (minBlockNumber > maxBlockNumber) {
+      throw new Error('invalid block numbers')
     }
 
-    this._getTokenChainRecursive(minBlockHeight, maxBlockHeight, buffer, (err) => {
+    this._getTokenChainRecursive(minBlockNumber, maxBlockNumber, buffer, (err) => {
       if (err) {
         callback(err, null)
       } else {
@@ -177,15 +177,15 @@ class TokenBlockChainDB {
   /**
    * This function is used for recursive
    */
-  _getTokenChainRecursive (index, maxBlockHeight, buffer, callback) {
+  _getTokenChainRecursive (index, maxBlockNumber, buffer, callback) {
     let self = this
     this._getTokenChain(index, (err, value) => {
       if (err) {
         callback(err)
       } else {
         buffer.push(value)
-        if (index < maxBlockHeight) {
-          self._getTokenChainRecursive(index + 1, maxBlockHeight, buffer, (err) => {
+        if (index < maxBlockNumber) {
+          self._getTokenChainRecursive(index + 1, maxBlockNumber, buffer, (err) => {
             if (err) {
               callback(err)
             } else {
@@ -202,8 +202,8 @@ class TokenBlockChainDB {
   /**
    * Read corresponding block data(json format) from token database
    */
-  _getTokenChain (height, callback) {
-    dataHandlerUtil._getJsonDB(this.tokenBlockChainDB, height, (err, value) => {
+  _getTokenChain (number, callback) {
+    dataHandlerUtil._getJsonDB(this.tokenBlockChainDB, number, (err, value) => {
       if (err) {
         callback(err, null)
       } else {
