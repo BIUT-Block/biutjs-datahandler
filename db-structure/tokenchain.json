@@ -1,5 +1,5 @@
 [{
-    "Height": 0,
+    "Number": 0,
     "TimeStamp": 1530297308,
     "Transactions": [],
     "Parent_Hash": "Genesis",
@@ -14,13 +14,13 @@
     "Nonce": "",
     "Hash": "5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f668448708e34c1"
 }, {
-    "Height": 1,
+    "Number": 1,
     "TimeStamp": 1530297318,
     "Transactions": [{
         "TxHash": "401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d",
         "TxReceiptStatus": "success",
         "Version": "0.0.1",
-        "BlockHeight": 1,
+        "BlockNumber": 1,
         "TimeStamp": 1530297310,
         "TxFrom": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
         "TxTo": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
@@ -44,13 +44,13 @@
     "Block_Reward": 10,
     "Extra_Data": "Test Token cases"
 }, {
-    "Height": 2,
+    "Number": 2,
     "TimeStamp": 1530297328,
     "Transactions": [{
         "TxHash": "8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374",
         "TxReceiptStatus": "success",
         "Version": "0.0.1",
-        "BlockHeight": 2,
+        "BlockNumber": 2,
         "TimeStamp": 1530297320,
         "TxFrom": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
         "TxTo": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
@@ -65,7 +65,7 @@
         "TxHash": "511570b94bcf98061265974f74b29fbe5e179c47fc22b1eb7505901fe97f8c3f",
         "TxReceiptStatus": "success",
         "Version": "0.0.1",
-        "BlockHeight": 2,
+        "BlockNumber": 2,
         "TimeStamp": 1530297322,
         "TxFrom": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
         "TxTo": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
@@ -80,7 +80,7 @@
         "TxHash": "adc1464538bb2ecbba627692d58db9958b76ed8bfdbc5b52d644596e9e3c3eec",
         "TxReceiptStatus": "success",
         "Version": "0.0.1",
-        "BlockHeight": 2,
+        "BlockNumber": 2,
         "TimeStamp": 1530297324,
         "TxFrom": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
         "TxTo": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
@@ -95,7 +95,7 @@
         "TxHash": "f3701c2a94590a353a6b91c3fdc058f22fbd262d282fac4ae55272e41af0efd2",
         "TxReceiptStatus": "success",
         "Version": "0.0.1",
-        "BlockHeight": 2,
+        "BlockNumber": 2,
         "TimeStamp": 1530297326,
         "TxFrom": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
         "TxTo": "1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju",
