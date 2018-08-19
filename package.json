@@ -1,6 +1,6 @@
 {
   "name": "@sec-block/secjs-datahandler",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "sec blockchain data handler lib",
   "main": "src/index.js",
   "directories": {
