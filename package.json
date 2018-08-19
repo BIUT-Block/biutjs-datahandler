@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/test.js"
+    "test": "mocha test/tokenDB_test.js test/txDB_test test/productDB_test test/accountDB_test"
   },
   "repository": {
     "type": "git",
@@ -29,9 +29,7 @@
     "chai": "^4.1.2",
     "fs": "0.0.1-security",
     "level": "^4.0.0",
-    "mocha": "^5.2.0",
     "promise": "^8.0.1",
-    "rimraf": "^2.6.2"
   },
   "devDependencies": {}
 }
