@@ -136,8 +136,8 @@ class SECDataHandler {
 
     // token database operations
     blockInfo.Transactions = this._txStringify(blockInfo.Transactions)
-    this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Height, blockInfo))
-    this.tokenAsyncList.push(this._putDB(this.tokenBlockChainDB, blockInfo.Hash, blockInfo.Height))
+    this.tokenAsyncList.push(this._putJsonDB(this.tokenBlockChainDB, blockInfo.Number, blockInfo))
+    this.tokenAsyncList.push(this._putDB(this.tokenBlockChainDB, blockInfo.Hash, blockInfo.Number))
 
     // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
@@ -148,8 +148,8 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Height))
-        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Height))
+        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash), blockInfo.Number))
+        self.tokenAsyncList.push(self._putDB(self.accountDB, self._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash), blockInfo.Number))
       }
     })
 
@@ -293,8 +293,8 @@ class SECDataHandler {
 
     // tx database operations
     blockInfo.Transactions = this._txStringify(blockInfo.Transactions)
-    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Height, blockInfo))
-    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Hash, blockInfo.Height))
+    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Number, blockInfo))
+    this.tokenAsyncList.push(this._putJsonDB(this.txBlockChainDB, blockInfo.Hash, blockInfo.Number))
 
     // account database operations
     blockInfo.Transactions.forEach(function (transaction) {
@@ -305,8 +305,8 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash), transaction.BlockHeight))
-        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash), transaction.BlockHeight))
+        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash), transaction.BlockNumber))
+        self.txAsyncList.push(self._putDB(self.accountDB, self._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash), transaction.BlockNumber))
       }
     })
 
@@ -319,7 +319,7 @@ class SECDataHandler {
       transaction = JSON.parse(transaction)
 
       if (typeof transaction.ProductInfo.Name !== 'undefined') {
-        self.txAsyncList.push(self._putDB(self.productDB, self._combineStrings(transaction.ProductInfo.Name, 'name', transaction.TxHash), transaction.BlockHeight))
+        self.txAsyncList.push(self._putDB(self.productDB, self._combineStrings(transaction.ProductInfo.Name, 'name', transaction.TxHash), transaction.BlockNumber))
       }
     })
   }
