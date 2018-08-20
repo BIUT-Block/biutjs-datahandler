@@ -12,8 +12,6 @@ This package uses leveldb to store and handle data from SEC blockchain, this rep
 - Account Database
 - Product Database
 
-<br>
-
 The databases contain following methods:
 <a name="TokenBlockChainDB"></a>
 
@@ -86,7 +84,7 @@ Write single token block or full token chain data to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenData | <code>Array | Object</code> | single token block data or full token block chain data |
+| tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="TokenBlockChainDB+isTokenBlockChainDBEmpty"></a>
@@ -120,7 +118,7 @@ Get token blocks according to block hash values
 
 | Param | Type | Description |
 | --- | --- | --- |
-| blockHashArray | <code>String | Array</code> | block hash values, string or array format |
+| blockHashArray | <code>String, Array</code> | block hash values, string or array format |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
 <a name="TokenBlockChainDB+getTokenChain"></a>
@@ -157,7 +155,7 @@ Write single tx block or full transaction chain data to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| txData | <code>Array, Object</code> | single tx block data or full transaction block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="TxBlockChainDB+isTxBlockChainDBEmpty"></a>
@@ -191,7 +189,7 @@ Get transaction blocks according to block hash values
 
 | Param | Type | Description |
 | --- | --- | --- |
-| blockHashArray | <code>String</code> \| <code>Array</code> | block hash values, string or array format |
+| blockHashArray | <code>String, Array</code> | block hash values, string or array format |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
 <a name="TxBlockChainDB+getTxChain"></a>
@@ -228,7 +226,7 @@ Write tx block chain transactions to account database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| txData | <code>Array, Object</code> | single tx block data or full transaction block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="AccountDB+updateAccountDBTokenChain"></a>
@@ -240,7 +238,7 @@ Write token block chain transactions to account database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
+| tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="AccountDB+isAccountDBEmpty"></a>
@@ -286,7 +284,7 @@ Write single transaction block or full transaction chain data to product databas
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| txData | <code>Array, Object</code> | single tx block data or full transaction block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="ProductDB+isProductDBEmpty"></a>
