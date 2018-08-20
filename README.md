@@ -12,6 +12,8 @@ This package uses leveldb to store and handle data from SEC blockchain, this rep
 - Account Database
 - Product Database
 
+<br><br>
+
 The databases contain following methods:
 <a name="TokenBlockChainDB"></a>
 
@@ -27,7 +29,7 @@ The databases contain following methods:
     * [.getTokenBlockFromDB(blockHashArray, callback)](#TokenBlockChainDB+getTokenBlockFromDB) ⇒ <code>None</code>
     * [.getTokenChain(minBlockNumber, maxBlockNumber, callback)](#TokenBlockChainDB+getTokenChain) ⇒ <code>None</code>
 
-
+<br>
 
 <a name="TxBlockChainDB"></a>
 
@@ -42,7 +44,7 @@ The databases contain following methods:
     * [.getTxBlockFromDB(blockHashArray, callback)](#TxBlockChainDB+getTxBlockFromDB) ⇒ <code>None</code>
     * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
 
-
+<br>
 
 <a name="AccountDB"></a>
 
@@ -56,7 +58,7 @@ The databases contain following methods:
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
 
-
+<br>
 
 <a name="ProductDB"></a>
 
@@ -69,7 +71,7 @@ The databases contain following methods:
     * [.isProductDBEmpty(callback)](#ProductDB+isProductDBEmpty) ⇒ <code>None</code>
     * [.getProductDB(callback)](#ProductDB+getProductDB) ⇒ <code>None</code>
 
-
+<br>
 
 ## TokenBlockChainDB Methods
 
@@ -140,10 +142,7 @@ Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumb
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
-\
-\
-\
-\
+<br>
 
 ## TxBlockChainDB Methods
 
@@ -214,7 +213,7 @@ Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlo
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
-
+<br>
 
 ## AccountDB Methods
 
@@ -272,7 +271,7 @@ Get all the data in account database
 | --- | --- | --- |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
-
+<br>
 
 ## ProductDB Methods
 
