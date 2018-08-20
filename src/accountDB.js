@@ -51,7 +51,7 @@ class AccountDB {
     let key = ''
     txData.forEach(function (txBlock) {
       txBlock.Transactions.forEach(function (transaction) {
-        if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
+        if (typeof transaction.BuyerAddress !== 'undefined' && typeof transaction.SellerAddress !== 'undefined') {
           key = dataHandlerUtil._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash)
           accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockNumber))
           key = dataHandlerUtil._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash)

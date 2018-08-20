@@ -6,232 +6,184 @@
 
 ## SECDataHandler
 
-This package uses leveldb to store and handle data from SEC blockchain
+This package uses leveldb to store and handle data from SEC blockchain, this repository includes operations to four databases:
+- Token Block Chain Database
+- Transaction Block Chain Database
+- Account Database
+- Product Database
 
-* [SECDataHandler](#SECDataHandler)
-    * [new SECDataHandler(config)](#new_SECDataHandler_new)
-    * [.writeTokenChainToDB(jsonFile, callback)](#SECDataHandler+writeTokenChainToDB) => <code>None</code>
-    * [.writeSingleTokenBlockToDB(tokenBlock, callback)](#SECDataHandler+writeSingleTokenBlockToDB) => <code>None</code>
-    * [.writeTxChainToDB(jsonFile, callback)](#SECDataHandler+writeTxChainToDB) => <code>None</code>
-    * [.writeSingleTxBlockToDB(txBlock, callback)](#SECDataHandler+writeSingleTxBlockToDB) => <code>None</code>
-    * [.getAccountTx(address, callback)](#SECDataHandler+getAccountTx) => <code>None</code>
-    * [.getTokenBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTokenBlockFromDB) => <code>None</code>
-    * [.getTokenChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTokenChain) => <code>None</code>
-    * [.getTxBlockFromDB(blockHashArray, callback)](#SECDataHandler+getTxBlockFromDB) => <code>None</code>
-    * [.getTxChain(minBlockHeight, maxBlockHeight, callback)](#SECDataHandler+getTxChain) => <code>None</code>
-    * [.isAccountDBEmpty(callback)](#SECDataHandler+isAccountDBEmpty) => <code>None</code>
-    * [.isProductDBEmpty(callback)](#SECDataHandler+isProductDBEmpty) => <code>None</code>
-    * [.isTokenBlockChainDBEmpty(callback)](#SECDataHandler+isTokenBlockChainDBEmpty) => <code>None</code>
-    * [.isTxBlockChainDBEmpty(callback)](#SECDataHandler+isTxBlockChainDBEmpty) => <code>None</code>
-    * [.getAccountDB(callback)](#SECDataHandler+getAccountDB) => <code>None</code>
-    * [.getProductDB(callback)](#SECDataHandler+getProductDB) => <code>None</code>
-    * [.getTokenBlockChainDB(callback)](#SECDataHandler+getTokenBlockChainDB) => <code>None</code>
-    * [.getTxBlockChainDB(callback)](#SECDataHandler+getTxBlockChainDB) => <code>None</code>
+The databases contain following methods:
+<a name="TokenBlockChainDB"></a>
 
-<a name="SECDataHandler+writeTokenChainToDB"></a>
 
-### secDataHandler.writeTokenChainToDB(tokenChain, callback) => <code>None</code>
-Update token chain data to database
+## TokenBlockChainDB
+**Kind**: global class  
 
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+* [TokenBlockChainDB](#TokenBlockChainDB)
+    * [new TokenBlockChainDB(config)](#new_TokenBlockChainDB_new)
+    * [.writeTokenBlockToDB(tokenData, callback)](#TokenBlockChainDB+writeTokenBlockToDB) ⇒ <code>None</code>
+    * [.isTokenBlockChainDBEmpty(callback)](#TokenBlockChainDB+isTokenBlockChainDBEmpty) ⇒ <code>None</code>
+    * [.getTokenBlockChainDB(callback)](#TokenBlockChainDB+getTokenBlockChainDB) ⇒ <code>None</code>
+    * [.getTokenBlockFromDB(blockHashArray, callback)](#TokenBlockChainDB+getTokenBlockFromDB) ⇒ <code>None</code>
+    * [.getTokenChain(minBlockNumber, maxBlockNumber, callback)](#TokenBlockChainDB+getTokenChain) ⇒ <code>None</code>
+
+
+
+
+<a name="TxBlockChainDB"></a>
+
+## TxBlockChainDB
+**Kind**: global class  
+
+* [TxBlockChainDB](#TxBlockChainDB)
+    * [new TxBlockChainDB(config)](#new_TxBlockChainDB_new)
+    * [.writeTxBlockToDB(txData, callback)](#TxBlockChainDB+writeTxBlockToDB) ⇒ <code>None</code>
+    * [.isTxBlockChainDBEmpty(callback)](#TxBlockChainDB+isTxBlockChainDBEmpty) ⇒ <code>None</code>
+    * [.getTxBlockChainDB(callback)](#TxBlockChainDB+getTxBlockChainDB) ⇒ <code>None</code>
+    * [.getTxBlockFromDB(blockHashArray, callback)](#TxBlockChainDB+getTxBlockFromDB) ⇒ <code>None</code>
+    * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
+
+
+
+
+
+
+
+
+
+<a name="new_TokenBlockChainDB_new"></a>
+
+### new TokenBlockChainDB(config)
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenChain | <code>Array</code> | token block chain data. E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
+| config | <code>Object</code> | contains the relative path for storing database |
+
+<a name="TokenBlockChainDB+writeTokenBlockToDB"></a>
+
+### tokenBlockChainDB.writeTokenBlockToDB(tokenData, callback) ⇒ <code>None</code>
+Write single token block or full token chain data to database
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
+<a name="TokenBlockChainDB+isTokenBlockChainDBEmpty"></a>
 
-<a name="SECDataHandler+writeSingleTokenBlockToDB"></a>
-
-### secDataHandler.writeSingleTokenBlockToDB(tokenBlock, callback) => <code>None</code>
-Update a single token block to database
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tokenBlock | <code>Object</code> | single token block data, json format |
-| callback | <code>function</code> | callback function, returns error if exist |
-
-
-<a name="SECDataHandler+writeTxChainToDB"></a>
-
-### secDataHandler.writeTxChainToDB(txChain, callback) => <code>None</code>
-Update transaction chain data to database
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| txChain | <code>Array</code> | transaction block chain data.  E.g, '[{"TimeStamp": 1529288258, ...}, {"TimeStamp": 1529288304, ...}]' |
-| callback | <code>function</code> | callback function, returns error if exist |
-
-
-<a name="SECDataHandler+writeSingleTxBlockToDB"></a>
-
-### secDataHandler.writeSingleTxBlockToDB(txBlock, callback) => <code>None</code>
-Update a single transaction block to database
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| txBlock | <code>Object</code> | single transaction block data, json format |
-| callback | <code>function</code> | callback function, returns error if exist |
-
-
-<a name="SECDataHandler+getAccountTx"></a>
-
-### secDataHandler.getAccountTx(address, callback) => <code>None</code>
-Get account DB recorded token chain transactions for an account address
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| address | <code>String</code> | account address which is searched |
-| callback | <code>function</code> | callback function, returns account address previous transaction list |
-
-
-<a name="SECDataHandler+getTokenBlockFromDB"></a>
-
-### secDataHandler.getTokenBlockFromDB(blockHashArray, callback) => <code>None</code>
-Get token block according to block hash value
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| blockHashArray | <code>String, Array</code> | block hash value string or array |
-| callback | <code>function</code> | callback function |
-
-
-<a name="SECDataHandler+getTokenChain"></a>
-
-### secDataHandler.getTokenChain(minBlockHeight, maxBlockHeight, callback) => <code>None</code>
-Get token block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| minBlockHeight | <code>Integer</code> | minimum block height |
-| maxBlockHeight | <code>Integer</code> | maximum block height |
-| callback | <code>function</code> | callback function |
-
-
-<a name="SECDataHandler+getTxBlockFromDB"></a>
-
-### secDataHandler.getTxBlockFromDB(blockHashArray, callback) => <code>None</code>
-Get transaction block according to block hash value
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| blockHashArray | <code>String, Array</code> | block hash value string or array |
-| callback | <code>function</code> | callback function |
-
-
-<a name="SECDataHandler+getTxChain"></a>
-
-### secDataHandler.getTxChain(minBlockHeight, maxBlockHeight, callback) => <code>None</code>
-Get transaction block chain data, from height 'minBlockHeight' to height 'maxBlockHeight'
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| minBlockHeight | <code>Integer</code> | minimum block height |
-| maxBlockHeight | <code>Integer</code> | maximum block height |
-| callback | <code>function</code> | callback function |
-
-
-<a name="SECDataHandler+isAccountDBEmpty"></a>
-
-### secDataHandler.isAccountDBEmpty(callback) => <code>None</code>
-Check whether the account database is empty
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | callback function |
-
-<a name="SECDataHandler+isProductDBEmpty"></a>
-
-### secDataHandler.isProductDBEmpty(callback) => <code>None</code>
-Check whether the product database is empty
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | callback function |
-
-<a name="SECDataHandler+isTokenBlockChainDBEmpty"></a>
-
-### secDataHandler.isTokenBlockChainDBEmpty(callback) => <code>None</code>
+### tokenBlockChainDB.isTokenBlockChainDBEmpty(callback) ⇒ <code>None</code>
 Check whether the token block chain database is empty
 
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>function</code> | callback function |
+| callback | <code>function</code> | callback function, callback arguments (err, emptyFlag) |
 
-<a name="SECDataHandler+isTxBlockChainDBEmpty"></a>
+<a name="TokenBlockChainDB+getTokenBlockChainDB"></a>
 
-### secDataHandler.isTxBlockChainDBEmpty(callback) => <code>None</code>
-Check whether the transaction block chain database is empty
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | callback function |
-
-
-<a name="SECDataHandler+getAccountDB"></a>
-
-### secDataHandler.getAccountDB(callback) => <code>None</code>
-Get all the data in account database
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | callback function |
-
-<a name="SECDataHandler+getProductDB"></a>
-
-### secDataHandler.getProductDB(callback) => <code>None</code>
-Get all the data in product database
-
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| callback | <code>function</code> | callback function |
-
-<a name="SECDataHandler+getTokenBlockChainDB"></a>
-
-### secDataHandler.getTokenBlockChainDB(callback) => <code>None</code>
+### tokenBlockChainDB.getTokenBlockChainDB(callback) ⇒ <code>None</code>
 Get all the data in token block chain database
 
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>function</code> | callback function |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
-<a name="SECDataHandler+getTxBlockChainDB"></a>
+<a name="TokenBlockChainDB+getTokenBlockFromDB"></a>
 
-### secDataHandler.getTxBlockChainDB(callback) => <code>None</code>
+### tokenBlockChainDB.getTokenBlockFromDB(blockHashArray, callback) ⇒ <code>None</code>
+Get token blocks according to block hash values
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHashArray | <code>String</code> \| <code>Array</code> | block hash values, string or array format |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="TokenBlockChainDB+getTokenChain"></a>
+
+### tokenBlockChainDB.getTokenChain(minBlockNumber, maxBlockNumber, callback) ⇒ <code>None</code>
+Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minBlockNumber | <code>Integer</code> | minimum block number |
+| maxBlockNumber | <code>Integer</code> | maximum block number |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+
+
+
+<a name="new_TxBlockChainDB_new"></a>
+
+### new TxBlockChainDB(config)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>Object</code> | contains the relative path for storing database |
+
+<a name="TxBlockChainDB+writeTxBlockToDB"></a>
+
+### txBlockChainDB.writeTxBlockToDB(txData, callback) ⇒ <code>None</code>
+Write single tx block or full transaction chain data to database
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="TxBlockChainDB+isTxBlockChainDBEmpty"></a>
+
+### txBlockChainDB.isTxBlockChainDBEmpty(callback) ⇒ <code>None</code>
+Check whether the transaction block chain database is empty
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, emptyFlag) |
+
+<a name="TxBlockChainDB+getTxBlockChainDB"></a>
+
+### txBlockChainDB.getTxBlockChainDB(callback) ⇒ <code>None</code>
 Get all the data in transaction block chain database
 
-**Kind**: instance method of [<code>SECDataHandler</code>](#SECDataHandler)  
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| callback | <code>function</code> | callback function |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="TxBlockChainDB+getTxBlockFromDB"></a>
+
+### txBlockChainDB.getTxBlockFromDB(blockHashArray, callback) ⇒ <code>None</code>
+Get transaction blocks according to block hash values
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHashArray | <code>String</code> \| <code>Array</code> | block hash values, string or array format |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="TxBlockChainDB+getTxChain"></a>
+
+### txBlockChainDB.getTxChain(minBlockNumber, maxBlockNumber, callback) ⇒ <code>None</code>
+Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minBlockNumber | <code>Integer</code> | minimum block number |
+| maxBlockNumber | <code>Integer</code> | maximum block number |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
