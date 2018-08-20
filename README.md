@@ -44,6 +44,33 @@ The databases contain following methods:
 
 
 
+<a name="AccountDB"></a>
+
+## AccountDB
+**Kind**: global class  
+
+* [AccountDB](#AccountDB)
+    * [new AccountDB(config)](#new_AccountDB_new)
+    * [.updateAccountDBTxChain(txData, callback)](#AccountDB+updateAccountDBTxChain) ⇒ <code>None</code>
+    * [.updateAccountDBTokenChain(tokenData, callback)](#AccountDB+updateAccountDBTokenChain) ⇒ <code>None</code>
+    * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
+    * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
+
+
+
+<a name="ProductDB"></a>
+
+## ProductDB
+**Kind**: global class  
+
+* [ProductDB](#ProductDB)
+    * [new ProductDB(config)](#new_ProductDB_new)
+    * [.writeTxBlockToDB(txData, callback)](#ProductDB+writeTxBlockToDB) ⇒ <code>None</code>
+    * [.isProductDBEmpty(callback)](#ProductDB+isProductDBEmpty) ⇒ <code>None</code>
+    * [.getProductDB(callback)](#ProductDB+getProductDB) ⇒ <code>None</code>
+
+
+
 ## TokenBlockChainDB Methods
 
 <a name="new_TokenBlockChainDB_new"></a>
@@ -113,7 +140,10 @@ Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumb
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
-
+\
+\
+\
+\
 
 ## TxBlockChainDB Methods
 
@@ -183,3 +213,108 @@ Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlo
 | minBlockNumber | <code>Integer</code> | minimum block number |
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+
+
+## AccountDB Methods
+
+<a name="new_AccountDB_new"></a>
+
+### new AccountDB(config)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>Object</code> | contains the relative path for storing database |
+
+<a name="AccountDB+updateAccountDBTxChain"></a>
+
+### accountDB.updateAccountDBTxChain(txData, callback) ⇒ <code>None</code>
+Write tx block chain transactions to account database
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="AccountDB+updateAccountDBTokenChain"></a>
+
+### accountDB.updateAccountDBTokenChain(tokenData, callback) ⇒ <code>None</code>
+Write token block chain transactions to account database
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="AccountDB+isAccountDBEmpty"></a>
+
+### accountDB.isAccountDBEmpty(callback) ⇒ <code>None</code>
+Check whether the account database is empty
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, emptyFlag) |
+
+<a name="AccountDB+getAccountDB"></a>
+
+### accountDB.getAccountDB(callback) ⇒ <code>None</code>
+Get all the data in account database
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+
+
+## ProductDB Methods
+
+<a name="new_ProductDB_new"></a>
+
+### new ProductDB(config)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>Object</code> | contains the relative path for storing database |
+
+<a name="ProductDB+writeTxBlockToDB"></a>
+
+### productDB.writeTxBlockToDB(txData, callback) ⇒ <code>None</code>
+Write single transaction block or full transaction chain data to product database
+
+**Kind**: instance method of [<code>ProductDB</code>](#ProductDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txData | <code>Array</code> \| <code>Object</code> | single tx block data or full transaction block chain data |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="ProductDB+isProductDBEmpty"></a>
+
+### productDB.isProductDBEmpty(callback) ⇒ <code>None</code>
+Check whether the product database is empty
+
+**Kind**: instance method of [<code>ProductDB</code>](#ProductDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, emptyFlag) |
+
+<a name="ProductDB+getProductDB"></a>
+
+### productDB.getProductDB(callback) ⇒ <code>None</code>
+Get all the data in product database
+
+**Kind**: instance method of [<code>ProductDB</code>](#ProductDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
