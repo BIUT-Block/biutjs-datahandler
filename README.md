@@ -29,7 +29,6 @@ The databases contain following methods:
 
 
 
-
 <a name="TxBlockChainDB"></a>
 
 ## TxBlockChainDB
@@ -45,11 +44,7 @@ The databases contain following methods:
 
 
 
-
-
-
-
-
+## TokenBlockChainDB Methods
 
 <a name="new_TokenBlockChainDB_new"></a>
 
@@ -68,7 +63,7 @@ Write single token block or full token chain data to database
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
+| tokenData | <code>Array | Object</code> | single token block data or full token block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="TokenBlockChainDB+isTokenBlockChainDBEmpty"></a>
@@ -102,7 +97,7 @@ Get token blocks according to block hash values
 
 | Param | Type | Description |
 | --- | --- | --- |
-| blockHashArray | <code>String</code> \| <code>Array</code> | block hash values, string or array format |
+| blockHashArray | <code>String | Array</code> | block hash values, string or array format |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
 <a name="TokenBlockChainDB+getTokenChain"></a>
@@ -120,6 +115,7 @@ Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumb
 
 
 
+## TxBlockChainDB Methods
 
 <a name="new_TxBlockChainDB_new"></a>
 
