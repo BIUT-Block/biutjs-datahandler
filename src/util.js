@@ -36,6 +36,24 @@ exports._getAllDataInDB = function (db, callback) {
   })
 }
 
+/* Read all the blocks in a database */
+exports._getAllBlocksInDB = function (db, callback) {
+  let buffer = []
+  db.createReadStream().on('data', function (data) {
+    if (data.key.length != 64) {
+      buffer.push(data.value)
+    }
+  }).on('error', function (err) {
+    // console.log('Stream occurs an error when trying to read all data!')
+    callback(err, null)
+  }).on('close', function () {
+    // console.log('Stream closed')
+  }).on('end', function () {
+    // console.log('Stream ended')
+    callback(null, buffer)
+  })
+}
+
 /* Put a key-value pair data to db */
 exports._putDB = function (DB, key, value) {
   return new Promise(function (resolve, reject) {

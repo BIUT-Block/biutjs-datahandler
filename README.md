@@ -101,7 +101,7 @@ Check whether the token block chain database is empty
 <a name="TokenBlockChainDB+getTokenBlockChainDB"></a>
 
 ### tokenBlockChainDB.getTokenBlockChainDB(callback) ⇒ <code>None</code>
-Get all the data in token block chain database
+Get all the block datas from token block chain database
 
 **Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
 
@@ -172,7 +172,7 @@ Check whether the transaction block chain database is empty
 <a name="TxBlockChainDB+getTxBlockChainDB"></a>
 
 ### txBlockChainDB.getTxBlockChainDB(callback) ⇒ <code>None</code>
-Get all the data in transaction block chain database
+Get all the block datas from transaction block chain database
 
 **Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
 

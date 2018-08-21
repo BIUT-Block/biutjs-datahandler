@@ -71,12 +71,12 @@ class TxBlockChainDB {
   }
 
   /**
-   * Get all the data in transaction block chain database
+   * Get all the block datas from transaction block chain database
    * @param  {Function} callback - callback function, callback arguments (err, block object array)
    * @return {None}
    */
   getTxBlockChainDB (callback) {
-    dataHandlerUtil._getAllDataInDB(this.txBlockChainDB, callback)
+    dataHandlerUtil._getAllBlocksInDB(this.txBlockChainDB, callback)
   }
 
   /**

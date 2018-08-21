@@ -71,12 +71,12 @@ class TokenBlockChainDB {
   }
 
   /**
-   * Get all the data in token block chain database
+   * Get all the block datas from token block chain database
    * @param  {Function} callback - callback function, callback arguments (err, block object array)
    * @return {None}
    */
   getTokenBlockChainDB (callback) {
-    dataHandlerUtil._getAllDataInDB(this.tokenBlockChainDB, callback)
+    dataHandlerUtil._getAllBlocksInDB(this.tokenBlockChainDB, callback)
   }
 
   /**

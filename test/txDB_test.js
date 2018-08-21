@@ -69,7 +69,7 @@ describe('Transaction block chain database class test', () => {
             if (err) {
               expect.fail()
             } else {
-              expect(Object.keys(value).length).to.equal(4)
+              expect(Object.keys(value).length).to.equal(2)
             }
             done()
           })
