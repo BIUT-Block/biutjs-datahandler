@@ -252,7 +252,7 @@ Update token account balance
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
+| tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
 
 <a name="AccountDB+getAccBalance"></a>
 
