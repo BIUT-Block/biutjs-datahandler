@@ -86,9 +86,6 @@ class TxBlockChainDB {
    * @return {None}
    */
   getTxBlockFromDB (blockHashArray, callback) {
-    let self = this
-
-    let buffer = []
     if (typeof blockHashArray === 'string') {
       blockHashArray = [blockHashArray]
     }
@@ -97,37 +94,11 @@ class TxBlockChainDB {
       throw new Error('invalid blockHashArray input, should be an array')
     }
 
-    self._getTxBlockFromDBRecursive(0, blockHashArray, buffer, function (err) {
-      if (err) {
-        callback(err, null)
-      } else {
-        callback(null, buffer)
-      }
-    })
-  }
-
-  /**
-   * This function is used for recursive
-   */
-  _getTxBlockFromDBRecursive (index, array, buffer, callback) {
-    let self = this
-    this._getTxBlockFromDB(array[index], (err, value) => {
-      if (err) {
-        callback(err)
-      } else {
-        buffer.push(value)
-        if (index + 1 < array.length) {
-          self._getTxBlockFromDBRecursive(index + 1, array, buffer, (err) => {
-            if (err) {
-              callback(err)
-            } else {
-              callback(null)
-            }
-          })
-        } else {
-          callback(null)
-        }
-      }
+    let promise = this._getTxBlockFromDB(blockHashArray)
+    promise.then((data) => {
+      callback(null, data)
+    }).catch((err) => {
+      callback(err, null)
     })
   }
 
@@ -135,21 +106,25 @@ class TxBlockChainDB {
    * Read corresponding block data(json format) from transaction database
    * @return {None}
    */
-  _getTxBlockFromDB (blockHash, callback) {
+  async _getTxBlockFromDB (blockHashArray) {
     let self = this
-    dataHandlerUtil._getDB(this.txBlockChainDB, blockHash, (err, value) => {
-      if (err) {
-        callback(err, null)
+    let buffer = []
+
+    await dataHandlerUtil._asyncForEach(blockHashArray, async (blockHash) => {
+      let data = await dataHandlerUtil._getDBPromise(this.txBlockChainDB, blockHash)
+      if (data[0] !== null) {
+        throw data[0]
       } else {
-        dataHandlerUtil._getJsonDB(self.txBlockChainDB, value, (err, value) => {
-          if (err) {
-            callback(err, null)
-          } else {
-            callback(null, value)
-          }
-        })
+        data = await dataHandlerUtil._getJsonDBPromise(self.txBlockChainDB, data[1])
+        if (data[0] !== null) {
+          throw data[0]
+        } else {
+          buffer.push(data[1])
+        }
       }
     })
+
+    return buffer
   }
 
   /**
@@ -160,56 +135,32 @@ class TxBlockChainDB {
    * @return {None}
    */
   getTxChain (minBlockNumber, maxBlockNumber, callback) {
-    let buffer = []
     if (minBlockNumber > maxBlockNumber) {
       throw new Error('invalid block numbers')
     }
 
-    this._getTxChainRecursive(minBlockNumber, maxBlockNumber, buffer, (err) => {
-      if (err) {
-        callback(err, null)
-      } else {
-        callback(null, buffer)
-      }
-    })
-  }
-
-  /**
-   * This function is used for recursive
-   */
-  _getTxChainRecursive (index, maxBlockNumber, buffer, callback) {
-    let self = this
-    this._getTxChain(index, (err, value) => {
-      if (err) {
-        callback(err)
-      } else {
-        buffer.push(value)
-        if (index < maxBlockNumber) {
-          self._getTxChainRecursive(index + 1, maxBlockNumber, buffer, (err) => {
-            if (err) {
-              callback(err)
-            } else {
-              callback(null)
-            }
-          })
-        } else {
-          callback(null)
-        }
-      }
+    let promise = this._getTxChain(minBlockNumber, maxBlockNumber)
+    promise.then((data) => {
+      callback(null, data)
+    }).catch((err) => {
+      callback(err, null)
     })
   }
 
   /**
    * Read corresponding block data(json format) from transaction database
    */
-  _getTxChain (number, callback) {
-    dataHandlerUtil._getJsonDB(this.txBlockChainDB, number, (err, value) => {
-      if (err) {
-        callback(err, null)
+  async _getTxChain (minHeight, maxHeight) {
+    let buffer = []
+    for (let i = minHeight; i < maxHeight + 1; i++) {
+      let data = await dataHandlerUtil._getJsonDBPromise(this.txBlockChainDB, i)
+      if (data[0] !== null) {
+        throw data[0]
       } else {
-        callback(null, value)
+        buffer.push(data[1])
       }
-    })
+    }
+    return buffer
   }
 }
 

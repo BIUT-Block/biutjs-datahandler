@@ -108,10 +108,12 @@ describe('Token block chain database class test', () => {
       let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
       secDataTest.writeTokenBlockToDB(data, function (err) {
         if (err) {
+          console.log(err)
           expect.fail()
         } else {
           secDataTest.getTokenChain(1, 2, (err, value) => {
             if (err) {
+              console.log(err)
               expect.fail()
             } else {
               expect(value.length).to.equal(2)

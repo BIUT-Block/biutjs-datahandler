@@ -86,9 +86,6 @@ class TokenBlockChainDB {
    * @return {None}
    */
   getTokenBlockFromDB (blockHashArray, callback) {
-    let self = this
-
-    let buffer = []
     if (typeof blockHashArray === 'string') {
       blockHashArray = [blockHashArray]
     }
@@ -97,37 +94,11 @@ class TokenBlockChainDB {
       throw new Error('invalid blockHashArray input, should be an array')
     }
 
-    self._getTokenBlockFromDBRecursive(0, blockHashArray, buffer, function (err) {
-      if (err) {
-        callback(err, null)
-      } else {
-        callback(null, buffer)
-      }
-    })
-  }
-
-  /**
-   * This function is used for recursive
-   */
-  _getTokenBlockFromDBRecursive (index, array, buffer, callback) {
-    let self = this
-    this._getTokenBlockFromDB(array[index], (err, value) => {
-      if (err) {
-        callback(err)
-      } else {
-        buffer.push(value)
-        if (index + 1 < array.length) {
-          self._getTokenBlockFromDBRecursive(index + 1, array, buffer, (err) => {
-            if (err) {
-              callback(err)
-            } else {
-              callback(null)
-            }
-          })
-        } else {
-          callback(null)
-        }
-      }
+    let promise = this._getTokenBlockFromDB(blockHashArray)
+    promise.then((data) => {
+      callback(null, data)
+    }).catch((err) => {
+      callback(err, null)
     })
   }
 
@@ -135,21 +106,25 @@ class TokenBlockChainDB {
    * Read corresponding block data(json format) from token database
    * @return {None}
    */
-  _getTokenBlockFromDB (blockHash, callback) {
+  async _getTokenBlockFromDB (blockHashArray) {
     let self = this
-    dataHandlerUtil._getDB(this.tokenBlockChainDB, blockHash, (err, value) => {
-      if (err) {
-        callback(err, null)
+    let buffer = []
+
+    await dataHandlerUtil._asyncForEach(blockHashArray, async (blockHash) => {
+      let data = await dataHandlerUtil._getDBPromise(this.tokenBlockChainDB, blockHash)
+      if (data[0] !== null) {
+        throw data[0]
       } else {
-        dataHandlerUtil._getJsonDB(self.tokenBlockChainDB, value, (err, value) => {
-          if (err) {
-            callback(err, null)
-          } else {
-            callback(null, value)
-          }
-        })
+        data = await dataHandlerUtil._getJsonDBPromise(self.tokenBlockChainDB, data[1])
+        if (data[0] !== null) {
+          throw data[0]
+        } else {
+          buffer.push(data[1])
+        }
       }
     })
+
+    return buffer
   }
 
   /**
@@ -160,56 +135,32 @@ class TokenBlockChainDB {
    * @return {None}
    */
   getTokenChain (minBlockNumber, maxBlockNumber, callback) {
-    let buffer = []
     if (minBlockNumber > maxBlockNumber) {
       throw new Error('invalid block numbers')
     }
 
-    this._getTokenChainRecursive(minBlockNumber, maxBlockNumber, buffer, (err) => {
-      if (err) {
-        callback(err, null)
-      } else {
-        callback(null, buffer)
-      }
-    })
-  }
-
-  /**
-   * This function is used for recursive
-   */
-  _getTokenChainRecursive (index, maxBlockNumber, buffer, callback) {
-    let self = this
-    this._getTokenChain(index, (err, value) => {
-      if (err) {
-        callback(err)
-      } else {
-        buffer.push(value)
-        if (index < maxBlockNumber) {
-          self._getTokenChainRecursive(index + 1, maxBlockNumber, buffer, (err) => {
-            if (err) {
-              callback(err)
-            } else {
-              callback(null)
-            }
-          })
-        } else {
-          callback(null)
-        }
-      }
+    let promise = this._getTokenChain(minBlockNumber, maxBlockNumber)
+    promise.then((data) => {
+      callback(null, data)
+    }).catch((err) => {
+      callback(err, null)
     })
   }
 
   /**
    * Read corresponding block data(json format) from token database
    */
-  _getTokenChain (number, callback) {
-    dataHandlerUtil._getJsonDB(this.tokenBlockChainDB, number, (err, value) => {
-      if (err) {
-        callback(err, null)
+  async _getTokenChain (minHeight, maxHeight) {
+    let buffer = []
+    for (let i = minHeight; i < maxHeight + 1; i++) {
+      let data = await dataHandlerUtil._getJsonDBPromise(this.tokenBlockChainDB, i)
+      if (data[0] !== null) {
+        throw data[0]
       } else {
-        callback(null, value)
+        buffer.push(data[1])
       }
-    })
+    }
+    return buffer
   }
 }
 

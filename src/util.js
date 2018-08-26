@@ -4,6 +4,13 @@ const dbOpts = {
   valueEncoding: 'json'
 }
 
+/* array for each functions async call */
+exports._asyncForEach = async function (array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
+
 /* Check whether the database is empty */
 exports._isDBEmpty = function (db, callback) {
   let emptyFlag = true
@@ -101,6 +108,34 @@ exports._getJsonDB = function (DB, key, callback) {
       // console.log(key + '=' + value)
       callback(null, value)
     }
+  })
+}
+
+/* Get a value from the DB according to the "key" input, return a promise object */
+exports._getDBPromise = function (DB, key) {
+  return new Promise(function (resolve) {
+    DB.get(key, function (err, value) {
+      if (err) {
+        resolve([err, value])
+      } else {
+        // console.log(key + '=' + value)
+        resolve([null, value])
+      }
+    })
+  })
+}
+
+/* Get a value which is in json format from the DB according to the "key" input, return a promise object */
+exports._getJsonDBPromise = function (DB, key) {
+  return new Promise(function (resolve) {
+    DB.get(key, dbOpts, function (err, value) {
+      if (err) {
+        resolve([err, null])
+      } else {
+        // console.log(key + '=' + value)
+        resolve([null, value])
+      }
+    })
   })
 }
 

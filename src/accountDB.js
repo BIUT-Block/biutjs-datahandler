@@ -111,11 +111,11 @@ class AccountDB {
       tokenData = [tokenData]
     }
 
-    await this._asyncForEach(tokenData, async (tokenBlock) => {
-      await self._asyncForEach(tokenBlock.Transactions, async (transaction) => {
+    await dataHandlerUtil._asyncForEach(tokenData, async (tokenBlock) => {
+      await dataHandlerUtil._asyncForEach(tokenBlock.Transactions, async (transaction) => {
         // payer account balance update
         let balanceChange = -(transaction.Value + transaction.GasPrice + transaction.TxFee)
-        let data = await self._getDBPromise(dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'))
+        let data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'))
         if (data[0] !== null) {
           await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
         } else {
@@ -125,7 +125,7 @@ class AccountDB {
 
         // payee account balance update
         balanceChange = transaction.Value
-        data = await self._getDBPromise(dataHandlerUtil._combineStrings('token', transaction.TxTo, 'balance'))
+        data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxTo, 'balance'))
         if (data[0] !== null) {
           await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
         } else {
@@ -165,27 +165,6 @@ class AccountDB {
    */
   getAccountDB (callback) {
     dataHandlerUtil._getAllDataInDB(this.accountDB, callback)
-  }
-
-  /* Get a value from the DB according to the "key" input, return a promise object */
-  _getDBPromise (key) {
-    let self = this
-    return new Promise(function (resolve) {
-      self.accountDB.get(key, function (err, value) {
-        if (err) {
-          resolve([err, value])
-        } else {
-          // console.log(key + '=' + value)
-          resolve([null, value])
-        }
-      })
-    })
-  }
-
-  async _asyncForEach (array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array)
-    }
   }
 }
 
