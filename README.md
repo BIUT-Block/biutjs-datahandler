@@ -49,6 +49,8 @@ The databases contain following methods:
     * [new AccountDB(config)](#new_AccountDB_new)
     * [.updateAccountDBTxChain(txData, callback)](#AccountDB+updateAccountDBTxChain) ⇒ <code>None</code>
     * [.updateAccountDBTokenChain(tokenData, callback)](#AccountDB+updateAccountDBTokenChain) ⇒ <code>None</code>
+    * [.updateAccBalance(tokenData)](#AccountDB+updateAccBalance) ⇒ <code>None</code>
+    * [.getAccBalance(address, callback)](#AccountDB+getAccBalance) ⇒ <code>None</code>
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
 
@@ -240,6 +242,29 @@ Write token block chain transactions to account database
 | --- | --- | --- |
 | tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
 | callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="AccountDB+updateAccBalance"></a>
+
+### accountDB.updateAccBalance(tokenData) ⇒ <code>None</code>
+Update token account balance
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tokenData | <code>Array</code> \| <code>Object</code> | single token block data or full token block chain data |
+
+<a name="AccountDB+getAccBalance"></a>
+
+### accountDB.getAccBalance(address, callback) ⇒ <code>None</code>
+Get token chain account balance
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| address | <code>String</code> | account address which is searched |
+| callback | <code>function</code> | callback function, returns error info (or null if does not exist) and account balance |
 
 <a name="AccountDB+isAccountDBEmpty"></a>
 
