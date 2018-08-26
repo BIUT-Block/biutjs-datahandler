@@ -20,8 +20,7 @@ describe('Transaction block chain database class test', () => {
         console.log(err)
         expect.fail()
       }).then(() => {
-        let key = dataHandlerUtil._combineStrings('token', '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', 'balance')
-        dataHandlerUtil._getDB(secDataTest.accountDB, key, function (err, value) {
+        secDataTest.getAccBalance('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', (err, value) => {
           if (err) {
             expect.fail()
           } else {

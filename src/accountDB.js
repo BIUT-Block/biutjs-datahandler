@@ -137,6 +137,19 @@ class AccountDB {
   }
 
   /**
+   * Get token chain account balance
+   * @param  {String} address - account address which is searched
+   * @param  {Function} callback - callback function, returns error info (or null if does not exist) and account balance
+   * @return {None}
+   */
+  getAccBalance (address, callback) {
+    let key = dataHandlerUtil._combineStrings('token', address, 'balance')
+    dataHandlerUtil._getDB(this.accountDB, key, (err, value) => {
+      callback(err, value)
+    })
+  }
+
+  /**
    * Check whether the account database is empty
    * @param  {Function} callback - callback function, callback arguments (err, emptyFlag)
    * @return {None}
