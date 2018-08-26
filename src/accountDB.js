@@ -101,6 +101,42 @@ class AccountDB {
   }
 
   /**
+   * Update token account balance
+   * @param  {Array | Object} tokenData - single token block data or full token block chain data
+   * @return {None}
+   */
+  async updateAccBalance (tokenData) {
+    let self = this
+    if (!Array.isArray(tokenData)) {
+      tokenData = [tokenData]
+    }
+
+    await this._asyncForEach(tokenData, async (tokenBlock) => {
+      await self._asyncForEach(tokenBlock.Transactions, async (transaction) => {
+        // payer account balance update
+        let balanceChange = -(transaction.Value + transaction.GasPrice + transaction.TxFee)
+        let data = await self._getDBPromise(dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'))
+        if (data[0] !== null) {
+          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
+        } else {
+          data[1] = parseFloat(data[1]) + balanceChange
+          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
+        }
+
+        // payee account balance update
+        balanceChange = transaction.Value
+        data = await self._getDBPromise(dataHandlerUtil._combineStrings('token', transaction.TxTo, 'balance'))
+        if (data[0] !== null) {
+          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
+        } else {
+          data[1] = parseFloat(data[1]) + balanceChange
+          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
+        }
+      })
+    })
+  }
+
+  /**
    * Check whether the account database is empty
    * @param  {Function} callback - callback function, callback arguments (err, emptyFlag)
    * @return {None}
@@ -116,6 +152,27 @@ class AccountDB {
    */
   getAccountDB (callback) {
     dataHandlerUtil._getAllDataInDB(this.accountDB, callback)
+  }
+
+  /* Get a value from the DB according to the "key" input, return a promise object */
+  _getDBPromise (key) {
+    let self = this
+    return new Promise(function (resolve) {
+      self.accountDB.get(key, function (err, value) {
+        if (err) {
+          resolve([err, value])
+        } else {
+          // console.log(key + '=' + value)
+          resolve([null, value])
+        }
+      })
+    })
+  }
+
+  async _asyncForEach (array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array)
+    }
   }
 }
 

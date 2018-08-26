@@ -12,6 +12,27 @@ describe('Transaction block chain database class test', () => {
   }
   const secDataTest = new AccountDB(config)
 
+  describe('updateAccBalance() function test', (done) => {
+    it('functionality correctness test', (done) => {
+      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+      let promise = secDataTest.updateAccBalance(data)
+      promise.catch((err) => {
+        console.log(err)
+        expect.fail()
+      }).then(() => {
+        let key = dataHandlerUtil._combineStrings('token', '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', 'balance')
+        dataHandlerUtil._getDB(secDataTest.accountDB, key, function (err, value) {
+          if (err) {
+            expect.fail()
+          } else {
+            console.log(value)
+          }
+          done()
+        })
+      })
+    })
+  })
+
   describe('updateAccountDBTokenChain() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
@@ -82,11 +103,10 @@ describe('Transaction block chain database class test', () => {
           expect.fail()
         } else {
           secDataTest.getAccountDB((err, value) => {
-            console.log(value)
             if (err) {
               expect.fail()
             } else {
-              expect(Object.keys(value).length).to.equal(12)
+              expect(Object.keys(value).length).to.equal(13)
             }
             done()
           })
