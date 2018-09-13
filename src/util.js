@@ -48,6 +48,14 @@ exports._getAllBlocksInDB = function (db, callback) {
   let buffer = []
   db.createReadStream().on('data', function (data) {
     if (data.key.length != 64) {
+      data.value = JSON.parse(data.value)
+      if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+        let tx_buffer = []
+        data.value['Transactions'].forEach((transaction) => {
+          tx_buffer.push(JSON.parse(transaction))
+        })
+        data.value['Transactions'] = tx_buffer
+      }
       buffer.push(data.value)
     }
   }).on('error', function (err) {
@@ -132,7 +140,13 @@ exports._getJsonDBPromise = function (DB, key) {
       if (err) {
         resolve([err, null])
       } else {
-        // console.log(key + '=' + value)
+        if (('Transactions' in value) && (value['Transactions'].length !== 0)) {
+          let tx_buffer = []
+          value['Transactions'].forEach((transaction) => {
+            tx_buffer.push(JSON.parse(transaction))
+          })
+          value['Transactions'] = tx_buffer
+        }
         resolve([null, value])
       }
     })
