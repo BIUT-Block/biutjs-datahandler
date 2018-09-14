@@ -110,11 +110,11 @@ describe('Transaction block chain database class test', () => {
         if (err) {
           expect.fail()
         } else {
-          secDataTest.getTxChain(0, 0, (err, value) => {
+          secDataTest.getTxChain(0, 3, (err, value) => {
             if (err) {
               expect.fail()
             } else {
-              expect(value.length).to.equal(1)
+              expect(value.length).to.equal(4)
             }
             done()
           })
