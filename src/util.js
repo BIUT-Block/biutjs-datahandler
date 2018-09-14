@@ -69,6 +69,25 @@ exports._getAllBlocksInDB = function (db, callback) {
   })
 }
 
+/* Read all the block heights in a database */
+exports._getAllBlockHeightsInDB = function (db, callback) {
+  let buffer = []
+  db.createReadStream().on('data', function (data) {
+    if (data.key.length != 64) {
+      buffer.push(parseInt(data.key, 10))
+    }
+  }).on('error', function (err) {
+    // console.log('Stream occurs an error when trying to read all data!')
+    callback(err, null)
+  }).on('close', function () {
+    // console.log('Stream closed')
+  }).on('end', function () {
+    // console.log('Stream ended')
+    buffer = buffer.sort((a, b) => a - b)
+    callback(null, buffer)
+  })
+}
+
 /* Put a key-value pair data to db */
 exports._putDB = function (DB, key, value) {
   return new Promise(function (resolve, reject) {
@@ -148,6 +167,17 @@ exports._getJsonDBPromise = function (DB, key) {
           value['Transactions'] = tx_buffer
         }
         resolve([null, value])
+      }
+    })
+  })
+}
+
+/* Delete a value from the DB according to the "key" input, return a promise object */
+exports._delDBPromise = function (DB, key) {
+  return new Promise(function (reject) {
+    DB.del(key, function (err) {
+      if (err) {
+        reject(err)
       }
     })
   })

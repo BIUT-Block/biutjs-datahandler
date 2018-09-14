@@ -69,7 +69,7 @@ describe('Token block chain database class test', () => {
             if (err) {
               expect.fail()
             } else {
-              expect(Object.keys(value).length).to.equal(3)
+              expect(Object.keys(value).length).to.equal(13)
             }
             done()
           })
@@ -117,6 +117,29 @@ describe('Token block chain database class test', () => {
               expect.fail()
             } else {
               expect(value.length).to.equal(2)
+            }
+            done()
+          })
+        }
+      })
+    })
+  })
+
+  describe('delBlocksFromHeight() function test', () => {
+    it('functionality correctness test', (done) => {
+      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+      secDataTest.writeTokenBlockToDB(data, function (err) {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          secDataTest.delBlocksFromHeight(6, (err, value) => {
+            if (err) {
+              console.log(err)
+              expect.fail()
+            } else {
+              console.log(value)
+              expect(value.length).to.equal(6)
             }
             done()
           })
