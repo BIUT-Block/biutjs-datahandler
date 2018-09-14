@@ -50,8 +50,8 @@ class TxBlockChainDB {
 
     txData.forEach(function (txBlock) {
       txBlock.Transactions = dataHandlerUtil._txStringify(txBlock.Transactions)
-      txPromiseList.push(dataHandlerUtil._putJsonDB(self.txBlockChainDB, txBlock.Number, txBlock))
-      txPromiseList.push(dataHandlerUtil._putDB(self.txBlockChainDB, txBlock.Hash, txBlock.Number))
+      txPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.txBlockChainDB, txBlock.Number, txBlock))
+      txPromiseList.push(dataHandlerUtil._putDBPromise(self.txBlockChainDB, txBlock.Hash, txBlock.Number))
     })
 
     Promise.all(txPromiseList).then(function () {
@@ -220,11 +220,11 @@ class TxBlockChainDB {
     let len = blockArray.length
     let promiseList = []
     for (let i = 0; i < len; i++) {
-      promiseList.push(dataHandlerUtil._putJsonDB(this.txBlockChainDB, pos + i, blockArray[i]))
+      promiseList.push(dataHandlerUtil._putJsonDBPromise(this.txBlockChainDB, pos + i, blockArray[i]))
       if (!('Hash' in blockArray[i])) {
         return callback(new Error('Invalid block data, block hash missing'))
       }
-      promiseList.push(dataHandlerUtil._putJsonDB(this.txBlockChainDB, blockArray[i].Hash, pos + i))
+      promiseList.push(dataHandlerUtil._putJsonDBPromise(this.txBlockChainDB, blockArray[i].Hash, pos + i))
     }
 
     Promise.all(promiseList).then(() => {

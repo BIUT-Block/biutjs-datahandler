@@ -53,9 +53,9 @@ class AccountDB {
       txBlock.Transactions.forEach(function (transaction) {
         if (typeof transaction.BuyerAddress !== 'undefined' && typeof transaction.SellerAddress !== 'undefined') {
           key = dataHandlerUtil._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockNumber))
+          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, transaction.BlockNumber))
           key = dataHandlerUtil._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, transaction.BlockNumber))
+          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, transaction.BlockNumber))
         }
       })
     })
@@ -86,9 +86,9 @@ class AccountDB {
       tokenBlock.Transactions.forEach(function (transaction) {
         if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
           key = dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Number))
+          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, tokenBlock.Number))
           key = dataHandlerUtil._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDB(self.accountDB, key, tokenBlock.Number))
+          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, tokenBlock.Number))
         }
       })
     })
@@ -117,20 +117,20 @@ class AccountDB {
         let balanceChange = -(transaction.Value + transaction.GasPrice + transaction.TxFee)
         let data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'))
         if (data[0] !== null) {
-          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
+          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
         } else {
           data[1] = parseFloat(data[1]) + balanceChange
-          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
+          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
         }
 
         // payee account balance update
         balanceChange = transaction.Value
         data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxTo, 'balance'))
         if (data[0] !== null) {
-          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
+          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
         } else {
           data[1] = parseFloat(data[1]) + balanceChange
-          await dataHandlerUtil._putDB(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
+          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
         }
       })
     })

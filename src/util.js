@@ -91,7 +91,29 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
 }
 
 /* Put a key-value pair data to db */
-exports._putDB = function (DB, key, value) {
+exports._putDB = function (DB, key, value, callback) {
+  DB.put(key, value, function (err) {
+    if (err) {
+      callback(err)
+    } else {
+      callback()
+    }
+  })
+}
+
+/* Put a key-jsonData pair data to db */
+exports._putJsonDB = function (DB, key, value, callback) {
+  DB.put(key, value, dbOpts, function (err) {
+    if (err) {
+      callback(err)
+    } else {
+      callback()
+    }
+  })
+}
+
+/* Put a key-value pair data to db, return a promise object */
+exports._putDBPromise = function (DB, key, value) {
   return new Promise(function (resolve, reject) {
     DB.put(key, value, function (err) {
       if (err) {
@@ -103,8 +125,8 @@ exports._putDB = function (DB, key, value) {
   })
 }
 
-/* Put a key-jsonData pair data to db */
-exports._putJsonDB = function (DB, key, value) {
+/* Put a key-jsonData pair data to db, return a promise object */
+exports._putJsonDBPromise = function (DB, key, value) {
   return new Promise(function (resolve, reject) {
     DB.put(key, value, dbOpts, function (err) {
       if (err) {
@@ -171,6 +193,17 @@ exports._getJsonDBPromise = function (DB, key) {
         resolve([null, value])
       }
     })
+  })
+}
+
+/* Delete a value from the DB according to the "key" input */
+exports._delDB = function (DB, key, callback) {
+  DB.del(key, function (err) {
+    if (err) {
+      callback(err)
+    } else {
+      callback()
+    }
   })
 }
 
