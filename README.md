@@ -27,6 +27,7 @@ The databases contain following methods:
     * [.getTokenBlockFromDB(blockHashArray, callback)](#TokenBlockChainDB+getTokenBlockFromDB) ⇒ <code>None</code>
     * [.getTokenChain(minBlockNumber, maxBlockNumber, callback)](#TokenBlockChainDB+getTokenChain) ⇒ <code>None</code>
     * [.delBlocksFromHeight(blockHeight, callback)](#TokenBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
+    * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
 
 <a name="TxBlockChainDB"></a>
 
@@ -41,6 +42,7 @@ The databases contain following methods:
     * [.getTxBlockFromDB(blockHashArray, callback)](#TxBlockChainDB+getTxBlockFromDB) ⇒ <code>None</code>
     * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
     * [.delBlocksFromHeight(blockHeight, callback)](#TxBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
+    * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
 
 <a name="AccountDB"></a>
 
@@ -150,6 +152,20 @@ Delete blocks which have a higher height than the input 'blockHeight' argument
 | blockHeight | <code>Integer</code> | blocks with larger height will be deleted from database |
 | callback | <code>function</code> | callback function, callback arguments (err) |
 
+<a name="TokenBlockChainDB+addUpdateBlock"></a>
+
+### tokenBlockChainDB.addUpdateBlock(pos, blockArray, callback) ⇒ <code>None</code>
+Add new blocks from a specific position if the blocks does not exist
+Update old blocks from a specific position if the blocks already exist
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pos | <code>Integer</code> | block add/update starting position |
+| blockArray | <code>Array</code> | array of block data(json object) |
+| callback | <code>function</code> | callback function, callback arguments (err) |
+
 <br><br>
 
 ## TxBlockChainDB Methods
@@ -229,6 +245,20 @@ Delete blocks which have a higher height than the input 'blockHeight' argument
 | Param | Type | Description |
 | --- | --- | --- |
 | blockHeight | <code>Integer</code> | blocks with larger height will be deleted from database |
+| callback | <code>function</code> | callback function, callback arguments (err) |
+
+<a name="TxBlockChainDB+addUpdateBlock"></a>
+
+### txBlockChainDB.addUpdateBlock(pos, blockArray, callback) ⇒ <code>None</code>
+Add new blocks from a specific position if the blocks does not exist
+Update old blocks from a specific position if the blocks already exist
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pos | <code>Integer</code> | block add/update starting position |
+| blockArray | <code>Array</code> | array of block data(json object) |
 | callback | <code>function</code> | callback function, callback arguments (err) |
 
 <br><br>

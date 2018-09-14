@@ -150,4 +150,27 @@ describe('Transaction block chain database class test', () => {
       })
     })
   })
+
+  describe('addUpdateBlock() function test', () => {
+    it('functionality correctness test', (done) => {
+      let json = { Number: 1, Hash: '04c7123071429bbfcfb6ffd22501bdcc575f8df820041d63d8c16b94a9696ecf' }
+      let pos = 2
+      let blockArray = [json, json, json]
+      secDataTest.addUpdateBlock(pos, blockArray, (err) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          secDataTest.getTxBlockChainDB((err, value) => {
+            if (err) {
+              expect.fail()
+            } else {
+              expect(Object.keys(value).length).to.equal(6)
+            }
+            done()
+          })
+        }
+      })
+    })
+  })
 })

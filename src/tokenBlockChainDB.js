@@ -204,6 +204,35 @@ class TokenBlockChainDB {
       }
     })
   }
+
+  /**
+   * Add new blocks from a specific position if the blocks does not exist
+   * Update old blocks from a specific position if the blocks already exist
+   * @param {Integer} pos - block add/update starting position
+   * @param {Array} blockArray - array of block data(json object)
+   * @param  {Function} callback - callback function, callback arguments (err)
+   * @return {None}
+   */
+  addUpdateBlock (pos, blockArray, callback) {
+    if (pos < 0 || !Array.isArray(blockArray)) {
+      throw new Error('invalid input data')
+    }
+    let len = blockArray.length
+    let promiseList = []
+    for (let i = 0; i < len; i++) {
+      promiseList.push(dataHandlerUtil._putJsonDB(this.tokenBlockChainDB, pos + i, blockArray[i]))
+      if (!('Hash' in blockArray[i])) {
+        return callback(new Error('Invalid block data, block hash missing'))
+      }
+      promiseList.push(dataHandlerUtil._putJsonDB(this.tokenBlockChainDB, blockArray[i].Hash, pos + i))
+    }
+
+    Promise.all(promiseList).then(() => {
+      callback()
+    }).catch((err) => {
+      callback(err)
+    })
+  }
 }
 
 module.exports = TokenBlockChainDB
