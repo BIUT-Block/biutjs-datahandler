@@ -155,7 +155,7 @@ Delete blocks which have a higher height than the input 'blockHeight' argument
 <a name="TokenBlockChainDB+addUpdateBlock"></a>
 
 ### tokenBlockChainDB.addUpdateBlock(pos, blockArray, callback) ⇒ <code>None</code>
-Add new blocks from a specific position if the blocks does not exist
+Add new blocks from a specific position if the blocks does not exist<br>
 Update old blocks from a specific position if the blocks already exist
 
 **Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
@@ -250,7 +250,7 @@ Delete blocks which have a higher height than the input 'blockHeight' argument
 <a name="TxBlockChainDB+addUpdateBlock"></a>
 
 ### txBlockChainDB.addUpdateBlock(pos, blockArray, callback) ⇒ <code>None</code>
-Add new blocks from a specific position if the blocks does not exist
+Add new blocks from a specific position if the blocks does not exist<br>
 Update old blocks from a specific position if the blocks already exist
 
 **Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
