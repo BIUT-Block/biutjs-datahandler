@@ -162,6 +162,48 @@ class TxBlockChainDB {
     }
     return buffer
   }
+
+  /**
+   * Delete blocks which have a higher height than the input 'blockHeight' argument
+   * @param {Integer} blockHeight - blocks with larger height will be deleted from database
+   * @param  {Function} callback - callback function, callback arguments (err)
+   * @return {None}
+   */
+  delBlocksFromHeight (blockHeight, callback) {
+    let self = this
+    dataHandlerUtil._getAllBlockHeightsInDB(this.txBlockChainDB, (err, data) => {
+      if (err) {
+        callback(err)
+      } else {
+        let pos = 0
+        let promiseList = []
+        let bufferHeight = data[0]
+        let bufferHash = data[1]
+        if (blockHeight in bufferHeight) {
+          pos = bufferHeight.indexOf(blockHeight)
+          bufferHeight = bufferHeight.slice(pos)
+        } else {
+          bufferHeight.push(blockHeight)
+          bufferHeight = bufferHeight.sort((a, b) => a - b)
+          pos = bufferHeight.indexOf(blockHeight)
+          bufferHeight = bufferHeight.slice(pos + 1)
+        }
+
+        bufferHeight.forEach((height) => {
+          promiseList.push(dataHandlerUtil._delDBPromise(self.txBlockChainDB, height))
+        })
+        bufferHash.forEach((hash) => {
+          promiseList.push(dataHandlerUtil._delDBPromise(self.txBlockChainDB, hash))
+        })
+
+        Promise.all(promiseList).then(() => {
+          callback()
+        }).catch((err) => {
+          callback(err)
+        })
+      }
+    })
+  }
 }
 
 module.exports = TxBlockChainDB

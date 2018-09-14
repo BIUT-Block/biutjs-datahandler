@@ -133,15 +133,20 @@ describe('Token block chain database class test', () => {
           console.log(err)
           expect.fail()
         } else {
-          secDataTest.delBlocksFromHeight(6, (err, value) => {
+          secDataTest.delBlocksFromHeight(6, (err) => {
             if (err) {
               console.log(err)
               expect.fail()
             } else {
-              console.log(value)
-              expect(value.length).to.equal(6)
+              secDataTest.getTokenBlockChainDB((err, value) => {
+                if (err) {
+                  expect.fail()
+                } else {
+                  expect(Object.keys(value).length).to.equal(6)
+                }
+                done()
+              })
             }
-            done()
           })
         }
       })

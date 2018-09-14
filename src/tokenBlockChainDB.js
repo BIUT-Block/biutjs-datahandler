@@ -163,28 +163,44 @@ class TokenBlockChainDB {
     return buffer
   }
 
-  delBlocksFromHeight(blockHeight, callback) {
-    if (blockHeight < 1) {
-      throw new Error("invalid input block height")
-    }
-
+  /**
+   * Delete blocks which have a higher height than the input 'blockHeight' argument
+   * @param {Integer} blockHeight - blocks with larger height will be deleted from database
+   * @param  {Function} callback - callback function, callback arguments (err)
+   * @return {None}
+   */
+  delBlocksFromHeight (blockHeight, callback) {
     let self = this
-    let promiseList = []
     dataHandlerUtil._getAllBlockHeightsInDB(this.tokenBlockChainDB, (err, data) => {
       if (err) {
         callback(err)
       } else {
-        if (blockHeight in data) {
-          pos = data.indexOf(blockHeight)
-          data = data.slice(pos)
-          data.forEach((height) => {
-            promiseList.push(dataHandlerUtil._delDBPromise(self.tokenBlockChainDB, height))
-          })
+        let pos = 0
+        let promiseList = []
+        let bufferHeight = data[0]
+        let bufferHash = data[1]
+        if (blockHeight in bufferHeight) {
+          pos = bufferHeight.indexOf(blockHeight)
+          bufferHeight = bufferHeight.slice(pos)
+        } else {
+          bufferHeight.push(blockHeight)
+          bufferHeight = bufferHeight.sort((a, b) => a - b)
+          pos = bufferHeight.indexOf(blockHeight)
+          bufferHeight = bufferHeight.slice(pos + 1)
         }
-        data.push(blockHeight)
-        
-        data.indexOf(blockHeight)
-        callback()
+
+        bufferHeight.forEach((height) => {
+          promiseList.push(dataHandlerUtil._delDBPromise(self.tokenBlockChainDB, height))
+        })
+        bufferHash.forEach((hash) => {
+          promiseList.push(dataHandlerUtil._delDBPromise(self.tokenBlockChainDB, hash))
+        })
+
+        Promise.all(promiseList).then(() => {
+          callback()
+        }).catch((err) => {
+          callback(err)
+        })
       }
     })
   }

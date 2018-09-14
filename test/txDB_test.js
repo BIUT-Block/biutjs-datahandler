@@ -69,7 +69,7 @@ describe('Transaction block chain database class test', () => {
             if (err) {
               expect.fail()
             } else {
-              expect(Object.keys(value).length).to.equal(2)
+              expect(Object.keys(value).length).to.equal(13)
             }
             done()
           })
@@ -117,6 +117,34 @@ describe('Transaction block chain database class test', () => {
               expect(value.length).to.equal(1)
             }
             done()
+          })
+        }
+      })
+    })
+  })
+
+  describe('delBlocksFromHeight() function test', () => {
+    it('functionality correctness test', (done) => {
+      let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
+      secDataTest.writeTxBlockToDB(data, function (err) {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          secDataTest.delBlocksFromHeight(6, (err) => {
+            if (err) {
+              console.log(err)
+              expect.fail()
+            } else {
+              secDataTest.getTxBlockChainDB((err, value) => {
+                if (err) {
+                  expect.fail()
+                } else {
+                  expect(Object.keys(value).length).to.equal(6)
+                }
+                done()
+              })
+            }
           })
         }
       })

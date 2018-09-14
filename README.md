@@ -26,6 +26,7 @@ The databases contain following methods:
     * [.getTokenBlockChainDB(callback)](#TokenBlockChainDB+getTokenBlockChainDB) ⇒ <code>None</code>
     * [.getTokenBlockFromDB(blockHashArray, callback)](#TokenBlockChainDB+getTokenBlockFromDB) ⇒ <code>None</code>
     * [.getTokenChain(minBlockNumber, maxBlockNumber, callback)](#TokenBlockChainDB+getTokenChain) ⇒ <code>None</code>
+    * [.delBlocksFromHeight(blockHeight, callback)](#TokenBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
 
 <a name="TxBlockChainDB"></a>
 
@@ -39,6 +40,7 @@ The databases contain following methods:
     * [.getTxBlockChainDB(callback)](#TxBlockChainDB+getTxBlockChainDB) ⇒ <code>None</code>
     * [.getTxBlockFromDB(blockHashArray, callback)](#TxBlockChainDB+getTxBlockFromDB) ⇒ <code>None</code>
     * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
+    * [.delBlocksFromHeight(blockHeight, callback)](#TxBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
 
 <a name="AccountDB"></a>
 
@@ -136,6 +138,18 @@ Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumb
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
+<a name="TokenBlockChainDB+delBlocksFromHeight"></a>
+
+### tokenBlockChainDB.delBlocksFromHeight(blockHeight, callback) ⇒ <code>None</code>
+Delete blocks which have a higher height than the input 'blockHeight' argument
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHeight | <code>Integer</code> | blocks with larger height will be deleted from database |
+| callback | <code>function</code> | callback function, callback arguments (err) |
+
 <br><br>
 
 ## TxBlockChainDB Methods
@@ -206,6 +220,16 @@ Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlo
 | minBlockNumber | <code>Integer</code> | minimum block number |
 | maxBlockNumber | <code>Integer</code> | maximum block number |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+### txBlockChainDB.delBlocksFromHeight(blockHeight, callback) ⇒ <code>None</code>
+Delete blocks which have a higher height than the input 'blockHeight' argument
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHeight | <code>Integer</code> | blocks with larger height will be deleted from database |
+| callback | <code>function</code> | callback function, callback arguments (err) |
 
 <br><br>
 

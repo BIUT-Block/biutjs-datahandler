@@ -47,14 +47,14 @@ exports._getAllDataInDB = function (db, callback) {
 exports._getAllBlocksInDB = function (db, callback) {
   let buffer = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length != 64) {
+    if (data.key.length !== 64) {
       data.value = JSON.parse(data.value)
       if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
-        let tx_buffer = []
+        let txBuffer = []
         data.value['Transactions'].forEach((transaction) => {
-          tx_buffer.push(JSON.parse(transaction))
+          txBuffer.push(JSON.parse(transaction))
         })
-        data.value['Transactions'] = tx_buffer
+        data.value['Transactions'] = txBuffer
       }
       buffer.push(data.value)
     }
@@ -71,10 +71,12 @@ exports._getAllBlocksInDB = function (db, callback) {
 
 /* Read all the block heights in a database */
 exports._getAllBlockHeightsInDB = function (db, callback) {
-  let buffer = []
+  let bufferHeight = []
+  let bufferHash = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length != 64) {
-      buffer.push(parseInt(data.key, 10))
+    if (data.key.length !== 64) {
+      bufferHeight.push(parseInt(data.key, 10))
+      bufferHash.push(JSON.parse(data.value).Hash)
     }
   }).on('error', function (err) {
     // console.log('Stream occurs an error when trying to read all data!')
@@ -83,8 +85,8 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
     // console.log('Stream closed')
   }).on('end', function () {
     // console.log('Stream ended')
-    buffer = buffer.sort((a, b) => a - b)
-    callback(null, buffer)
+    bufferHeight = bufferHeight.sort((a, b) => a - b)
+    callback(null, [bufferHeight, bufferHash])
   })
 }
 
@@ -160,11 +162,11 @@ exports._getJsonDBPromise = function (DB, key) {
         resolve([err, null])
       } else {
         if (('Transactions' in value) && (value['Transactions'].length !== 0)) {
-          let tx_buffer = []
+          let txBuffer = []
           value['Transactions'].forEach((transaction) => {
-            tx_buffer.push(JSON.parse(transaction))
+            txBuffer.push(JSON.parse(transaction))
           })
-          value['Transactions'] = tx_buffer
+          value['Transactions'] = txBuffer
         }
         resolve([null, value])
       }
@@ -174,10 +176,12 @@ exports._getJsonDBPromise = function (DB, key) {
 
 /* Delete a value from the DB according to the "key" input, return a promise object */
 exports._delDBPromise = function (DB, key) {
-  return new Promise(function (reject) {
+  return new Promise(function (resolve, reject) {
     DB.del(key, function (err) {
       if (err) {
         reject(err)
+      } else {
+        resolve()
       }
     })
   })
