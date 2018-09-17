@@ -7,7 +7,8 @@ const dataHandlerUtil = require('../src/util.js')
 describe('Transaction block chain database class test', () => {
   let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
   const config = {
-    'DBPath': '../data/'
+    'DBPath': '../data/',
+    'ID': '12345'
   }
   const secDataTest = new TxBlockChainDB(config)
 

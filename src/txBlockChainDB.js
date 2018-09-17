@@ -12,22 +12,24 @@ class TxBlockChainDB {
     if (typeof config.DBPath !== 'string' || config.DBPath === '') {
       throw new Error('Needs a valid config input for creating or loading transaction block chain db')
     }
+    if (typeof config.ID !== 'string' || config.ID === '') {
+      throw new Error('Needs a valid config input for creating or loading transaction block chain db')
+    }
 
     if (!fs.existsSync(config.DBPath)) {
       fs.mkdirSync(config.DBPath)
     }
 
-    this.DBPath = config.DBPath
-    this.txBlockChainDBPath = path.join(this.DBPath, './txBlockChain')
-    this._initDB()
+    let txDBPath = path.join(config.DBPath, './txBlockChain', './' + config.ID)
+    this._initDB(txDBPath)
   }
 
   /**
    * Load or create databases
    */
-  _initDB () {
+  _initDB (txDBPath) {
     try {
-      this.txBlockChainDB = level(this.txBlockChainDBPath)
+      this.txBlockChainDB = level(txDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
