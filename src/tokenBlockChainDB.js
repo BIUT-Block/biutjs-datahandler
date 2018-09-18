@@ -1,5 +1,5 @@
-const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
 const Promise = require('promise')
 const level = require('level')
 const dataHandlerUtil = require('./util.js')
@@ -13,9 +13,7 @@ class TokenBlockChainDB {
       throw new Error('Needs a valid config input for creating or loading token block chain db')
     }
 
-    if (!fs.existsSync(config.DBPath)) {
-      fs.mkdirSync(config.DBPath)
-    }
+    mkdirp.sync(config.DBPath + '/tokenBlockChain')
 
     this.DBPath = config.DBPath
     this.tokenBlockChainDBPath = path.join(this.DBPath, './tokenBlockChain')

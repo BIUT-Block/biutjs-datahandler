@@ -16,9 +16,7 @@ class TxBlockChainDB {
       throw new Error('Needs a valid config input for creating or loading transaction block chain db')
     }
 
-    if (!fs.existsSync(config.DBPath + '/txBlockChain/' + config.ID)) {
-      fs.mkdirSync(config.DBPath + '/txBlockChain/' + config.ID)
-    }
+    mkdirp.sync(config.DBPath + '/txBlockChain/' + config.ID)
 
     let txDBPath = path.join(config.DBPath, './txBlockChain', './' + config.ID)
     this._initDB(txDBPath)
