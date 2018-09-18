@@ -1,5 +1,5 @@
-const fs = require('fs')
 const path = require('path')
+const mkdirp = require('mkdirp')
 const Promise = require('promise')
 const level = require('level')
 const dataHandlerUtil = require('./util.js')
