@@ -1,4 +1,5 @@
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 const path = require('path')
 const Promise = require('promise')
 const level = require('level')
@@ -13,21 +14,18 @@ class ProductDB {
       throw new Error('Needs a valid config input for creating or loading product block chain db')
     }
 
-    if (!fs.existsSync(config.DBPath)) {
-      fs.mkdirSync(config.DBPath)
-    }
+    mkdirp.sync(config.DBPath + '/product')
 
-    this.DBPath = config.DBPath
-    this.productDBPath = path.join(this.DBPath, './product')
-    this._initDB()
+    let productDBPath = path.join(config.DBPath, './product')
+    this._initDB(productDBPath)
   }
 
   /**
    * Load or create databases
    */
-  _initDB () {
+  _initDB (productDBPath) {
     try {
-      this.productDB = level(this.productDBPath)
+      this.productDB = level(productDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)

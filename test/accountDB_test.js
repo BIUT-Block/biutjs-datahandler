@@ -5,46 +5,24 @@ const AccountDB = require('../src/accountDB')
 const dataHandlerUtil = require('../src/util.js')
 
 describe('Transaction block chain database class test', () => {
-  let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
-  let txJsonPath = path.join(__dirname, '../db-structure/txchain.json')
+  let accInfoPath = path.join(__dirname, '../db-structure/account.json')
   const config = {
     'DBPath': '../data/'
   }
   const secDataTest = new AccountDB(config)
 
-  describe('updateAccBalance() function test', (done) => {
+  describe('writeUserInfoToAccountDB() function test', () => {
     it('functionality correctness test', (done) => {
-      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
-      let promise = secDataTest.updateAccBalance(data)
-      promise.catch((err) => {
-        console.log(err)
-        expect.fail()
-      }).then(() => {
-        secDataTest.getAccBalance('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', (err, value) => {
-          if (err) {
-            expect.fail()
-          } else {
-            console.log(value)
-          }
-          done()
-        })
-      })
-    })
-  })
-
-  describe('updateAccountDBTokenChain() function test', () => {
-    it('functionality correctness test', (done) => {
-      let data = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
-      secDataTest.updateAccountDBTokenChain(data, function (err) {
+      let data = JSON.parse(fs.readFileSync(accInfoPath, 'utf8'))
+      secDataTest.writeUserInfoToAccountDB(data, (err) => {
         if (err) {
           expect.fail()
         } else {
-          let key = dataHandlerUtil._combineStrings('token', '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', 'payer', '401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d')
-          dataHandlerUtil._getDB(secDataTest.accountDB, key, function (err, value) {
+          secDataTest.getAccountDB((err, value) => {
             if (err) {
               expect.fail()
             } else {
-              expect(value).to.equal('1')
+              expect(Object.keys(value).length).to.equal(4)
             }
             done()
           })
@@ -53,20 +31,22 @@ describe('Transaction block chain database class test', () => {
     })
   })
 
-  describe('updateAccountDBTxChain() function test', () => {
+  describe('readUserInfofromAccountDB() function test', () => {
     it('functionality correctness test', (done) => {
-      let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      secDataTest.updateAccountDBTxChain(data, function (err) {
+      let data = JSON.parse(fs.readFileSync(accInfoPath, 'utf8'))
+      secDataTest.writeUserInfoToAccountDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          let key = dataHandlerUtil._combineStrings('tx', '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', 'payer', 'e973165029e704633de63a7fd615c574dbbedbd3de0a4e3f3c411f1b8898f766')
-          dataHandlerUtil._getDB(secDataTest.accountDB, key, function (err, value) {
-            if (err) {
-              expect.fail()
-            } else {
-              expect(value).to.equal('1')
-            }
+          let accAddr = 'b14ab53e38da1c172f877dbc6d65e4a1b0474c3c'
+          let promise = secDataTest.readUserInfofromAccountDB(accAddr)
+          promise.then((data) => {
+            expect(data.length).to.equal(1)
+            expect(data[0].address).to.equal('b14ab53e38da1c172f877dbc6d65e4a1b0474c3c')
+            done()
+          }).catch((err) => {
+            console.log(err)
+            expect.fail()
             done()
           })
         }
@@ -76,8 +56,8 @@ describe('Transaction block chain database class test', () => {
 
   describe('isAccountDBEmpty() function test', () => {
     it('functionality correctness test', (done) => {
-      let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      secDataTest.updateAccountDBTxChain(data, function (err) {
+      let data = JSON.parse(fs.readFileSync(accInfoPath, 'utf8'))
+      secDataTest.writeUserInfoToAccountDB(data, (err) => {
         if (err) {
           expect.fail()
         } else {
@@ -96,8 +76,8 @@ describe('Transaction block chain database class test', () => {
 
   describe('getAccountDB() function test', () => {
     it('functionality correctness test', (done) => {
-      let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      secDataTest.updateAccountDBTxChain(data, function (err) {
+      let data = JSON.parse(fs.readFileSync(accInfoPath, 'utf8'))
+      secDataTest.writeUserInfoToAccountDB(data, (err) => {
         if (err) {
           expect.fail()
         } else {
@@ -105,7 +85,7 @@ describe('Transaction block chain database class test', () => {
             if (err) {
               expect.fail()
             } else {
-              expect(Object.keys(value).length).to.equal(13)
+              expect(Object.keys(value).length).to.equal(4)
             }
             done()
           })

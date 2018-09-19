@@ -1,4 +1,5 @@
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 const path = require('path')
 const Promise = require('promise')
 const level = require('level')
@@ -13,21 +14,18 @@ class AccountDB {
       throw new Error('Needs a valid config input for creating or loading account block chain db')
     }
 
-    if (!fs.existsSync(config.DBPath)) {
-      fs.mkdirSync(config.DBPath)
-    }
+    mkdirp.sync(config.DBPath + '/account')
 
-    this.DBPath = config.DBPath
-    this.accountDBPath = path.join(this.DBPath, './account')
-    this._initDB()
+    let accDBPath = path.join(config.DBPath, './account')
+    this._initDB(accDBPath)
   }
 
   /**
    * Load or create databases
    */
-  _initDB () {
+  _initDB (accDBPath) {
     try {
-      this.accountDB = level(this.accountDBPath)
+      this.accountDB = level(accDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -35,29 +33,27 @@ class AccountDB {
   }
 
   /**
-   * Write tx block chain transactions to account database
-   * @param  {Array | Object} txData - single tx block data or full transaction block chain data
+   * Write user account information to account database
+   * @param  {Array | Object} accData - single user account info(json object) or a list of user account info
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
-  updateAccountDBTxChain (txData, callback) {
+  writeUserInfoToAccountDB (accData, callback) {
     let self = this
     let accPromiseList = []
 
-    if (!Array.isArray(txData)) {
-      txData = [txData]
+    if (!Array.isArray(accData)) {
+      accData = [accData]
     }
 
     let key = ''
-    txData.forEach(function (txBlock) {
-      txBlock.Transactions.forEach(function (transaction) {
-        if (typeof transaction.BuyerAddress !== 'undefined' && typeof transaction.SellerAddress !== 'undefined') {
-          key = dataHandlerUtil._combineStrings('tx', transaction.BuyerAddress, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, transaction.BlockNumber))
-          key = dataHandlerUtil._combineStrings('tx', transaction.SellerAddress, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, transaction.BlockNumber))
-        }
-      })
+    accData.forEach(function (accInfo) {
+      if (typeof accInfo.address !== 'undefined') {
+        key = dataHandlerUtil._combineStrings('accAddr', accInfo.address)
+        accPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.accountDB, key, accInfo))
+      } else {
+        callback(new Error('invalid input, user account address cannot be found'))
+      }
     })
 
     Promise.all(accPromiseList).then(function () {
@@ -68,85 +64,30 @@ class AccountDB {
   }
 
   /**
-   * Write token block chain transactions to account database
-   * @param  {Array | Object} tokenData - single token block data or full token block chain data
-   * @param  {Function} callback - callback function, returns error if exist
-   * @return {None}
+   * Read user account information from account database, returns a promise object
+   * @param  {Array | String} accAddrList - single user account address(string) or a list of user account addresses
+   * @return {Object} - promise object
    */
-  updateAccountDBTokenChain (tokenData, callback) {
+  async readUserInfofromAccountDB (accAddrList) {
     let self = this
-    let accPromiseList = []
 
-    if (!Array.isArray(tokenData)) {
-      tokenData = [tokenData]
+    if (!Array.isArray(accAddrList)) {
+      accAddrList = [accAddrList]
     }
 
-    let key = ''
-    tokenData.forEach(function (tokenBlock) {
-      tokenBlock.Transactions.forEach(function (transaction) {
-        if (typeof transaction.TxFrom !== 'undefined' && typeof transaction.TxTo !== 'undefined') {
-          key = dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'payer', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, tokenBlock.Number))
-          key = dataHandlerUtil._combineStrings('token', transaction.TxTo, 'payee', transaction.TxHash)
-          accPromiseList.push(dataHandlerUtil._putDBPromise(self.accountDB, key, tokenBlock.Number))
-        }
-      })
+    // let key = ''
+    let buffer = []
+    await dataHandlerUtil._asyncForEach(accAddrList, async (accAddr) => {
+      key = dataHandlerUtil._combineStrings('accAddr', accAddr)
+      let data = await dataHandlerUtil._getJsonDBPromise(self.accountDB, key)
+      if (data[0] !== null) {
+        throw data[0]
+      } else {
+        buffer.push(data[1])
+      }
     })
 
-    Promise.all(accPromiseList).then(function () {
-      callback()
-    }).catch(function (err) {
-      callback(err)
-    })
-  }
-
-  /**
-   * Update token account balance
-   * @param  {Array | Object} tokenData - single token block data or full token block chain data
-   * @return {None}
-   */
-  async updateAccBalance (tokenData) {
-    let self = this
-    if (!Array.isArray(tokenData)) {
-      tokenData = [tokenData]
-    }
-
-    await dataHandlerUtil._asyncForEach(tokenData, async (tokenBlock) => {
-      await dataHandlerUtil._asyncForEach(tokenBlock.Transactions, async (transaction) => {
-        // payer account balance update
-        let balanceChange = -(transaction.Value + transaction.GasPrice + transaction.TxFee)
-        let data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'))
-        if (data[0] !== null) {
-          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
-        } else {
-          data[1] = parseFloat(data[1]) + balanceChange
-          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
-        }
-
-        // payee account balance update
-        balanceChange = transaction.Value
-        data = await dataHandlerUtil._getDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxTo, 'balance'))
-        if (data[0] !== null) {
-          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), balanceChange)
-        } else {
-          data[1] = parseFloat(data[1]) + balanceChange
-          await dataHandlerUtil._putDBPromise(self.accountDB, dataHandlerUtil._combineStrings('token', transaction.TxFrom, 'balance'), data[1])
-        }
-      })
-    })
-  }
-
-  /**
-   * Get token chain account balance
-   * @param  {String} address - account address which is searched
-   * @param  {Function} callback - callback function, returns error info (or null if does not exist) and account balance
-   * @return {None}
-   */
-  getAccBalance (address, callback) {
-    let key = dataHandlerUtil._combineStrings('token', address, 'balance')
-    dataHandlerUtil._getDB(this.accountDB, key, (err, value) => {
-      callback(err, value)
-    })
+    return buffer
   }
 
   /**

@@ -15,17 +15,16 @@ class TokenBlockChainDB {
 
     mkdirp.sync(config.DBPath + '/tokenBlockChain')
 
-    this.DBPath = config.DBPath
-    this.tokenBlockChainDBPath = path.join(this.DBPath, './tokenBlockChain')
-    this._initDB()
+    let tokenDBPath = path.join(config.DBPath, './tokenBlockChain')
+    this._initDB(tokenDBPath)
   }
 
   /**
    * Load or create databases
    */
-  _initDB () {
+  _initDB (tokenDBPath) {
     try {
-      this.tokenBlockChainDB = level(this.tokenBlockChainDBPath)
+      this.tokenBlockChainDB = level(tokenDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)

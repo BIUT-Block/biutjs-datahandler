@@ -51,10 +51,8 @@ The databases contain following methods:
 
 * [AccountDB](#AccountDB)
     * [new AccountDB(config)](#new_AccountDB_new)
-    * [.updateAccountDBTxChain(txData, callback)](#AccountDB+updateAccountDBTxChain) ⇒ <code>None</code>
-    * [.updateAccountDBTokenChain(tokenData, callback)](#AccountDB+updateAccountDBTokenChain) ⇒ <code>None</code>
-    * [.updateAccBalance(tokenData)](#AccountDB+updateAccBalance) ⇒ <code>None</code>
-    * [.getAccBalance(address, callback)](#AccountDB+getAccBalance) ⇒ <code>None</code>
+    * [.writeUserInfoToAccountDB(accData, callback)](#AccountDB+writeUserInfoToAccountDB) ⇒ <code>None</code>
+    * [.readUserInfofromAccountDB(accAddrList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Object</code>
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
 
@@ -273,52 +271,28 @@ Update old blocks from a specific position if the blocks already exist
 | --- | --- | --- |
 | config | <code>Object</code> | contains the relative path for storing database |
 
-<a name="AccountDB+updateAccountDBTxChain"></a>
+<a name="AccountDB+writeUserInfoToAccountDB"></a>
 
-### accountDB.updateAccountDBTxChain(txData, callback) ⇒ <code>None</code>
-Write tx block chain transactions to account database
+### accountDB.writeUserInfoToAccountDB(accData, callback) ⇒ <code>None</code>
+Write user account information to account database
 
 **Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| txData | <code>Array, Object</code> | single tx block data or full transaction block chain data |
+| accData | <code>Array, Object</code> | single user account info(json object) or a list of user account info |
 | callback | <code>function</code> | callback function, returns error if exist |
 
-<a name="AccountDB+updateAccountDBTokenChain"></a>
+<a name="AccountDB+readUserInfofromAccountDB"></a>
 
-### accountDB.updateAccountDBTokenChain(tokenData, callback) ⇒ <code>None</code>
-Write token block chain transactions to account database
-
-**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
-| callback | <code>function</code> | callback function, returns error if exist |
-
-<a name="AccountDB+updateAccBalance"></a>
-
-### accountDB.updateAccBalance(tokenData) ⇒ <code>None</code>
-Update token account balance
+### accountDB.readUserInfofromAccountDB(accAddrList) ⇒ <code>Object</code>
+Read user account information from account database, returns a promise object
 
 **Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tokenData | <code>Array, Object</code> | single token block data or full token block chain data |
-
-<a name="AccountDB+getAccBalance"></a>
-
-### accountDB.getAccBalance(address, callback) ⇒ <code>None</code>
-Get token chain account balance
-
-**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| address | <code>String</code> | account address which is searched |
-| callback | <code>function</code> | callback function, returns error info (or null if does not exist) and account balance |
+| accAddrList | <code>Array, String</code> | single user account address(string) or a list of user account addresses |
 
 <a name="AccountDB+isAccountDBEmpty"></a>
 
