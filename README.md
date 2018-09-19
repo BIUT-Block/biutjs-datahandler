@@ -51,8 +51,8 @@ The databases contain following methods:
 
 * [AccountDB](#AccountDB)
     * [new AccountDB(config)](#new_AccountDB_new)
-    * [.writeUserInfoToAccountDB(accData, callback)](#AccountDB+writeUserInfoToAccountDB) ⇒ <code>None</code>
-    * [.readUserInfofromAccountDB(accAddrList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Object</code>
+    * [.writeUserInfoToAccountDB(accDataList, callback)](#AccountDB+writeUserInfoToAccountDB) ⇒ <code>None</code>
+    * [.readUserInfofromAccountDB(accAddrList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Promise Object</code>
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
 
@@ -273,19 +273,19 @@ Update old blocks from a specific position if the blocks already exist
 
 <a name="AccountDB+writeUserInfoToAccountDB"></a>
 
-### accountDB.writeUserInfoToAccountDB(accData, callback) ⇒ <code>None</code>
+### accountDB.writeUserInfoToAccountDB(accDataList, callback) ⇒ <code>None</code>
 Write user account information to account database
 
 **Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| accData | <code>Array, Object</code> | single user account info(json object) or a list of user account info |
+| accDataList | <code>Array, Object</code> | single user account info(json object) or a list of user account info |
 | callback | <code>function</code> | callback function, returns error if exist |
 
 <a name="AccountDB+readUserInfofromAccountDB"></a>
 
-### accountDB.readUserInfofromAccountDB(accAddrList) ⇒ <code>Object</code>
+### accountDB.readUserInfofromAccountDB(accAddrList) ⇒ <code>Promise Object</code>
 Read user account information from account database, returns a promise object
 
 **Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  

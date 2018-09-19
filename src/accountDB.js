@@ -34,23 +34,23 @@ class AccountDB {
 
   /**
    * Write user account information to account database
-   * @param  {Array | Object} accData - single user account info(json object) or a list of user account info
+   * @param  {Array | Object} accDataList - single user account info(json object) or a list of user account info
    * @param  {Function} callback - callback function, returns error if exist
    * @return {None}
    */
-  writeUserInfoToAccountDB (accData, callback) {
+  writeUserInfoToAccountDB (accDataList, callback) {
     let self = this
     let accPromiseList = []
 
-    if (!Array.isArray(accData)) {
-      accData = [accData]
+    if (!Array.isArray(accDataList)) {
+      accDataList = [accDataList]
     }
 
     let key = ''
-    accData.forEach(function (accInfo) {
-      if (typeof accInfo.address !== 'undefined') {
-        key = dataHandlerUtil._combineStrings('accAddr', accInfo.address)
-        accPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.accountDB, key, accInfo))
+    accDataList.forEach(function (accData) {
+      if (typeof accData.address !== 'undefined') {
+        key = dataHandlerUtil._combineStrings('accAddr', accData.address)
+        accPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.accountDB, key, accData))
       } else {
         callback(new Error('invalid input, user account address cannot be found'))
       }
@@ -66,7 +66,7 @@ class AccountDB {
   /**
    * Read user account information from account database, returns a promise object
    * @param  {Array | String} accAddrList - single user account address(string) or a list of user account addresses
-   * @return {Object} - promise object
+   * @return {Promise Object} - promise object
    */
   async readUserInfofromAccountDB (accAddrList) {
     let self = this
@@ -75,7 +75,7 @@ class AccountDB {
       accAddrList = [accAddrList]
     }
 
-    // let key = ''
+    let key = ''
     let buffer = []
     await dataHandlerUtil._asyncForEach(accAddrList, async (accAddr) => {
       key = dataHandlerUtil._combineStrings('accAddr', accAddr)
