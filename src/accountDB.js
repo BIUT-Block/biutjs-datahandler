@@ -48,8 +48,8 @@ class AccountDB {
 
     let key = ''
     accDataList.forEach(function (accData) {
-      if (typeof accData.address !== 'undefined') {
-        key = dataHandlerUtil._combineStrings('accAddr', accData.address)
+      if (typeof accData.account !== 'undefined') {
+        key = dataHandlerUtil._combineStrings('accName', accData.account)
         accPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.accountDB, key, accData))
       } else {
         callback(new Error('invalid input, user account address cannot be found'))
@@ -65,20 +65,20 @@ class AccountDB {
 
   /**
    * Read user account information from account database, returns a promise object
-   * @param  {Array | String} accAddrList - single user account address(string) or a list of user account addresses
+   * @param  {Array | String} accNameList - single user account address(string) or a list of user account addresses
    * @return {Promise Object} - promise object
    */
-  async readUserInfofromAccountDB (accAddrList) {
+  async readUserInfofromAccountDB (accNameList) {
     let self = this
 
-    if (!Array.isArray(accAddrList)) {
-      accAddrList = [accAddrList]
+    if (!Array.isArray(accNameList)) {
+      accNameList = [accNameList]
     }
 
     let key = ''
     let buffer = []
-    await dataHandlerUtil._asyncForEach(accAddrList, async (accAddr) => {
-      key = dataHandlerUtil._combineStrings('accAddr', accAddr)
+    await dataHandlerUtil._asyncForEach(accNameList, async (accName) => {
+      key = dataHandlerUtil._combineStrings('accName', accName)
       let data = await dataHandlerUtil._getJsonDBPromise(self.accountDB, key)
       if (data[0] !== null) {
         throw data[0]

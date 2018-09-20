@@ -38,11 +38,11 @@ describe('Transaction block chain database class test', () => {
         if (err) {
           expect.fail()
         } else {
-          let accAddr = 'b14ab53e38da1c172f877dbc6d65e4a1b0474c3c'
-          let promise = secDataTest.readUserInfofromAccountDB(accAddr)
+          let accName = 'ppg'
+          let promise = secDataTest.readUserInfofromAccountDB(accName)
           promise.then((data) => {
             expect(data.length).to.equal(1)
-            expect(data[0].address).to.equal('b14ab53e38da1c172f877dbc6d65e4a1b0474c3c')
+            expect(data[0].password).to.equal('ppgzhenshuai')
             done()
           }).catch((err) => {
             console.log(err)

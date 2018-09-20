@@ -52,7 +52,7 @@ The databases contain following methods:
 * [AccountDB](#AccountDB)
     * [new AccountDB(config)](#new_AccountDB_new)
     * [.writeUserInfoToAccountDB(accDataList, callback)](#AccountDB+writeUserInfoToAccountDB) ⇒ <code>None</code>
-    * [.readUserInfofromAccountDB(accAddrList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Promise Object</code>
+    * [.readUserInfofromAccountDB(accNameList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Promise Object</code>
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
 
@@ -285,14 +285,14 @@ Write user account information to account database
 
 <a name="AccountDB+readUserInfofromAccountDB"></a>
 
-### accountDB.readUserInfofromAccountDB(accAddrList) ⇒ <code>Promise Object</code>
+### accountDB.readUserInfofromAccountDB(accNameList) ⇒ <code>Promise Object</code>
 Read user account information from account database, returns a promise object
 
 **Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| accAddrList | <code>Array, String</code> | single user account address(string) or a list of user account addresses |
+| accNameList | <code>Array, String</code> | single user account address(string) or a list of user account addresses |
 
 <a name="AccountDB+isAccountDBEmpty"></a>
 
