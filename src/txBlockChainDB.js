@@ -76,7 +76,7 @@ class TxBlockChainDB {
    * @return {None}
    */
   getTxBlockChainDB (callback) {
-    dataHandlerUtil._getAllBlocksInDB(this.txBlockChainDB, callback)
+    dataHandlerUtil._getAllBlocksInDBSort(this.txBlockChainDB, callback)
   }
 
   /**
