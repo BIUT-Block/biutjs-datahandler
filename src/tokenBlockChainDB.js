@@ -73,7 +73,7 @@ class TokenBlockChainDB {
    * @return {None}
    */
   getTokenBlockChainDB (callback) {
-    dataHandlerUtil._getAllBlocksInDB(this.tokenBlockChainDB, callback)
+    dataHandlerUtil._getAllBlocksInDBSort(this.tokenBlockChainDB, callback)
   }
 
   /**

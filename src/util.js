@@ -43,7 +43,7 @@ exports._getAllDataInDB = function (db, callback) {
   })
 }
 
-/* Read all the blocks in a database */
+/* Read all the blocks in a database, this function is used by accountDB and productDB */
 exports._getAllBlocksInDB = function (db, callback) {
   let buffer = []
   db.createReadStream().on('data', function (data) {
@@ -65,6 +65,37 @@ exports._getAllBlocksInDB = function (db, callback) {
     // console.log('Stream closed')
   }).on('end', function () {
     // console.log('Stream ended')
+    callback(null, buffer)
+  })
+}
+
+/* Read all the blocks in a database, this function is used by txBlockChainDB and tokenBlockChainDB */
+exports._getAllBlocksInDBSort = function (db, callback) {
+  let buffer = []
+  db.createReadStream().on('data', function (data) {
+    if (data.key.length !== 64) {
+      data.value = JSON.parse(data.value)
+      if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+        let txBuffer = []
+        data.value['Transactions'].forEach((transaction) => {
+          if (typeof transaction === 'string') {
+            txBuffer.push(JSON.parse(transaction))
+          } else if (typeof transaction === 'object') {
+            txBuffer.push(transaction)
+          }
+        })
+        data.value['Transactions'] = txBuffer
+      }
+      buffer.push(data.value)
+    }
+  }).on('error', function (err) {
+    // console.log('Stream occurs an error when trying to read all data!')
+    callback(err, null)
+  }).on('close', function () {
+    // console.log('Stream closed')
+  }).on('end', function () {
+    // console.log('Stream ended')
+    buffer = buffer.sort((a, b) => parseInt(a['Number']) - parseInt(b['Number']))
     callback(null, buffer)
   })
 }
