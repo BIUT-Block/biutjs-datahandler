@@ -28,6 +28,7 @@ The databases contain following methods:
     * [.getTokenChain(minBlockNumber, maxBlockNumber, callback)](#TokenBlockChainDB+getTokenChain) ⇒ <code>None</code>
     * [.delBlocksFromHeight(blockHeight, callback)](#TokenBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
     * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
+    * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
 
 <a name="TxBlockChainDB"></a>
 
@@ -43,6 +44,7 @@ The databases contain following methods:
     * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
     * [.delBlocksFromHeight(blockHeight, callback)](#TxBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
     * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
+    * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
 
 <a name="AccountDB"></a>
 
@@ -164,6 +166,18 @@ Update old blocks from a specific position if the blocks already exist
 | blockArray | <code>Array</code> | array of block data(json object) |
 | callback | <code>function</code> | callback function, callback arguments (err) |
 
+<a name="TokenBlockChainDB+findTxForUser"></a>
+
+### tokenBlockChainDB.findTxForUser(userAddress, callback) ⇒ <code>None</code>
+Find all previous transactions for a user
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userAddress | <code>String</code> | user account address |
+| callback | <code>function</code> | callback function, callback arguments (txArray, err) |
+
 <br><br>
 
 ## TxBlockChainDB Methods
@@ -258,6 +272,18 @@ Update old blocks from a specific position if the blocks already exist
 | pos | <code>Integer</code> | block add/update starting position |
 | blockArray | <code>Array</code> | array of block data(json object) |
 | callback | <code>function</code> | callback function, callback arguments (err) |
+
+<a name="TxBlockChainDB+findTxForUser"></a>
+
+### TxBlockChainDB.findTxForUser(userAddress, callback) ⇒ <code>None</code>
+Find all previous transactions for a user
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userAddress | <code>String</code> | user account address |
+| callback | <code>function</code> | callback function, callback arguments (txArray, err) |
 
 <br><br>
 

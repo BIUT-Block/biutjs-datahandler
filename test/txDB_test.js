@@ -174,4 +174,20 @@ describe('Transaction block chain database class test', () => {
       })
     })
   })
+
+  describe('findTxForUser() function test', () => {
+    it('functionality correctness test', (done) => {
+      let userAddress = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
+      secDataTest.findTxForUser(userAddress, (err, txArray) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          console.log(txArray)
+          expect(txArray.length).to.equal(1)
+          done()
+        }
+      })
+    })
+  })
 })

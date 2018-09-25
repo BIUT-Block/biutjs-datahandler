@@ -230,6 +230,39 @@ class TokenBlockChainDB {
       callback(err)
     })
   }
+
+  /**
+   * Find all previous transactions for a user
+   * @param {String} userAddress - user account address
+   * @param  {Function} callback - callback function, callback arguments (txArray, err)
+   * @return {None}
+   */
+  findTxForUser (userAddress, callback) {
+    let txBuffer = []
+    this.tokenBlockChainDB.createReadStream().on('data', function (data) {
+      if (data.key.length !== 64) {
+        data.value = JSON.parse(data.value)
+        if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+          data.value['Transactions'].forEach((transaction) => {
+            try{
+              transaction = JSON.parse(transaction)
+              if ((transaction.TxFrom === userAddress) || (transaction.TxTo === userAddress)) {
+                txBuffer.push(transaction)
+              }
+            } catch (err) {
+              //expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
+              callback(err, null)
+            }
+          })
+        }
+      }
+    }).on('error', function (err) {
+      callback(err, null)
+    }).on('close', function () {
+    }).on('end', function () {
+      callback(null, txBuffer)
+    })
+  }
 }
 
 module.exports = TokenBlockChainDB

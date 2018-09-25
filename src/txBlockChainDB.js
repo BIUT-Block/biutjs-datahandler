@@ -233,6 +233,39 @@ class TxBlockChainDB {
       callback(err)
     })
   }
+
+  /**
+   * Find all previous transactions for a user
+   * @param {String} userAddress - user account address
+   * @param  {Function} callback - callback function, callback arguments (txArray, err)
+   * @return {None}
+   */
+  findTxForUser (userAddress, callback) {
+    let txBuffer = []
+    this.txBlockChainDB.createReadStream().on('data', function (data) {
+      if (data.key.length !== 64) {
+        data.value = JSON.parse(data.value)
+        if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+          data.value['Transactions'].forEach((transaction) => {
+            try{
+              transaction = JSON.parse(transaction)
+              if ((transaction.SellerAddress === userAddress) || (transaction.BuyerAddress === userAddress)) {
+                txBuffer.push(transaction)
+              }
+            } catch (err) {
+              //expected errors: JsonParsingError or KeyError(SellerAddress or BuyerAddress does not exist)
+              callback(err, null)
+            }
+          })
+        }
+      }
+    }).on('error', function (err) {
+      callback(err, null)
+    }).on('close', function () {
+    }).on('end', function () {
+      callback(null, txBuffer)
+    })
+  }
 }
 
 module.exports = TxBlockChainDB
