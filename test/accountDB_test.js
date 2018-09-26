@@ -2,7 +2,6 @@ const expect = require('chai').expect
 const fs = require('fs')
 const path = require('path')
 const AccountDB = require('../src/accountDB')
-const dataHandlerUtil = require('../src/util.js')
 
 describe('Transaction block chain database class test', () => {
   let accInfoPath = path.join(__dirname, '../db-structure/account.json')
