@@ -250,7 +250,7 @@ class TokenBlockChainDB {
                 txBuffer.push(transaction)
               }
             } catch (err) {
-              //expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
+              // expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
               callback(err, null)
             }
           })
@@ -263,10 +263,11 @@ class TokenBlockChainDB {
       callback(null, txBuffer)
     })
   }
+
   /**
    * Find previous transactions for a user by user transaction hash
-   * @param  {string} txHash -transaction hash
-   * @param  {function} callback -callback function, callback arguments (txArray, err)
+   * @param  {String} txHash -transaction hash
+   * @param  {Function} callback -callback function, callback arguments (txArray, err)
    * @return {None}
    */
   findTxForUserByTxHash (txHash, callback) {
@@ -282,7 +283,7 @@ class TokenBlockChainDB {
                 txBuffer.push(transaction)
               }
             } catch (err) {
-              //expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
+              // expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
               callback(err, null)
             }
           })
