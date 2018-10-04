@@ -244,9 +244,36 @@ class TokenBlockChainDB {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
           data.value['Transactions'].forEach((transaction) => {
-            try{
+            try {
               transaction = JSON.parse(transaction)
               if ((transaction.TxFrom === userAddress) || (transaction.TxTo === userAddress)) {
+                txBuffer.push(transaction)
+              }
+            } catch (err) {
+              //expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
+              callback(err, null)
+            }
+          })
+        }
+      }
+    }).on('error', function (err) {
+      callback(err, null)
+    }).on('close', function () {
+    }).on('end', function () {
+      callback(null, txBuffer)
+    })
+  }
+
+  findTxForUserByTxHash (txHash, callback) {
+    let txBuffer = []
+    this.tokenBlockChainDB.createReadStream().on('data', function (data) {
+      if (data.key.length !== 64) {
+        data.value = JSON.parse(data.value)
+        if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+          data.value['Transactions'].forEach((transaction) => {
+            try {
+              transaction = JSON.parse(transaction)
+              if (transaction.TxHash === txHash) {
                 txBuffer.push(transaction)
               }
             } catch (err) {
