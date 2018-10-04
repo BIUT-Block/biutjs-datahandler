@@ -232,7 +232,7 @@ class TokenBlockChainDB {
   }
 
   /**
-   * Find all previous transactions for a user
+   * Find all previous transactions for a user by user wallet address
    * @param {String} userAddress - user account address
    * @param  {Function} callback - callback function, callback arguments (txArray, err)
    * @return {None}
@@ -263,7 +263,12 @@ class TokenBlockChainDB {
       callback(null, txBuffer)
     })
   }
-
+  /**
+   * Find previous transactions for a user by user transaction hash
+   * @param  {string} txHash -transaction hash
+   * @param  {function} callback -callback function, callback arguments (txArray, err)
+   * @return {None}
+   */
   findTxForUserByTxHash (txHash, callback) {
     let txBuffer = []
     this.tokenBlockChainDB.createReadStream().on('data', function (data) {

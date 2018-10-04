@@ -178,6 +178,16 @@ Find all previous transactions for a user
 | userAddress | <code>String</code> | user account address |
 | callback | <code>function</code> | callback function, callback arguments (txArray, err) |
 
+### tokenBlockChainDB.findTxForUserByTxHash(txHash, callback) ⇒ <code>None</code>
+Find all previous transactions for a user
+
+**Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txHash | <code>String</code> | transaction hash |
+| callback | <code>function</code> | callback function, callback arguments (txArray, err) |
+
 <br><br>
 
 ## TxBlockChainDB Methods
