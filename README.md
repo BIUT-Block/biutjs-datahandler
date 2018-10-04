@@ -180,7 +180,7 @@ Find all previous transactions for a user
 | callback | <code>function</code> | callback function, callback arguments (txArray, err) |
 
 ### tokenBlockChainDB.findTxForUserByTxHash(txHash, callback) ⇒ <code>None</code>
-Find all previous transactions for a user
+Find a previous transactions for a user by transaction hash
 
 **Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  
 
