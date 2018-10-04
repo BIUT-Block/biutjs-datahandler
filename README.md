@@ -29,6 +29,7 @@ The databases contain following methods:
     * [.delBlocksFromHeight(blockHeight, callback)](#TokenBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
     * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
     * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
+    * [.findTxForUserByTxHash(userAddress, callback)](#TokenBlockChainDB+findTxForUserByTxHash) ⇒ <code>None</code>
 
 <a name="TxBlockChainDB"></a>
 
