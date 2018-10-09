@@ -115,7 +115,7 @@ class AccountDB {
    */
   isAccountInAccountDB (accName, callback) {
     let key = dataHandlerUtil._combineStrings('accName', accName)
-    dataHandlerUtil._getDB(this.accountDB, key, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.accountDB, key, (err, value) => {
       if (err) {
         callback(err, null)
       } else {
