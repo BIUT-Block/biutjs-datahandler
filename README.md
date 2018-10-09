@@ -58,6 +58,7 @@ The databases contain following methods:
     * [.readUserInfofromAccountDB(accNameList)](#AccountDB+readUserInfofromAccountDB) ⇒ <code>Promise Object</code>
     * [.isAccountDBEmpty(callback)](#AccountDB+isAccountDBEmpty) ⇒ <code>None</code>
     * [.getAccountDB(callback)](#AccountDB+getAccountDB) ⇒ <code>None</code>
+    * [.isAccountInAccountDB(accName, callback)](#AccountDB+isAccountInAccountDB) ⇒ <code>None</code>
 
 <a name="ProductDB"></a>
 
@@ -351,6 +352,18 @@ Get all the data in account database
 
 | Param | Type | Description |
 | --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="AccountDB+isAccountInAccountDB"></a>
+
+### accountDB.isAccountInAccountDB(accName, callback) ⇒ <code>None</code>
+Check whether an account is in AccountDB
+
+**Kind**: instance method of [<code>AccountDB</code>](#AccountDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| accName | <code>String</code> | account name |
 | callback | <code>function</code> | callback function, callback arguments (err, block object array) |
 
 <br><br>

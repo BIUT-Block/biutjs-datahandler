@@ -106,6 +106,23 @@ class AccountDB {
   getAccountDB (callback) {
     dataHandlerUtil._getAllDataInDB(this.accountDB, callback)
   }
+
+  /**
+   * Check whether an account is in AccountDB
+   * @param  {String} accName - account name
+   * @param  {Function} callback - callback function, callback arguments (err, block object array)
+   * @return {None}
+   */
+  isAccountInAccountDB (accName, callback) {
+    let key = dataHandlerUtil._combineStrings('accName', accName)
+    dataHandlerUtil._getDB(this.accountDB, key, (err, value) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        callback(null, value)
+      }
+    })
+  }
 }
 
 module.exports = AccountDB

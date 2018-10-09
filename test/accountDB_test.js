@@ -92,4 +92,28 @@ describe('Transaction block chain database class test', () => {
       })
     })
   })
+
+  describe('isAccountInAccountDB() function test', () => {
+    it('functionality correctness test', (done) => {
+      let data = JSON.parse(fs.readFileSync(accInfoPath, 'utf8'))
+      secDataTest.writeUserInfoToAccountDB(data, (err) => {
+        if (err) {
+          expect.fail()
+        } else {
+          let key = 'ppg'
+          secDataTest.isAccountInAccountDB(key, (err, value) => {
+            expect(err).to.be.null
+            expect(value).to.not.be.null
+          })
+
+          key = 'NodeDefaultAccount'
+          secDataTest.isAccountInAccountDB(key, (err, value) => {
+            expect(err).to.not.be.null
+            expect(value).to.be.null
+            done()
+          })
+        }
+      })
+    })
+  })
 })
