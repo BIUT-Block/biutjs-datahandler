@@ -47,8 +47,8 @@ class AccountDB {
 
     let key = ''
     accDataList.forEach(function (accData) {
-      if (typeof accData.account !== 'undefined') {
-        key = dataHandlerUtil._combineStrings('accName', accData.account)
+      if (typeof accData.privateKey !== 'undefined') {
+        key = dataHandlerUtil._combineStrings('privateKey', accData.privateKey)
         accPromiseList.push(dataHandlerUtil._putJsonDBPromise(self.accountDB, key, accData))
       } else {
         callback(new Error('invalid input, user account address cannot be found'))
@@ -64,20 +64,20 @@ class AccountDB {
 
   /**
    * Read user account information from account database, returns a promise object
-   * @param  {Array | String} accNameList - single user account address(string) or a list of user account addresses
+   * @param  {Array | String} privateKeyList - single user privateKey address(string)
    * @return {Promise Object} - promise object
    */
-  async readUserInfofromAccountDB (accNameList) {
+  async readUserInfofromAccountDB (privateKeyList) {
     let self = this
 
-    if (!Array.isArray(accNameList)) {
-      accNameList = [accNameList]
+    if (!Array.isArray(privateKeyList)) {
+      privateKeyList = [privateKeyList]
     }
 
     let key = ''
     let buffer = []
-    await dataHandlerUtil._asyncForEach(accNameList, async (accName) => {
-      key = dataHandlerUtil._combineStrings('accName', accName)
+    await dataHandlerUtil._asyncForEach(privateKeyList, async (privateKey) => {
+      key = dataHandlerUtil._combineStrings('privateKey', privateKey)
       let data = await dataHandlerUtil._getJsonDBPromise(self.accountDB, key)
       if (data[0] !== null) {
         throw data[0]
@@ -109,12 +109,12 @@ class AccountDB {
 
   /**
    * Check whether an account is in AccountDB
-   * @param  {String} accName - account name
+   * @param  {String} privateKey - privateKey name
    * @param  {Function} callback - callback function, callback arguments (err, block object array)
    * @return {None}
    */
-  isAccountInAccountDB (accName, callback) {
-    let key = dataHandlerUtil._combineStrings('accName', accName)
+  isAccountInAccountDB (privateKey, callback) {
+    let key = dataHandlerUtil._combineStrings('privateKey', privateKey)
     dataHandlerUtil._getJsonDB(this.accountDB, key, (err, value) => {
       if (err) {
         callback(err, null)

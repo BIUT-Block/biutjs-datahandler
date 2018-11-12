@@ -37,8 +37,8 @@ describe('Transaction block chain database class test', () => {
         if (err) {
           expect.fail()
         } else {
-          let accName = 'ppg'
-          let promise = secDataTest.readUserInfofromAccountDB(accName)
+          let privateKey = '1fca4cdd31923b50f4214af5d2ae10e7ac45a5019e9431cc195482d707485378'
+          let promise = secDataTest.readUserInfofromAccountDB(privateKey)
           promise.then((data) => {
             expect(data.length).to.equal(1)
             expect(data[0].password).to.equal('ppgzhenshuai')
@@ -100,14 +100,14 @@ describe('Transaction block chain database class test', () => {
         if (err) {
           expect.fail()
         } else {
-          let key = 'ppg'
-          secDataTest.isAccountInAccountDB(key, (err, value) => {
+          let privateKey = '1fca4cdd31923b50f4214af5d2ae10e7ac45a5019e9431cc195482d707485378'
+          secDataTest.isAccountInAccountDB(privateKey, (err, value) => {
             expect(err).to.be.null
             expect(value).to.not.be.null
           })
 
-          key = 'NodeDefaultAccount'
-          secDataTest.isAccountInAccountDB(key, (err, value) => {
+          privateKey = 'NodeDefaultAccount'
+          secDataTest.isAccountInAccountDB(privateKey, (err, value) => {
             expect(err).to.not.be.null
             expect(value).to.be.null
             done()
