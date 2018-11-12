@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/SEC-Block/secjs-datahandler#README",
   "dependencies": {
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "fs": "0.0.1-security",
     "level": "^4.0.0",
     "mkdirp": "^0.5.1",
-    "promise": "^8.0.1"
+    "promise": "^8.0.2"
   },
   "devDependencies": {}
 }
