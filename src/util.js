@@ -209,17 +209,24 @@ exports._getDBPromise = function (DB, key) {
 
 /* Get a value which is in json format from the DB according to the "key" input, return a promise object */
 exports._getJsonDBPromise = function (DB, key) {
-  return new Promise(function (resolve) {
+  return new Promise(function (resolve, reject) {
     DB.get(key, dbOpts, function (err, value) {
       if (err) {
         resolve([err, null])
       } else {
         if (('Transactions' in value) && (value['Transactions'].length !== 0)) {
-          let txBuffer = []
-          value['Transactions'].forEach((transaction) => {
-            txBuffer.push(JSON.parse(transaction))
-          })
-          value['Transactions'] = txBuffer
+          try {
+            let txBuffer = []
+            if (typeof value['Transactions'] === 'string') {
+              value['Transactions'] = JSON.parse(value['Transactions'])
+            }
+            value['Transactions'].forEach((transaction) => {
+              txBuffer.push(JSON.parse(transaction))
+            })
+            value['Transactions'] = txBuffer
+          } catch (error) {
+            reject(error)
+          }
         }
         resolve([null, value])
       }

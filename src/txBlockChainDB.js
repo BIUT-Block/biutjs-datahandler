@@ -247,13 +247,13 @@ class TxBlockChainDB {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
           data.value['Transactions'].forEach((transaction) => {
-            try{
+            try {
               transaction = JSON.parse(transaction)
               if ((transaction.SellerAddress === userAddress) || (transaction.BuyerAddress === userAddress)) {
                 txBuffer.push(transaction)
               }
             } catch (err) {
-              //expected errors: JsonParsingError or KeyError(SellerAddress or BuyerAddress does not exist)
+              // expected errors: JsonParsingError or KeyError(SellerAddress or BuyerAddress does not exist)
               callback(err, null)
             }
           })
