@@ -243,10 +243,16 @@ class TokenBlockChainDB {
       if (data.key.length !== 64) {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
-          data.value['Transactions'].forEach((transaction) => {
+          data.value['Transactions'].forEach((transaction, index) => {
             try {
               transaction = JSON.parse(transaction)
               if ((transaction.TxFrom === userAddress) || (transaction.TxTo === userAddress)) {
+                transaction.BlockNumber = data.value['Number']
+                transaction.BlockHash = data.value['Hash']
+                transaction.CumulativeGasUsed = data.value['GasUsed']
+                transaction.TransactionIndex = index
+                transaction.ContractAddress = ''
+                transaction.Confirmations = ''
                 txBuffer.push(transaction)
               }
             } catch (err) {
