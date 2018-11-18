@@ -246,18 +246,17 @@ class TokenBlockChainDB {
           data.value['Transactions'].forEach((transaction, index) => {
             try {
               transaction = JSON.parse(transaction)
-              if ((transaction.TxFrom === userAddress) || (transaction.TxTo === userAddress)) {
-                transaction.BlockNumber = data.value['Number']
-                transaction.BlockHash = data.value['Hash']
-                transaction.CumulativeGasUsed = data.value['GasUsed']
-                transaction.TransactionIndex = index
-                transaction.ContractAddress = ''
-                transaction.Confirmations = ''
-                txBuffer.push(transaction)
-              }
             } catch (err) {
-              // expected errors: JsonParsingError or KeyError(TxFrom or TxTo does not exist)
-              callback(err, null)
+              // expected errors: JsonParsingError
+            }
+            if ((transaction.TxFrom === userAddress) || (transaction.TxTo === userAddress)) {
+              transaction.BlockNumber = data.value['Number']
+              transaction.BlockHash = data.value['Hash']
+              transaction.CumulativeGasUsed = data.value['GasUsed']
+              transaction.TransactionIndex = index
+              transaction.ContractAddress = ''
+              transaction.Confirmations = ''
+              txBuffer.push(transaction)
             }
           })
         }
