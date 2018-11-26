@@ -1,6 +1,6 @@
 const Promise = require('promise')
 
-const HASH_LENGTH = 64
+exports.HASH_LENGTH = 64
 const dbOpts = {
   valueEncoding: 'json'
 }
@@ -48,7 +48,7 @@ exports._getAllDataInDB = function (db, callback) {
 exports._getAllBlocksInDB = function (db, callback) {
   let buffer = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length !== HASH_LENGTH) {
+    if (data.key.length !== exports.HASH_LENGTH) {
       data.value = JSON.parse(data.value)
       if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
         let txBuffer = []
@@ -74,7 +74,7 @@ exports._getAllBlocksInDB = function (db, callback) {
 exports._getAllBlocksInDBSort = function (db, callback) {
   let buffer = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length !== HASH_LENGTH) {
+    if (data.key.length !== exports.HASH_LENGTH) {
       data.value = JSON.parse(data.value)
       if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
         let txBuffer = []
@@ -106,7 +106,7 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
   let bufferHeight = []
   let bufferHash = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length !== HASH_LENGTH) {
+    if (data.key.length !== exports.HASH_LENGTH) {
       bufferHeight.push(parseInt(data.key, 10))
       bufferHash.push(JSON.parse(data.value).Hash)
     }
