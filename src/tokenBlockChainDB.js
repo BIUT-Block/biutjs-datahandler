@@ -240,7 +240,7 @@ class TokenBlockChainDB {
   findTxForUser (userAddress, callback) {
     let txBuffer = []
     this.tokenBlockChainDB.createReadStream().on('data', function (data) {
-      if (data.key.length !== 64) {
+      if (data.key.length !== dataHandlerUtil.ADDRESS_LENGTH) {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
           data.value['Transactions'].forEach((transaction, index) => {
@@ -278,7 +278,7 @@ class TokenBlockChainDB {
   findTxForUserByTxHash (txHash, callback) {
     let txBuffer = []
     this.tokenBlockChainDB.createReadStream().on('data', function (data) {
-      if (data.key.length !== 64) {
+      if (data.key.length !== dataHandlerUtil.ADDRESS_LENGTH) {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
           data.value['Transactions'].forEach((transaction) => {
