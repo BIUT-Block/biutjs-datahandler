@@ -243,7 +243,7 @@ class TxBlockChainDB {
   findTxForUser (userAddress, callback) {
     let txBuffer = []
     this.txBlockChainDB.createReadStream().on('data', function (data) {
-      if (data.key.length !== dataHandlerUtil.ADDRESS_LENGTH) {
+      if (data.key.length !== dataHandlerUtil.HASH_LENGTH) {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
           data.value['Transactions'].forEach((transaction) => {

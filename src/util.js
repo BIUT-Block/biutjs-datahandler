@@ -1,6 +1,5 @@
 const Promise = require('promise')
 
-const ADDRESS_LENGTH = 40
 const HASH_LENGTH = 64
 const dbOpts = {
   valueEncoding: 'json'
