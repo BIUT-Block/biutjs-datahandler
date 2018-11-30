@@ -22,6 +22,7 @@ exports._isDBEmpty = function (db, callback) {
     callback(err, null)
   }).on('close', function () {
     // console.log('Stream closed')
+    callback(null, emptyFlag)
   }).on('end', function () {
     // console.log('Stream ended')
     callback(null, emptyFlag)
@@ -38,6 +39,7 @@ exports._getAllDataInDB = function (db, callback) {
     callback(err, null)
   }).on('close', function () {
     // console.log('Stream closed')
+    callback(null, buffer)
   }).on('end', function () {
     // console.log('Stream ended')
     callback(null, buffer)
@@ -64,6 +66,7 @@ exports._getAllBlocksInDB = function (db, callback) {
     callback(err, null)
   }).on('close', function () {
     // console.log('Stream closed')
+    callback(null, buffer)
   }).on('end', function () {
     // console.log('Stream ended')
     callback(null, buffer)
@@ -94,6 +97,7 @@ exports._getAllBlocksInDBSort = function (db, callback) {
     callback(err, null)
   }).on('close', function () {
     // console.log('Stream closed')
+    callback(null, buffer)
   }).on('end', function () {
     // console.log('Stream ended')
     buffer = buffer.sort((a, b) => parseInt(a['Number']) - parseInt(b['Number']))
@@ -115,6 +119,7 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
     callback(err, null)
   }).on('close', function () {
     // console.log('Stream closed')
+    callback(null, [bufferHeight, bufferHash])
   }).on('end', function () {
     // console.log('Stream ended')
     bufferHeight = bufferHeight.sort((a, b) => a - b)
