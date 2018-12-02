@@ -190,10 +190,10 @@ describe('Token block chain database class test', () => {
       })
     })
   })
-  describe('findTxForUserByTxHash() function test', () => {
+  describe('findTx() function test', () => {
     it('functionality correctness test', (done) => {
       let TxHash = '8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374'
-      secDataTest.findTxForUserByTxHash(TxHash, (err, txArray) => {
+      secDataTest.findTx(TxHash, (err, txArray) => {
         if (err) {
           console.log(err)
           expect.fail()

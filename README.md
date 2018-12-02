@@ -29,7 +29,7 @@ The databases contain following methods:
     * [.delBlocksFromHeight(blockHeight, callback)](#TokenBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
     * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
     * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
-    * [.findTxForUserByTxHash(userAddress, callback)](#TokenBlockChainDB+findTxForUserByTxHash) ⇒ <code>None</code>
+    * [.findTx(userAddress, callback)](#TokenBlockChainDB+findTx) ⇒ <code>None</code>
 
 <a name="TxBlockChainDB"></a>
 
@@ -180,7 +180,7 @@ Find all previous transactions for a user
 | userAddress | <code>String</code> | user account address |
 | callback | <code>function</code> | callback function, callback arguments (txArray, err) |
 
-### tokenBlockChainDB.findTxForUserByTxHash(txHash, callback) ⇒ <code>None</code>
+### tokenBlockChainDB.findTx(txHash, callback) ⇒ <code>None</code>
 Find a previous transactions for a user by transaction hash
 
 **Kind**: instance method of [<code>TokenBlockChainDB</code>](#TokenBlockChainDB)  

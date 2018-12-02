@@ -275,7 +275,7 @@ class TokenBlockChainDB {
    * @param  {Function} callback -callback function, callback arguments (txArray, err)
    * @return {None}
    */
-  findTxForUserByTxHash (txHash, callback) {
+  findTx (txHash, callback) {
     let txBuffer = []
     this.tokenBlockChainDB.createReadStream().on('data', function (data) {
       if (data.key.length !== dataHandlerUtil.HASH_LENGTH) {
