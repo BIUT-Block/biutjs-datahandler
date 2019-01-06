@@ -218,21 +218,37 @@ class TokenBlockChainDB {
     if (pos < 0 || !Array.isArray(blockArray)) {
       throw new Error('invalid input data')
     }
-    let len = blockArray.length
-    let promiseList = []
-    for (let i = 0; i < len; i++) {
-      promiseList.push(dataHandlerUtil._putJsonDBPromise(this.tokenBlockChainDB, pos + i, blockArray[i]))
-      if (!('Hash' in blockArray[i])) {
-        return callback(new Error('Invalid block data, block hash missing'))
+
+    let self = this
+    const _addUpdateBlock = function (pos, blockArray, callback) {
+      let len = blockArray.length
+      let promiseList = []
+      for (let i = 0; i < len; i++) {
+        promiseList.push(dataHandlerUtil._putJsonDBPromise(self.tokenBlockChainDB, pos + i, blockArray[i]))
+        if (!('Hash' in blockArray[i])) {
+          return callback(new Error('Invalid block data, block hash missing'))
+        }
+        promiseList.push(dataHandlerUtil._putJsonDBPromise(self.tokenBlockChainDB, blockArray[i].Hash, pos + i))
       }
-      promiseList.push(dataHandlerUtil._putJsonDBPromise(this.tokenBlockChainDB, blockArray[i].Hash, pos + i))
+  
+      Promise.all(promiseList).then(() => {
+        callback()
+      }).catch((err) => {
+        callback(err)
+      })
     }
 
-    Promise.all(promiseList).then(() => {
-      callback()
-    }).catch((err) => {
-      callback(err)
-    })
+    if (pos === 0) {
+      _addUpdateBlock(pos, blockArray, callback)
+    } else {
+      dataHandlerUtil._getJsonDBPromise(this.tokenBlockChainDB, pos - 1).then((data) => {
+        if (data[0] !== null) {
+          callback(new Error('Failed to put a block into token database, reason: block number is discontinuous'))
+        } else {
+          _addUpdateBlock(pos, blockArray, callback)
+        }
+      })
+    }
   }
 
   /**

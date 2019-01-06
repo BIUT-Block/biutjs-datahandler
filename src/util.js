@@ -118,8 +118,11 @@ exports._getAllBlocksInDBSort = function (db, callback) {
         let txBuffer = []
         data.value['Transactions'].forEach((transaction) => {
           if (typeof transaction === 'string') {
-            txBuffer.push(JSON.parse(transaction))
+            transaction = JSON.parse(transaction)
+            transaction['BlockNumber'] = data.value['Number']
+            txBuffer.push(transaction)
           } else if (typeof transaction === 'object') {
+            transaction['BlockNumber'] = data.value['Number']
             txBuffer.push(transaction)
           }
         })
