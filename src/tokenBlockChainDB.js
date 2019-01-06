@@ -31,6 +31,10 @@ class TokenBlockChainDB {
     }
   }
 
+  clearDB (callback) {
+    dataHandlerUtil._clearDB(this.tokenBlockChainDB, callback)
+  }
+
   /**
    * Write single token block or full token chain data to database
    * @param  {Array | Object} tokenData - single token block data or full token block chain data

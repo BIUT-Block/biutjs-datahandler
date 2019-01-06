@@ -190,6 +190,7 @@ describe('Token block chain database class test', () => {
       })
     })
   })
+
   describe('findTx() function test', () => {
     it('functionality correctness test', (done) => {
       let TxHash = '8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374'
@@ -200,6 +201,26 @@ describe('Token block chain database class test', () => {
         } else {
           expect(txArray.length).to.equal(1)
           done()
+        }
+      })
+    })
+  })
+
+  describe('clearDB() function test', () => {
+    it('functionality correctness test', (done) => {
+      secDataTest.clearDB((err) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          secDataTest.getTokenBlockChainDB((err, value) => {
+            if (err) {
+              expect.fail()
+            } else {
+              expect(Object.keys(value).length).to.equal(0)
+            }
+            done()
+          })
         }
       })
     })

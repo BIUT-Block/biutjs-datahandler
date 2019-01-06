@@ -29,6 +29,41 @@ exports._isDBEmpty = function (db, callback) {
   })
 }
 
+exports._clearDB = function (db, callback) {
+  exports._getAllKeysInDB(db, (err, keyArray) => {
+    if (err) {
+      callback(err)
+    } else {
+      let promiseList = []
+      keyArray.forEach((key) => {
+        promiseList.push(exports._delDBPromise(db, key))
+      })
+
+      Promise.all(promiseList).then(() => {
+        callback()
+      }).catch((err) => {
+        callback(err)
+      })
+    }
+  })
+}
+
+exports._getAllKeysInDB = function (db, callback) {
+  let keyArray = []
+  db.createReadStream().on('data', function (data) {
+    keyArray.push(data.key)
+  }).on('error', function (err) {
+    // console.log('DB empty checking stream occurs an error!')
+    callback(err, null)
+  }).on('close', function () {
+    // console.log('Stream closed')
+    // callback(null, emptyFlag)
+  }).on('end', function () {
+    // console.log('Stream ended')
+    callback(null, keyArray)
+  })
+}
+
 /* Read all the data in a database */
 exports._getAllDataInDB = function (db, callback) {
   let buffer = {}
