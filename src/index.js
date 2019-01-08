@@ -1,11 +1,9 @@
-const AccountDB = require('./accountDB')
-const ProductDB = require('./productDB')
+const AccTreeDB = require('./accTreeDB')
 const TokenBlockChainDB = require('./tokenBlockChainDB')
 const TxBlockChainDB = require('./txBlockChainDB')
 
 module.exports = {
-  AccountDB: AccountDB,
-  ProductDB: ProductDB,
+  AccTreeDB: AccTreeDB,
   TokenBlockChainDB: TokenBlockChainDB,
   TxBlockChainDB: TxBlockChainDB
 }

@@ -29,6 +29,7 @@
     "chai": "^4.2.0",
     "fs": "0.0.1-security",
     "level": "^4.0.0",
+    "merkle-patricia-tree": "^3.0.0",
     "mkdirp": "^0.5.1",
     "promise": "^8.0.2"
   },
