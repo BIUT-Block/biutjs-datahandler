@@ -2,6 +2,7 @@ const mkdirp = require('mkdirp')
 const path = require('path')
 const Tree = require('merkle-patricia-tree')
 const level = require('level')
+const dataHandlerUtil = require('./util.js')
 
 class AccTreeDB {
   /**
@@ -23,40 +24,41 @@ class AccTreeDB {
    */
   _initDB (accTreeDBPath) {
     try {
-      let accTreeDB = level(accTreeDBPath)
-      this.tree = new Tree(accTreeDB)
+      this.accTreeDB = level(accTreeDBPath)
+      this.tree = new Tree(this.accTreeDB)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
     }
   }
 
+  clearDB (callback) {
+    dataHandlerUtil._clearDB(this.tree, callback)
+  }
+
   getRoot () {
-    return this.tree.root
+    return this.tree.root.toString('hex')
   }
 
   getAccInfo (accAddress, callback) {
-    this.tree.get(accAddress, callback)
-  }
-
-  getRawAccInfo (accAddress, callback) {
-    this.tree.getRaw(accAddress, callback)
+    this.tree.get(accAddress, (err, value) => {
+      callback(err, JSON.parse(value.toString()))
+    })
   }
 
   putAccInfo (accAddress, infoArray, callback) {
+    if (typeof infoArray !== 'string') {
+      infoArray = JSON.stringify(infoArray)
+    }
     this.tree.put(accAddress, infoArray, callback)
-  }
-
-  putRawAccInfo (accAddress, infoArray, callback) {
-    this.tree.putRaw(accAddress, infoArray, callback)
-  }
-
-  delRawAccInfo (accAddress, callback) {
-    this.tree.delRaw(accAddress, callback)
   }
 
   delAccInfo (accAddress, callback) {
     this.tree.del(accAddress, callback)
+  }
+
+  checkRoot (root, callback) {
+    this.tree.checkRoot(root, callback)
   }
 }
 
