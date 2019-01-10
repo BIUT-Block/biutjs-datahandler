@@ -68,17 +68,44 @@ describe('Account Tree block chain database class test', () => {
   it('updateWithTx functionality test', (done) => {
     let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
     let txs = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2].Transactions
-    txs.forEach((tx) => {
-      accTree.updateWithTx(tx).then(() => {}).catch((e) => { expect.fail() })
+    accTree.updateWithTx(txs[0]).then(() => {
+      accTree.getAllDB((err, data) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['9.216', '2'] })
+          done()
+        }
+      })
+    }).catch((err) => {
+      console.log(err)
+      expect.fail()
     })
+  })
 
-    accTree.getAllDB((err, data) => {
+  it('updateWithBlock functionality test', (done) => {
+    accTree.clearDB((err) => {
       if (err) {
         console.log(err)
         expect.fail()
       } else {
-        console.log(data)
-        done()
+        let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+        let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+        accTree.updateWithBlock(block).then(() => {
+          accTree.getAllDB((err, data) => {
+            if (err) {
+              console.log(err)
+              expect.fail()
+            } else {
+              expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['8.312', '8'] })
+              done()
+            }
+          })
+        }).catch((err) => {
+          console.log(err)
+          expect.fail()
+        })
       }
     })
   })

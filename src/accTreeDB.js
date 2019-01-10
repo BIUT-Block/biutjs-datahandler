@@ -78,9 +78,16 @@ class AccTreeDB {
     this.tree.del(accAddress, callback)
   }
 
-  async updateWithTx (tx) {
+  async updateWithBlock (block) {
+    let txs = block.Transactions
+    await dataHandlerUtil._asyncForEach(txs, async (tx) => {
+      await this.updateWithTx(tx)
+    })
+  }
+
+  updateWithTx (tx) {
     let self = this
-    await new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
         reject(new Error('Invalid input type, should be object'))
       }
