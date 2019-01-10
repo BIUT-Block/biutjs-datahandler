@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/SEC-Block/secjs-datahandler#README",
   "dependencies": {
+    "big.js": "^5.2.2",
     "chai": "^4.2.0",
     "fs": "0.0.1-security",
     "level": "^4.0.0",

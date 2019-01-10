@@ -1,8 +1,12 @@
 const mkdirp = require('mkdirp')
 const path = require('path')
+const Big = require('big.js')
 const Tree = require('merkle-patricia-tree')
 const level = require('level')
 const dataHandlerUtil = require('./util.js')
+
+const DEC_NUM = 8
+const INIT_BALANCE = '10'
 
 class AccTreeDB {
   /**
@@ -36,13 +40,30 @@ class AccTreeDB {
     dataHandlerUtil._clearDB(this.tree, callback)
   }
 
+  getAllDB (callback) {
+    dataHandlerUtil._getAllDataInDB(this.tree, (err, data) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        Object.keys(data).forEach((key) => {
+          data[key] = JSON.parse(data[key].toString())
+        })
+        callback(null, data)
+      }
+    })
+  }
+
   getRoot () {
     return this.tree.root.toString('hex')
   }
 
   getAccInfo (accAddress, callback) {
     this.tree.get(accAddress, (err, value) => {
-      callback(err, JSON.parse(value.toString()))
+      try {
+        callback(err, JSON.parse(value.toString()))
+      } catch (e) {
+        callback(e, null)
+      }
     })
   }
 
@@ -55,6 +76,55 @@ class AccTreeDB {
 
   delAccInfo (accAddress, callback) {
     this.tree.del(accAddress, callback)
+  }
+
+  async updateWithTx (tx) {
+    let self = this
+    await new Promise(function (resolve, reject) {
+      if (typeof tx !== 'object') {
+        reject(new Error('Invalid input type, should be object'))
+      }
+
+      // update account tx.TxFrom
+      self.getAccInfo(tx.TxFrom, (err, data1) => {
+        let nonce = ''
+        let balance = ''
+        if (err) {
+          nonce = '1'
+          balance = new Big(INIT_BALANCE)
+        } else {
+          nonce = (parseInt(data1[1]) + 1).toString()
+          balance = new Big(data1[0])
+        }
+        balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
+        balance = parseFloat(balance).toString()
+        self.putAccInfo(tx.TxFrom, [balance, nonce], (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            // update account tx.TxTo
+            self.getAccInfo(tx.TxTo, (err, data2) => {
+              if (err) {
+                nonce = '1'
+                balance = new Big(INIT_BALANCE)
+              } else {
+                nonce = (parseInt(data2[1]) + 1).toString()
+                balance = new Big(data2[0])
+              }
+              balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+              balance = parseFloat(balance).toString()
+              self.putAccInfo(tx.TxTo, [balance, nonce], (err) => {
+                if (err) {
+                  reject(err)
+                } else {
+                  resolve()
+                }
+              })
+            })
+          }
+        })
+      })
+    })
   }
 }
 

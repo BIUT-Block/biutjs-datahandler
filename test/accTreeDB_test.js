@@ -1,5 +1,7 @@
 const AccTreeDB = require('../src/accTreeDB.js')
 const expect = require('chai').expect
+const fs = require('fs')
+const path = require('path')
 const testData = require('../db-structure/accTree.js').testData
 
 describe('Account Tree block chain database class test', () => {
@@ -60,6 +62,24 @@ describe('Account Tree block chain database class test', () => {
           index++
         }
       })
+    })
+  })
+
+  it('updateWithTx functionality test', (done) => {
+    let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+    let txs = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2].Transactions
+    txs.forEach((tx) => {
+      accTree.updateWithTx(tx).then(() => {}).catch((e) => { expect.fail() })
+    })
+
+    accTree.getAllDB((err, data) => {
+      if (err) {
+        console.log(err)
+        expect.fail()
+      } else {
+        console.log(data)
+        done()
+      }
     })
   })
 })
