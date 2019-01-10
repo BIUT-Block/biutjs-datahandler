@@ -1,6 +1,6 @@
 const AccTreeDB = require('../src/accTreeDB.js')
 const expect = require('chai').expect
-const testData = require('../db-structure/accTree.js')
+const testData = require('../db-structure/accTree.js').testData
 
 describe('Account Tree block chain database class test', () => {
   const config = {
@@ -38,7 +38,28 @@ describe('Account Tree block chain database class test', () => {
     })
   })
 
-  it('Check if the merkle tree has the same root if data is written in different orders', () => {
-    testData
+  it('Check if the merkle tree has the same root if data is written in different orders', (done) => {
+    let index = 0
+    let length = Object.keys(testData).length
+    // Object.keys(testData).reverse().forEach((address) => {
+    Object.keys(testData).forEach((address) => {
+      accTree.putAccInfo(address, testData[address], (err) => {
+        if (err) {
+          expect.fail()
+        } else {
+          if (index + 1 === length) {
+            console.log(`root: ${accTree.getRoot()}`)
+            accTree.clearDB((err) => {
+              if (err) {
+                expect.fail()
+              } else {
+                done()
+              }
+            })
+          }
+          index++
+        }
+      })
+    })
   })
 })

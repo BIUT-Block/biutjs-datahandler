@@ -56,10 +56,6 @@ class AccTreeDB {
   delAccInfo (accAddress, callback) {
     this.tree.del(accAddress, callback)
   }
-
-  checkRoot (root, callback) {
-    this.tree.checkRoot(root, callback)
-  }
 }
 
 module.exports = AccTreeDB
