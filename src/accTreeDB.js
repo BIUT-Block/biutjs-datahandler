@@ -133,6 +133,60 @@ class AccTreeDB {
       })
     })
   }
+
+  async revertBlock (block) {
+    let txs = block.Transactions
+    await dataHandlerUtil._asyncForEach(txs, async (tx) => {
+      await this.revertTx(tx)
+    })
+  }
+
+  revertTx (tx) {
+    let self = this
+    return new Promise(function (resolve, reject) {
+      if (typeof tx !== 'object') {
+        reject(new Error('Invalid input type, should be object'))
+      }
+
+      // update account tx.TxFrom
+      self.getAccInfo(tx.TxFrom, (err, data1) => {
+        let nonce = ''
+        let balance = ''
+        if (err) {
+          reject(err)
+        } else {
+          nonce = (parseInt(data1[1]) - 1).toString()
+          balance = new Big(data1[0])
+        }
+        balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
+        balance = parseFloat(balance).toString()
+        self.putAccInfo(tx.TxFrom, [balance, nonce], (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            // update account tx.TxTo
+            self.getAccInfo(tx.TxTo, (err, data2) => {
+              if (err) {
+                reject(err)
+              } else {
+                nonce = (parseInt(data2[1]) - 1).toString()
+                balance = new Big(data2[0])
+              }
+              balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+              balance = parseFloat(balance).toString()
+              self.putAccInfo(tx.TxTo, [balance, nonce], (err) => {
+                if (err) {
+                  reject(err)
+                } else {
+                  resolve()
+                }
+              })
+            })
+          }
+        })
+      })
+    })
+  }
 }
 
 module.exports = AccTreeDB

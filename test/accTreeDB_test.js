@@ -109,4 +109,23 @@ describe('Account Tree block chain database class test', () => {
       }
     })
   })
+
+  it('reverthBlock functionality test', (done) => {
+    let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+    let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+    accTree.revertBlock(block).then(() => {
+      accTree.getAllDB((err, data) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['10', '0'] })
+          done()
+        }
+      })
+    }).catch((err) => {
+      console.log(err)
+      expect.fail()
+    })
+  })
 })
