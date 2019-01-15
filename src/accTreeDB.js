@@ -1,3 +1,5 @@
+const mkdirp = require('mkdirp')
+const path = require('path')
 const Big = require('big.js')
 const Tree = require('merkle-patricia-tree')
 const level = require('level')
@@ -15,7 +17,11 @@ class AccTreeDB {
       throw new Error('Needs a valid config input for creating or loading accTree db')
     }
 
-    this._initDB(config.DBPath)
+    mkdirp.sync(config.DBPath + '/accTree')
+
+    let accTreeDBPath = path.join(config.DBPath, './accTree')
+
+    this._initDB(accTreeDBPath)
   }
 
   /**

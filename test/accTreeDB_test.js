@@ -6,7 +6,7 @@ const testData = require('../db-structure/accTree.js').testData
 
 describe('Account Tree block chain database class test', () => {
   const config = {
-    'DBPath': '../data/accTree'
+    'DBPath': '../data/'
   }
   const accTree = new AccTreeDB(config)
 
