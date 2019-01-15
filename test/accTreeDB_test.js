@@ -50,7 +50,6 @@ describe('Account Tree block chain database class test', () => {
           expect.fail()
         } else {
           if (index + 1 === length) {
-            console.log(`root: ${accTree.getRoot()}`)
             accTree.clearDB((err) => {
               if (err) {
                 expect.fail()
@@ -84,6 +83,32 @@ describe('Account Tree block chain database class test', () => {
     })
   })
 
+  // it('updateWithBlock functionality test', (done) => {
+  //   accTree.clearDB((err) => {
+  //     if (err) {
+  //       console.log(err)
+  //       expect.fail()
+  //     } else {
+  //       let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+  //       let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+  //       accTree.updateWithBlock(block).then(() => {
+  //         accTree.getAllDB((err, data) => {
+  //           if (err) {
+  //             console.log(err)
+  //             expect.fail()
+  //           } else {
+  //             expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['8.312', '8'] })
+  //             done()
+  //           }
+  //         })
+  //       }).catch((err) => {
+  //         console.log(err)
+  //         expect.fail()
+  //       })
+  //     }
+  //   })
+  // })
+
   it('updateWithBlock functionality test', (done) => {
     accTree.clearDB((err) => {
       if (err) {
@@ -91,14 +116,14 @@ describe('Account Tree block chain database class test', () => {
         expect.fail()
       } else {
         let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
-        let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+        let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[0]
         accTree.updateWithBlock(block).then(() => {
-          accTree.getAllDB((err, data) => {
+          accTree.getRoots((err, array) => {
             if (err) {
               console.log(err)
               expect.fail()
             } else {
-              expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['8.312', '8'] })
+              console.log(array)
               done()
             }
           })
@@ -129,37 +154,35 @@ describe('Account Tree block chain database class test', () => {
     })
   })
 
-  it('updateRoots functionality test', (done) => {
-    accTree.updateRoots(0, 'test', (err) => {
-      if (err) {
-        console.log(err)
-        expect.fail()
-      } else {
-        accTree.getRoots((err, rootArray) => {
-          if (err) {
-            console.log(err)
-            expect.fail()
-          } else {
-            expect(rootArray).to.deep.equal(['test'])
-            accTree.clearRoots((err) => {
-              if (err) {
-                console.log(err)
-                expect.fail()
-              } else {
-                accTree.getRoots((err, array) => {
-                  if (err) {
-                    console.log(err)
-                    expect.fail()
-                  } else {
-                    expect(array).to.deep.equal([])
-                    done()
-                  }
-                })
-              }
-            })
-          }
-        })
-      }
+  it('_updateRoots functionality test', (done) => {
+    accTree._updateRoots(0, 'test').then(() => {
+      accTree.getRoots((err, rootArray) => {
+        if (err) {
+          console.log(err)
+          expect.fail()
+        } else {
+          expect(rootArray).to.deep.equal(['test'])
+          accTree._clearRoots((err) => {
+            if (err) {
+              console.log(err)
+              expect.fail()
+            } else {
+              accTree.getRoots((err, array) => {
+                if (err) {
+                  console.log(err)
+                  expect.fail()
+                } else {
+                  expect(array).to.deep.equal([])
+                  done()
+                }
+              })
+            }
+          })
+        }
+      })
+    }).catch((err) => {
+      console.log(err)
+      expect.fail()
     })
   })
 })
