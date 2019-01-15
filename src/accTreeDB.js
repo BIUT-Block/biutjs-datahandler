@@ -20,6 +20,7 @@ class AccTreeDB {
     mkdirp.sync(config.DBPath + '/accTree')
 
     let accTreeDBPath = path.join(config.DBPath, './accTree')
+
     this._initDB(accTreeDBPath)
   }
 
@@ -57,6 +58,37 @@ class AccTreeDB {
     return this.tree.root.toString('hex')
   }
 
+  getRoots (callback) {
+    this.accTreeDB.get('Roots', (err, value) => {
+      if (err) {
+        callback(null, [])
+      } else {
+        if (!Array.isArray(value)) {
+          value = [value]
+        }
+        callback(null, value)
+      }
+    })
+  }
+
+  updateRoots (blockNum, newRoot, callback) {
+    this.getRoots((err, roots) => {
+      if (err) {
+        callback(err, null)
+      } else {
+        if (blockNum > roots.length) {
+          return callback(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
+        }
+        roots[blockNum] = newRoot
+        this.accTreeDB.put('Roots', roots, callback)
+      }
+    })
+  }
+
+  clearRoots (callback) {
+    dataHandlerUtil._clearDB(this.accTreeDB, callback)
+  }
+
   getAccInfo (accAddress, callback) {
     this.tree.get(accAddress, (err, value) => {
       try {
@@ -81,11 +113,11 @@ class AccTreeDB {
   async updateWithBlock (block) {
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
-      await this.updateWithTx(tx)
+      await this._updateWithTx(tx)
     })
   }
 
-  updateWithTx (tx) {
+  _updateWithTx (tx) {
     let self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
@@ -137,11 +169,11 @@ class AccTreeDB {
   async revertBlock (block) {
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
-      await this.revertTx(tx)
+      await this._revertTx(tx)
     })
   }
 
-  revertTx (tx) {
+  _revertTx (tx) {
     let self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
