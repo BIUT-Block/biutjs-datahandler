@@ -69,6 +69,9 @@ class AccTreeDB {
       if (err) {
         callback(null, [])
       } else {
+        if (typeof value === 'string') {
+          value = value.split(',')
+        }
         if (!Array.isArray(value)) {
           value = [value]
         }
@@ -152,8 +155,8 @@ class AccTreeDB {
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
-      await this._updateRoots(block.Number, this.getRoot())
     })
+    await this._updateRoots(block.Number, this.getRoot())
   }
 
   _updateWithTx (tx) {
@@ -209,8 +212,8 @@ class AccTreeDB {
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
-      // await this._removeRoots(block.Number)
     })
+    await this._removeRoots(block.Number)
   }
 
   _revertTx (tx) {
@@ -225,7 +228,7 @@ class AccTreeDB {
         let nonce = ''
         let balance = ''
         if (err) {
-          reject(err)
+          resolve()
         } else {
           nonce = (parseInt(data1[1]) - 1).toString()
           balance = new Big(data1[0])
@@ -239,7 +242,7 @@ class AccTreeDB {
             // update account tx.TxTo
             self.getAccInfo(tx.TxTo, (err, data2) => {
               if (err) {
-                reject(err)
+                resolve()
               } else {
                 nonce = (parseInt(data2[1]) - 1).toString()
                 balance = new Big(data2[0])

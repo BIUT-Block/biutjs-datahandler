@@ -83,32 +83,6 @@ describe('Account Tree block chain database class test', () => {
     })
   })
 
-  // it('updateWithBlock functionality test', (done) => {
-  //   accTree.clearDB((err) => {
-  //     if (err) {
-  //       console.log(err)
-  //       expect.fail()
-  //     } else {
-  //       let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
-  //       let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
-  //       accTree.updateWithBlock(block).then(() => {
-  //         accTree.getAllDB((err, data) => {
-  //           if (err) {
-  //             console.log(err)
-  //             expect.fail()
-  //           } else {
-  //             expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['8.312', '8'] })
-  //             done()
-  //           }
-  //         })
-  //       }).catch((err) => {
-  //         console.log(err)
-  //         expect.fail()
-  //       })
-  //     }
-  //   })
-  // })
-
   it('updateWithBlock functionality test', (done) => {
     accTree.clearDB((err) => {
       if (err) {
@@ -118,14 +92,28 @@ describe('Account Tree block chain database class test', () => {
         let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
         let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[0]
         accTree.updateWithBlock(block).then(() => {
-          accTree.getRoots((err, array) => {
-            if (err) {
+          block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[1]
+          accTree.updateWithBlock(block).then(() => {
+            block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+            accTree.updateWithBlock(block).then(() => {
+              accTree.getRoots((err, array) => {
+                if (err) {
+                  console.log(err)
+                  expect.fail()
+                } else {
+                  expect(array).to.deep.equal(['56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
+                                               '2ee43c62ec80787e342c000eeb814c35d6743c6523a12aa842398ea501675470',
+                                               '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369'])
+                  done()
+                }
+              })
+            }).catch((err) => {
               console.log(err)
               expect.fail()
-            } else {
-              console.log(array)
-              done()
-            }
+            })
+          }).catch((err) => {
+            console.log(err)
+            expect.fail()
           })
         }).catch((err) => {
           console.log(err)
@@ -135,7 +123,7 @@ describe('Account Tree block chain database class test', () => {
     })
   })
 
-  it('reverthBlock functionality test', (done) => {
+  it('revertBlock functionality test', (done) => {
     let tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
     let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
     accTree.revertBlock(block).then(() => {
@@ -144,8 +132,14 @@ describe('Account Tree block chain database class test', () => {
           console.log(err)
           expect.fail()
         } else {
-          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['10', '0'] })
-          done()
+          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['9.626', '2'] })
+          accTree.clearDB((err) => {
+            if (err) {
+              expect.fail()
+            } else {
+              done()
+            }
+          })
         }
       })
     }).catch((err) => {
