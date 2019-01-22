@@ -151,7 +151,20 @@ class AccTreeDB {
     this.tree.del(accAddress, callback)
   }
 
+  async updateWithBlockChain (blockchain) {
+    await dataHandlerUtil._asyncForEach(blockchain, async (block) => {
+      await this.updateWithBlock(block)
+    })
+  }
+
   async updateWithBlock (block) {
+    // parse block.Transactions
+    block.Transactions.forEach((tx, index) => {
+      if (typeof tx === 'string') {
+        block.Transactions[index] = JSON.parse(tx)
+      }
+    })
+
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
@@ -205,6 +218,12 @@ class AccTreeDB {
           }
         })
       })
+    })
+  }
+
+  async revertWithBlockChain (blockchain) {
+    await dataHandlerUtil._asyncForEach(blockchain, async (block) => {
+      await this.revertBlock(block)
     })
   }
 
