@@ -6,7 +6,7 @@ const level = require('level')
 const dataHandlerUtil = require('./util.js')
 
 const DEC_NUM = 8
-const INIT_BALANCE = '10'
+const INIT_BALANCE = '1000'
 
 class AccTreeDB {
   /**
