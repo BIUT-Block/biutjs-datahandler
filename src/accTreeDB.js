@@ -84,6 +84,10 @@ class AccTreeDB {
     })
   }
 
+  checkRoot (root, callback) {
+    this.tree.checkRoot(root, callback)
+  }
+
   _updateRoots (blockNum, newRoot) {
     let self = this
     return new Promise(function (resolve, reject) {
