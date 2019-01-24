@@ -17,11 +17,16 @@ class AccTreeDB {
       throw new Error('Needs a valid config input for creating or loading accTree db')
     }
 
+    let root = config.StateRoot
+    if (root !== undefined && (typeof root !== 'string' || root.length !== 64)) {
+      throw new Error('Needs a valid state root input for creating or loading merkle tree')
+    }
+
     mkdirp.sync(config.DBPath + '/accTree')
 
     let accTreeDBPath = path.join(config.DBPath, './accTree')
 
-    this._initDB(accTreeDBPath, config.StateRoot)
+    this._initDB(accTreeDBPath, root)
   }
 
   /**
@@ -33,7 +38,7 @@ class AccTreeDB {
       if (stateRoot === undefined) {
         this.tree = new Tree(this.accTreeDB)
       } else {
-        this.tree = new Tree(this.accTreeDB, stateRoot)
+        this.tree = new Tree(this.accTreeDB, '0x' + stateRoot)
       }
     } catch (error) {
       // Could be invalid db path or invalid state root
@@ -85,6 +90,7 @@ class AccTreeDB {
   }
 
   checkRoot (root, callback) {
+    root = '0x' + root
     this.tree.checkRoot(root, callback)
   }
 
