@@ -21,18 +21,22 @@ class AccTreeDB {
 
     let accTreeDBPath = path.join(config.DBPath, './accTree')
 
-    this._initDB(accTreeDBPath)
+    this._initDB(accTreeDBPath, config.StateRoot)
   }
 
   /**
    * Load or create databases
    */
-  _initDB (accTreeDBPath) {
+  _initDB (accTreeDBPath, stateRoot) {
     try {
       this.accTreeDB = level(accTreeDBPath)
-      this.tree = new Tree(this.accTreeDB)
+      if (stateRoot === undefined) {
+        this.tree = new Tree(this.accTreeDB)
+      } else {
+        this.tree = new Tree(this.accTreeDB, stateRoot)
+      }
     } catch (error) {
-      // Could be invalid db path
+      // Could be invalid db path or invalid state root
       throw new Error(error)
     }
   }

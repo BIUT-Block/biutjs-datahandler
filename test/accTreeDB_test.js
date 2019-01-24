@@ -74,7 +74,7 @@ describe('Account Tree block chain database class test', () => {
           console.log(err)
           expect.fail()
         } else {
-          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['9.216', '2'] })
+          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['999.216', '2'] })
           done()
         }
       })
@@ -102,8 +102,8 @@ describe('Account Tree block chain database class test', () => {
                   expect.fail()
                 } else {
                   expect(array).to.deep.equal(['56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-                                               '2ee43c62ec80787e342c000eeb814c35d6743c6523a12aa842398ea501675470',
-                                               '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369'])
+                                               '8d73fae6d4a00f14319d7f4661f89b8d51956c26c8b91784e95fb084640d1f0a',
+                                               '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5'])
                   done()
                 }
               })
@@ -137,18 +137,18 @@ describe('Account Tree block chain database class test', () => {
               expect.fail()
             } else {
               expect(array).to.deep.equal([ '56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-                                            '2ee43c62ec80787e342c000eeb814c35d6743c6523a12aa842398ea501675470',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369',
-                                            '0ef00479d093945bb8b72036f08041642728ac14530ecd5f253e090d327dc369' ])
+                                            '8d73fae6d4a00f14319d7f4661f89b8d51956c26c8b91784e95fb084640d1f0a',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5',
+                                            '0357ab93477913855aa1133db8b92e430a1e3a5c5ab799eea9a1cea66f845bf5' ])
               done()
             }
           })
@@ -168,7 +168,7 @@ describe('Account Tree block chain database class test', () => {
           console.log(err)
           expect.fail()
         } else {
-          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['9.626', '2'] })
+          expect(data).to.deep.equal({ '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': ['999.626', '2'] })
           accTree.clearDB((err) => {
             if (err) {
               expect.fail()
