@@ -46,6 +46,18 @@ class AccTreeDB {
     }
   }
 
+  constructNewTree (root = undefined) {
+    if (root !== undefined && (typeof root !== 'string' || root.length !== 64)) {
+      throw new Error('Needs a valid state root input to construct a new merkle tree')
+    }
+
+    if (root === undefined) {
+      this.tree = new Tree(this.accTreeDB)
+    } else {
+      this.tree = new Tree(this.accTreeDB, '0x' + root)
+    }
+  }
+
   clearDB (callback) {
     dataHandlerUtil._clearDB(this.tree, (err) => {
       if (err) {
