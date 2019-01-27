@@ -132,6 +132,14 @@ class TokenBlockChainDB {
     return buffer
   }
 
+  getBlock (number, callback) {
+    dataHandlerUtil._getJsonDB(this.tokenBlockChainDB, number, callback)
+  }
+
+  getHashList (callback) {
+    dataHandlerUtil._getHashList(this.tokenBlockChainDB, callback)
+  }
+
   /**
    * Get token block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
    * @param {Integer} minBlockNumber - minimum block number
@@ -234,7 +242,7 @@ class TokenBlockChainDB {
         }
         promiseList.push(dataHandlerUtil._putJsonDBPromise(self.tokenBlockChainDB, blockArray[i].Hash, pos + i))
       }
-  
+
       Promise.all(promiseList).then(() => {
         callback()
       }).catch((err) => {

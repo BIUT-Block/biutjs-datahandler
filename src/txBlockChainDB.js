@@ -127,6 +127,14 @@ class TxBlockChainDB {
     return buffer
   }
 
+  getBlock (number, callback) {
+    dataHandlerUtil._getJsonDB(this.txBlockChainDB, number, callback)
+  }
+
+  getHashList (callback) {
+    dataHandlerUtil._getHashList(this.txBlockChainDB, callback)
+  }
+
   /**
    * Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
    * @param {Integer} minBlockNumber - minimum block number

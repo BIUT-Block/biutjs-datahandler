@@ -165,6 +165,29 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
   })
 }
 
+/* Read hash list in token or tx blockchain DB */
+exports._getHashList = function (db, callback) {
+  let hashList = []
+  db.createReadStream().on('data', function (data) {
+    if (data.key.length === exports.HASH_LENGTH) {
+      hashList.push({
+        Number: parseInt(data.value, 10),
+        Hash: data.key
+      })
+    }
+  }).on('error', function (err) {
+    // console.log('Stream occurs an error when trying to read all data!')
+    callback(err, null)
+  }).on('close', function () {
+    // console.log('Stream closed')
+    // callback(null, [bufferHeight, bufferHash])
+  }).on('end', function () {
+    // console.log('Stream ended')
+    hashList = hashList.sort((a, b) => a.Number - b.Number)
+    callback(null, hashList)
+  })
+}
+
 /* Put a key-value pair data to db */
 exports._putDB = function (DB, key, value, callback) {
   DB.put(key, value, function (err) {
