@@ -35,16 +35,8 @@ class TokenTxDB {
     dataHandlerUtil._clearDB(this.tokenTxDB, callback)
   }
 
-  isTxExist (tx, callback) {
-    try {
-      if (typeof tx === 'string') {
-        tx = JSON.parse(tx)
-      }
-    } catch (e) {
-      callback(e, null)
-    }
-
-    dataHandlerUtil._getDB(this.tokenTxDB, tx.TxHash, (err, data) => {
+  isTxExist (txHash, callback) {
+    dataHandlerUtil._getDB(this.tokenTxDB, txHash, (err, data) => {
       if (err) callback(null, false)
       else {
         callback(null, true)
@@ -52,16 +44,8 @@ class TokenTxDB {
     })
   }
 
-  getTx (tx, callback) {
-    try {
-      if (typeof tx === 'string') {
-        tx = JSON.parse(tx)
-      }
-    } catch (e) {
-      callback(e, null)
-    }
-
-    dataHandlerUtil._getDB(this.tokenTxDB, tx.TxHash, (err, data) => {
+  getTx (txHash, callback) {
+    dataHandlerUtil._getDB(this.tokenTxDB, txHash, (err, data) => {
       if (err) callback(err, null)
       else {
         callback(null, data)
@@ -85,32 +69,32 @@ class TokenTxDB {
     })
   }
 
-  writeBlock (tx, callback) {
-    this._writeBlock(tx).then(() => {
+  writeBlock (block, callback) {
+    this._writeBlock(block).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
     })
   }
 
-  delBlock (tx, callback) {
-    this._delBlock(tx).then(() => {
+  delBlock (block, callback) {
+    this._delBlock(block).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
     })
   }
 
-  writeChain (tx, callback) {
-    this._writeChain(tx).then(() => {
+  writeChain (chain, callback) {
+    this._writeChain(chain).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
     })
   }
 
-  delChain (tx, callback) {
-    this._delChain(tx).then(() => {
+  delChain (chain, callback) {
+    this._delChain(chain).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
