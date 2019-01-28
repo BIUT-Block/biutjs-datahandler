@@ -133,7 +133,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(block, async (tx) => {
-      await this.writeTx(tx)
+      await this._writeTx(tx)
     })
   }
 
@@ -147,7 +147,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(block, async (tx) => {
-      await this.delTx(tx)
+      await this._delTx(tx)
     })
   }
 
@@ -157,7 +157,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(chain, async (block) => {
-      await this.writeBlock(block)
+      await this._writeBlock(block)
     })
   }
 
@@ -167,7 +167,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(chain, async (block) => {
-      await this.delBlock(block)
+      await this._delBlock(block)
     })
   }
 }
