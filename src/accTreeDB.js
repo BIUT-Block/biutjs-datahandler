@@ -213,13 +213,22 @@ class AccTreeDB {
         if (err) {
           balance = new Big(INIT_BALANCE)
           nonce = '1'
+          txInfo = { From: [tx.TxHash], To: [] }
         } else {
           balance = new Big(data1[0])
           nonce = (parseInt(data1[1]) + 1).toString()
+
+          txInfo = data1[2]
+          if (typeof txInfo === 'string') {
+            txInfo = JSON.parse(txInfo)
+          }
+          if (txInfo.From.indexOf(tx.TxHash) < 0) {
+            txInfo.From.push(tx.TxHash)
+          }
         }
         balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
-        self.putAccInfo(tx.TxFrom, [balance, nonce], (err) => {
+        self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
           } else {
@@ -228,13 +237,21 @@ class AccTreeDB {
               if (err) {
                 balance = new Big(INIT_BALANCE)
                 nonce = '1'
+                txInfo = { From: [], To: [tx.TxHash] }
               } else {
                 balance = new Big(data2[0])
                 nonce = (parseInt(data2[1]) + 1).toString()
+                txInfo = data2[2]
+                if (typeof txInfo === 'string') {
+                  txInfo = JSON.parse(txInfo)
+                }
+                if (txInfo.To.indexOf(tx.TxHash) < 0) {
+                  txInfo.To.push(tx.TxHash)
+                }
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
-              self.putAccInfo(tx.TxTo, [balance, nonce], (err) => {
+              self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
                 } else {
@@ -273,15 +290,26 @@ class AccTreeDB {
       self.getAccInfo(tx.TxFrom, (err, data1) => {
         let nonce = ''
         let balance = ''
+        let txInfo = {}
         if (err) {
           resolve()
         } else {
-          nonce = (parseInt(data1[1]) - 1).toString()
           balance = new Big(data1[0])
+          nonce = (parseInt(data1[1]) - 1).toString()
+
+          txInfo = data1[2]
+          if (typeof txInfo === 'string') {
+            txInfo = JSON.parse(txInfo)
+          }
+          if (txInfo.From.indexOf(tx.TxHash) > -1) {
+            txInfo.From = txInfo.From.filter((hash) => {
+              return hash !== tx.TxHash
+            })
+          }
         }
         balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
-        self.putAccInfo(tx.TxFrom, [balance, nonce], (err) => {
+        self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
           } else {
@@ -290,12 +318,22 @@ class AccTreeDB {
               if (err) {
                 resolve()
               } else {
-                nonce = (parseInt(data2[1]) - 1).toString()
                 balance = new Big(data2[0])
+                nonce = (parseInt(data2[1]) - 1).toString()
+
+                txInfo = data2[2]
+                if (typeof txInfo === 'string') {
+                  txInfo = JSON.parse(txInfo)
+                }
+                if (txInfo.To.indexOf(tx.TxHash) > -1) {
+                  txInfo.To = txInfo.To.filter((hash) => {
+                    return hash !== tx.TxHash
+                  })
+                }
               }
               balance = balance.minus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
-              self.putAccInfo(tx.TxTo, [balance, nonce], (err) => {
+              self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
                 } else {
