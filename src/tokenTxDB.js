@@ -44,6 +44,10 @@ class TokenTxDB {
     })
   }
 
+  getTxHashList (callback) {
+    dataHandlerUtil._getAllDataInDB(callback)
+  }
+
   getTx (txHash, callback) {
     dataHandlerUtil._getDB(this.tokenTxDB, txHash, (err, data) => {
       if (err) callback(err, null)
