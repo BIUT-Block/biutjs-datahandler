@@ -45,7 +45,7 @@ class TokenTxDB {
   }
 
   getTxHashList (callback) {
-    dataHandlerUtil._getAllDataInDB(callback)
+    dataHandlerUtil._getAllDataInDB(this.tokenTxDB, callback)
   }
 
   getTx (txHash, callback) {
@@ -136,7 +136,7 @@ class TokenTxDB {
       throw e
     }
 
-    await dataHandlerUtil._asyncForEach(block, async (tx) => {
+    await dataHandlerUtil._asyncForEach(block.Transactions, async (tx) => {
       await this._writeTx(tx)
     })
   }
@@ -150,7 +150,7 @@ class TokenTxDB {
       throw e
     }
 
-    await dataHandlerUtil._asyncForEach(block, async (tx) => {
+    await dataHandlerUtil._asyncForEach(block.Transactions, async (tx) => {
       await this._delTx(tx)
     })
   }
