@@ -209,12 +209,13 @@ class AccTreeDB {
       self.getAccInfo(tx.TxFrom, (err, data1) => {
         let nonce = ''
         let balance = ''
+        let txInfo = {}
         if (err) {
-          nonce = '1'
           balance = new Big(INIT_BALANCE)
+          nonce = '1'
         } else {
-          nonce = (parseInt(data1[1]) + 1).toString()
           balance = new Big(data1[0])
+          nonce = (parseInt(data1[1]) + 1).toString()
         }
         balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
@@ -225,11 +226,11 @@ class AccTreeDB {
             // update account tx.TxTo
             self.getAccInfo(tx.TxTo, (err, data2) => {
               if (err) {
-                nonce = '1'
                 balance = new Big(INIT_BALANCE)
+                nonce = '1'
               } else {
-                nonce = (parseInt(data2[1]) + 1).toString()
                 balance = new Big(data2[0])
+                nonce = (parseInt(data2[1]) + 1).toString()
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
