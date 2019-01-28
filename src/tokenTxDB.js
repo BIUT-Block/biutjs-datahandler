@@ -35,8 +35,38 @@ class TokenTxDB {
     dataHandlerUtil._clearDB(this.tokenTxDB, callback)
   }
 
-  getTxHashList (callback) {
-    dataHandlerUtil._getAllKeysInDB(callback)
+  isTxExist (tx, callback) {
+    try {
+      if (typeof tx === 'string') {
+        tx = JSON.parse(tx)
+      }
+    } catch (e) {
+      callback(e, null)
+    }
+
+    dataHandlerUtil._getDB(this.tokenTxDB, tx.TxHash, (err, data) => {
+      if (err) callback(null, false)
+      else {
+        callback(null, true)
+      }
+    })
+  }
+
+  getTx (tx, callback) {
+    try {
+      if (typeof tx === 'string') {
+        tx = JSON.parse(tx)
+      }
+    } catch (e) {
+      callback(e, null)
+    }
+
+    dataHandlerUtil._getDB(this.tokenTxDB, tx.TxHash, (err, data) => {
+      if (err) callback(err, null)
+      else {
+        callback(null, data)
+      }
+    })
   }
 
   writeTx (tx, callback) {
