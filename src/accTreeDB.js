@@ -162,7 +162,7 @@ class AccTreeDB {
         if (value !== null) {
           callback(err, JSON.parse(value.toString()))
         } else {
-          callback(null, [null, '0', { 'From': [] }, { 'To': [] }])
+          callback(INIT_BALANCE, [null, '0', { 'From': [] }, { 'To': [] }])
         }
       } catch (err) {
         callback(err, null)
