@@ -206,7 +206,7 @@ class AccTreeDB {
     let self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
-        reject(new Error('Invalid input type, should be object'))
+        return reject(new Error('Invalid input type, should be object'))
       }
 
       // update account tx.TxFrom
@@ -310,15 +310,19 @@ class AccTreeDB {
               return hash !== tx.TxHash
             })
           }
+          balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
+          balance = parseFloat(balance).toString()
         }
-        balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
-        balance = parseFloat(balance).toString()
         self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
           } else {
             // update account tx.TxTo
             self.getAccInfo(tx.TxTo, (err, data2) => {
+              nonce = ''
+              balance = ''
+              txInfo = {}
+
               if (err) {
                 resolve()
               } else {
@@ -334,9 +338,9 @@ class AccTreeDB {
                     return hash !== tx.TxHash
                   })
                 }
+                balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+                balance = parseFloat(balance).toString()
               }
-              balance = balance.minus(tx.Value).toFixed(DEC_NUM)
-              balance = parseFloat(balance).toString()
               self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
