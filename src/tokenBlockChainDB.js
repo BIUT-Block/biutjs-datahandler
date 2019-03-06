@@ -218,6 +218,10 @@ class TokenBlockChainDB {
     })
   }
 
+  delBlockHash (hash, callback) {
+    dataHandlerUtil._delDB(this.tokenBlockChainDB, hash, callback)
+  }
+
   /**
    * Add new blocks from a specific position if the blocks does not exist
    * Update old blocks from a specific position if the blocks already exist
