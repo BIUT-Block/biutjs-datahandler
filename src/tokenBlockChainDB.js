@@ -218,8 +218,14 @@ class TokenBlockChainDB {
     })
   }
 
-  delBlockHash (hash, callback) {
-    dataHandlerUtil._delDB(this.tokenBlockChainDB, hash, callback)
+  delBlock (block, callback) {
+    dataHandlerUtil._delDB(this.tokenBlockChainDB, block.Hash, (err) => {
+      if (err) return callback(err)
+      dataHandlerUtil._delDB(this.tokenBlockChainDB, block.Number, (err) => {
+        if (err) return callback(err)
+        callback()
+      })
+    })
   }
 
   /**
