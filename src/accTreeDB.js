@@ -188,11 +188,23 @@ class AccTreeDB {
     })
   }
 
+  _typeCheck (variable) {
+    if (typeof variable !== 'string') return false
+    if (isNaN(parseInt(variable))) return false
+    return true
+  }
+
   async updateWithBlock (block) {
     // parse block.Transactions
     block.Transactions.forEach((tx, index) => {
       if (typeof tx === 'string') {
         block.Transactions[index] = JSON.parse(tx)
+      }
+      if (!this._typeCheck(block.Transactions[index].Value)) {
+        block.Transactions[index].Value = '0'
+      }
+      if (!this._typeCheck(block.Transactions[index].TxFee)) {
+        block.Transactions[index].TxFee = '0'
       }
     })
 
