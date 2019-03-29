@@ -206,8 +206,8 @@ class AccTreeDB {
       if (!this._typeCheck(block.Transactions[index].TxFee)) {
         block.Transactions[index].TxFee = '0'
       }
-      if (block.Transactions[index].CoinType === undefined) {
-        block.Transactions[index].CoinType = 'SEC'
+      if (block.Transactions[index].TokenName === undefined) {
+        block.Transactions[index].TokenName = 'SEC'
       }
     })
 
@@ -237,10 +237,10 @@ class AccTreeDB {
           nonce = '1'
           txInfo = { From: [tx.TxHash], To: [] }
         } else {
-          if (data1[0][tx.CoinType] === undefined) {
+          if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
           } else {
-            balance = new Big(data1[0][tx.CoinType])
+            balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) + 1).toString()
 
@@ -254,7 +254,7 @@ class AccTreeDB {
         }
         balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
-        data1[0][tx.CoinType] = balance
+        data1[0][tx.TokenName] = balance
         self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
           if (err) {
             reject(err)
@@ -268,10 +268,10 @@ class AccTreeDB {
                 nonce = '1'
                 txInfo = { From: [], To: [tx.TxHash] }
               } else {
-                if (data2[0][tx.CoinType] === undefined) {
+                if (data2[0][tx.TokenName] === undefined) {
                   balance = new Big(INIT_BALANCE)
                 } else {
-                  balance = new Big(data2[0][tx.CoinType])
+                  balance = new Big(data2[0][tx.TokenName])
                 }
                 nonce = (parseInt(data2[1]) + 1).toString()
                 txInfo = data2[2]
@@ -284,7 +284,7 @@ class AccTreeDB {
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
-              data2[0][tx.CoinType] = balance
+              data2[0][tx.TokenName] = balance
               self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
@@ -317,8 +317,8 @@ class AccTreeDB {
       if (!this._typeCheck(block.Transactions[index].TxFee)) {
         block.Transactions[index].TxFee = '0'
       }
-      if (block.Transactions[index].CoinType === undefined) {
-        block.Transactions[index].CoinType = 'SEC'
+      if (block.Transactions[index].TokenName === undefined) {
+        block.Transactions[index].TokenName = 'SEC'
       }
     })
 
@@ -343,10 +343,10 @@ class AccTreeDB {
         if (err) {
           resolve()
         } else {
-          if (data1[0][tx.CoinType] === undefined) {
+          if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
           } else {
-            balance = new Big(data1[0][tx.CoinType])
+            balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) - 1).toString()
 
@@ -361,7 +361,7 @@ class AccTreeDB {
           }
           balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
-          data1[0][tx.CoinType] = balance
+          data1[0][tx.TokenName] = balance
         }
         self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
           if (err) {
@@ -376,10 +376,10 @@ class AccTreeDB {
               if (err) {
                 resolve()
               } else {
-                if (data2[0][tx.CoinType] === undefined) {
+                if (data2[0][tx.TokenName] === undefined) {
                   balance = new Big(INIT_BALANCE)
                 } else {
-                  balance = new Big(data2[0][tx.CoinType])
+                  balance = new Big(data2[0][tx.TokenName])
                 }
                 nonce = (parseInt(data2[1]) - 1).toString()
 
@@ -394,7 +394,7 @@ class AccTreeDB {
                 }
                 balance = balance.minus(tx.Value).toFixed(DEC_NUM)
                 balance = parseFloat(balance).toString()
-                data2[0][tx.CoinType] = balance
+                data2[0][tx.TokenName] = balance
               }
               self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
                 if (err) {
