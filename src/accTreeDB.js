@@ -156,12 +156,12 @@ class AccTreeDB {
     dataHandlerUtil._clearDB(this.accTreeDB, callback)
   }
 
-  getAccInfo (accAddress, callback) {
+  getAccInfo (accAddress, tokenname, callback) {
     this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
         if (value === null) {
-          callback(null, [INIT_BALANCE, '0', { 'From': [] }, { 'To': [] }])
+          callback(null, [{tokenname: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
         } else {
           callback(null, JSON.parse(value.toString()))
         }
