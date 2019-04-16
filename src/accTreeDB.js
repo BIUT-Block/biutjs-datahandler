@@ -157,7 +157,7 @@ class AccTreeDB {
   }
 
   getAccInfo (accAddress, tokenname, callback) {
-    this.tree.get(accAddress, (err, value) => {
+    this.tree.get(accAddress, function(err, value){
       if (err) return callback(err)
       try {
         if (value === null) {
@@ -168,7 +168,7 @@ class AccTreeDB {
       } catch (e) {
         callback(e, null)
       }
-    })
+    }.bind({tokenname: tokenname}))
   }
 
   putAccInfo (accAddress, infoArray, callback) {
@@ -226,7 +226,7 @@ class AccTreeDB {
       }
 
       // update account tx.TxFrom
-      self.getAccInfo(tx.TxFrom, (err, data1) => {
+      self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = ''
         let balance = ''
         let txInfo = {}
@@ -260,7 +260,7 @@ class AccTreeDB {
             reject(err)
           } else {
             // update account tx.TxTo
-            self.getAccInfo(tx.TxTo, (err, data2) => {
+            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
               if (err) {
                 data2 = []
                 data2[0] = {}
@@ -336,7 +336,7 @@ class AccTreeDB {
       }
 
       // update account tx.TxFrom
-      self.getAccInfo(tx.TxFrom, (err, data1) => {
+      self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = ''
         let balance = ''
         let txInfo = {}
@@ -368,7 +368,7 @@ class AccTreeDB {
             reject(err)
           } else {
             // update account tx.TxTo
-            self.getAccInfo(tx.TxTo, (err, data2) => {
+            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
               nonce = ''
               balance = ''
               txInfo = {}
