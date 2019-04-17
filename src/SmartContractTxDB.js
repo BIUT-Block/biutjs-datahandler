@@ -44,7 +44,7 @@ class SmartContractTxDB {
     let readStream = this.smartContractDB.createReadStream()
     readStream.on('data', function (data) {
       if (data.value === tokenName) {
-        buffer = JSON.parse(data.key)
+        buffer = data.key
         readStream.destroy()
       }
     }).on('error', function (err) {
