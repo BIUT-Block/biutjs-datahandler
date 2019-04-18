@@ -157,18 +157,18 @@ class AccTreeDB {
   }
 
   getAccInfo (accAddress, tokenname, callback) {
-    this.tree.get(accAddress, function(err, value){
+    this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
         if (value === null) {
-          callback(null, [{tokenname: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+          callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
         } else {
           callback(null, JSON.parse(value.toString()))
         }
       } catch (e) {
         callback(e, null)
       }
-    }.bind({tokenname: tokenname}))
+    })
   }
 
   putAccInfo (accAddress, infoArray, callback) {
