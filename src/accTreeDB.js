@@ -302,6 +302,7 @@ class AccTreeDB {
                 txInfo = { From: [], To: [tx.TxHash] }
               } else {
                 balance = new Big(data2[0])
+                nonce = data2[1]
                 txInfo = data2[2]
                 if (typeof txInfo === 'string') {
                   txInfo = JSON.parse(txInfo)
