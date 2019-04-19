@@ -196,7 +196,6 @@ class AccTreeDB {
 
   async updateWithBlock (block) {
     // parse block.Transactions
-    let blockTxFee = 0
     block.Transactions.forEach((tx, index) => {
       if (typeof tx === 'string') {
         block.Transactions[index] = JSON.parse(tx)
@@ -207,57 +206,13 @@ class AccTreeDB {
       if (!this._typeCheck(block.Transactions[index].TxFee)) {
         block.Transactions[index].TxFee = '0'
       }
-
-      blockTxFee = blockTxFee + parseFloat(block.Transactions[index].TxFee)
     })
 
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
-      if (tx.TxFrom === '0000000000000000000000000000000000000000') {
-        await this._updateTxFee(tx, block.Number, blockTxFee)
-      }
     })
     await this._updateRoots(block.Number, this.getRoot())
-  }
-
-  _updateTxFee (tx, number, txFee) {
-    let self = this
-    return new Promise(function (resolve, reject) {
-      if (typeof tx !== 'object') {
-        return reject(new Error('Invalid input type, should be object'))
-      }
-
-      let nonce = ''
-      let balance = ''
-      let txInfo = {}
-      self.getAccInfo(tx.TxTo, (err, data) => {
-        if (err) {
-          balance = new Big(INIT_BALANCE)
-          nonce = '0'
-          txInfo = { From: [], To: [] }
-        } else {
-          balance = new Big(data[0])
-          nonce = data[1]
-          txInfo = data[2]
-          if (typeof txInfo === 'string') {
-            txInfo = JSON.parse(txInfo)
-          }
-          if (txInfo.To.indexOf(`TxFee from block ${number}`) < 0) {
-            txInfo.To.push(`TxFee from block ${number}`)
-          }
-        }
-        balance = balance.plus(txFee).toFixed(DEC_NUM)
-        balance = parseFloat(balance).toString()
-        self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve()
-          }
-        })
-      })
-    })
   }
 
   _updateWithTx (tx) {
@@ -334,59 +289,11 @@ class AccTreeDB {
   }
 
   async revertBlock (block) {
-    let blockTxFee = 0
-    block.Transactions.forEach((tx) => {
-      blockTxFee = blockTxFee + parseFloat(tx.TxFee)
-    })
-
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
-      if (tx.TxFrom === '0000000000000000000000000000000000000000') {
-        await this._revertTxFee(tx, block.Number, blockTxFee)
-      }
     })
     await this._removeRoots(block.Number)
-  }
-
-  _revertTxFee (tx, number, txFee) {
-    let self = this
-    return new Promise(function (resolve, reject) {
-      if (typeof tx !== 'object') {
-        reject(new Error('Invalid input type, should be object'))
-      }
-
-      self.getAccInfo(tx.TxTo, (err, data) => {
-        let nonce = ''
-        let balance = ''
-        let txInfo = {}
-
-        if (err) {
-          resolve()
-        } else {
-          balance = new Big(data[0])
-          nonce = data[1]
-          txInfo = data[2]
-          if (typeof txInfo === 'string') {
-            txInfo = JSON.parse(txInfo)
-          }
-          if (txInfo.To.indexOf(`TxFee from block ${number}`) > -1) {
-            txInfo.To = txInfo.To.filter((info) => {
-              return info !== `TxFee from block ${number}`
-            })
-          }
-          balance = balance.minus(txFee).toFixed(DEC_NUM)
-          balance = parseFloat(balance).toString()
-        }
-        self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve()
-          }
-        })
-      })
-    })
   }
 
   _revertTx (tx) {
