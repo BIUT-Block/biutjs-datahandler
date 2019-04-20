@@ -243,7 +243,7 @@ class AccTreeDB {
             txInfo.From.push(tx.TxHash)
           }
         }
-        balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
+        balance = balance.minus(tx.Value).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
         self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
@@ -323,7 +323,7 @@ class AccTreeDB {
               return hash !== tx.TxHash
             })
           }
-          balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
+          balance = balance.plus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
         }
         self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
