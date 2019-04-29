@@ -343,6 +343,25 @@ class TokenBlockChainDB {
       callback(null, txBuffer)
     })
   }
+
+  getTotalRewards (callback) {
+    let rewardAmount = 0
+    this.tokenBlockChainDB.createReadStream().on('data', function (data) {
+      if (data.key.length !== dataHandlerUtil.HASH_LENGTH) {
+        data.value = JSON.parse(data.value)
+        if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+          if (data.value['Transactions'][0].TxFrom === '0000000000000000000000000000000000000000') {
+            rewardAmount = rewardAmount + parseFloat(data.value['Transactions'][0].Value)
+          }
+        }
+      }
+    }).on('error', function (err) {
+      callback(err, null)
+    }).on('close', function () {
+    }).on('end', function () {
+      callback(null, rewardAmount)
+    })
+  }
 }
 
 module.exports = TokenBlockChainDB
