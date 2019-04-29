@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const testData = require('../db-structure/accTree.js').testData
 
-const accTreeJson = path.join(__dirname, '../db-structure/accTree.json')
+const tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
 
 describe('Account Tree block chain database class test', () => {
   const config = {
@@ -14,7 +14,7 @@ describe('Account Tree block chain database class test', () => {
 
   it('Clear DB test', (done) => {
     let address = '28f6af3bf89b7de2b5177f7747650d7321027055'
-    let data = [{ SEC: '1.2', SEN: '1.5' }, 0]
+    let data = [1.2, 0]
     let root1 = accTree.getRoot()
     accTree.putAccInfo(address, data, (err) => {
       if (err) {
@@ -67,7 +67,7 @@ describe('Account Tree block chain database class test', () => {
   })
 
   it('_updateWithTx functionality test', (done) => {
-    let txs = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2].Transactions
+    let txs = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2].Transactions
     accTree._updateWithTx(txs[0]).then(() => {
       let addr = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
       accTree.getAccInfo(addr, (err, data) => {
@@ -98,11 +98,11 @@ describe('Account Tree block chain database class test', () => {
         console.log(err)
         expect.fail()
       } else {
-        let block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[0]
+        let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[0]
         accTree.updateWithBlock(block).then(() => {
-          block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[1]
+          block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[1]
           accTree.updateWithBlock(block).then(() => {
-            block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2]
+            block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
             accTree.updateWithBlock(block).then(() => {
               accTree.getRoots((err, array) => {
                 if (err) {
@@ -137,7 +137,7 @@ describe('Account Tree block chain database class test', () => {
         console.log(err)
         expect.fail()
       } else {
-        let blockchain = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))
+        let blockchain = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
         accTree.updateWithBlockChain(blockchain).then(() => {
           accTree.getRoots((err, array) => {
             if (err) {
@@ -192,7 +192,7 @@ describe('Account Tree block chain database class test', () => {
   })
 
   it('revertBlock functionality test', (done) => {
-    let block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2]
+    let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
     accTree.revertBlock(block).then(() => {
       let addr = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
       accTree.getAccInfo(addr, (err, data) => {

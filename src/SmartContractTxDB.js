@@ -40,22 +40,20 @@ class SmartContractTxDB {
   }
 
   getContractAddress (tokenName, callback) {
-    let buffer = ''
-    let readStream = this.smartContractDB.createReadStream()
-    readStream.on('data', function (data) {
+    let bufferHash = []
+    this.smartContractDB.createReadStream().on('data', function (data) {
       if (data.value === tokenName) {
-        buffer = data.key
-        readStream.destroy()
+        bufferHash.push(JSON.parse(data.key))
       }
     }).on('error', function (err) {
       // console.log('Stream occurs an error when trying to read all data!')
       callback(err, null)
     }).on('close', function () {
       // console.log('Stream closed')
-      callback(null, buffer)
+      // callback(null, [bufferHeight, bufferHash])
     }).on('end', function () {
       // console.log('Stream ended')
-      callback(null, buffer)
+      callback(null, bufferHash)
     })
   }
 
