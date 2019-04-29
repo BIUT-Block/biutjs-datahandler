@@ -350,6 +350,10 @@ class TokenBlockChainDB {
       if (data.key.length !== dataHandlerUtil.HASH_LENGTH) {
         data.value = JSON.parse(data.value)
         if (('Transactions' in data.value) && (data.value['Transactions'].length !== 0)) {
+          if (typeof data.value['Transactions'][0] === 'string') {
+            data.value['Transactions'][0] = JSON.parse(data.value['Transactions'][0])
+          }
+
           if (data.value['Transactions'][0].TxFrom === '0000000000000000000000000000000000000000') {
             rewardAmount = rewardAmount + parseFloat(data.value['Transactions'][0].Value)
           }
