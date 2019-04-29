@@ -156,7 +156,7 @@ class AccTreeDB {
     dataHandlerUtil._clearDB(this.accTreeDB, callback)
   }
 
-  getAccInfo (accAddress, callback) {
+  getAccInfo (accAddress, tokenName, callback) {
     this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
