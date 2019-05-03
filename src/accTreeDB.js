@@ -160,7 +160,7 @@ class AccTreeDB {
     this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
-        if (value === null) {
+        if (value === null || value === undefined) {
           callback(null, [INIT_BALANCE, '0', { 'From': [], 'To': [] }])
         } else {
           callback(null, JSON.parse(value.toString()))
