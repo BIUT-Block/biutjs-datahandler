@@ -1,12 +1,14 @@
 const mkdirp = require('mkdirp')
 const path = require('path')
-const Big = require('big.js')
+const Big = require('bignumber.js')
 const Tree = require('merkle-patricia-tree')
 const level = require('level')
 const dataHandlerUtil = require('./util.js')
 
 const DEC_NUM = 8
 const INIT_BALANCE = '1000'
+Big.config({ ROUNDING_MODE: 0 })
+Big.set({ ROUNDING_MODE: Big.ROUND_DOWN })
 
 class AccTreeDB {
   /**
@@ -156,12 +158,12 @@ class AccTreeDB {
     dataHandlerUtil._clearDB(this.accTreeDB, callback)
   }
 
-  getAccInfo (accAddress, tokenName, callback) {
+  getAccInfo (accAddress, callback) {
     this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
-        if (value === null) {
-          callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+        if (value === null || value === undefined) {
+          callback(null, [INIT_BALANCE, '0', { 'From': [], 'To': [] }])
         } else {
           callback(null, JSON.parse(value.toString()))
         }
@@ -206,9 +208,6 @@ class AccTreeDB {
       if (!this._typeCheck(block.Transactions[index].TxFee)) {
         block.Transactions[index].TxFee = '0'
       }
-      if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
-      }
     })
 
     let txs = block.Transactions
@@ -226,22 +225,16 @@ class AccTreeDB {
       }
 
       // update account tx.TxFrom
-      self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
+      self.getAccInfo(tx.TxFrom, (err, data1) => {
         let nonce = ''
         let balance = ''
         let txInfo = {}
         if (err) {
-          data1 = []
-          data1[0] = {}
           balance = new Big(INIT_BALANCE)
           nonce = '1'
           txInfo = { From: [tx.TxHash], To: [] }
         } else {
-          if (data1[0][tx.TokenName] === undefined) {
-            balance = new Big(INIT_BALANCE)
-          } else {
-            balance = new Big(data1[0][tx.TokenName])
-          }
+          balance = new Big(data1[0])
           nonce = (parseInt(data1[1]) + 1).toString()
 
           txInfo = data1[2]
@@ -252,28 +245,21 @@ class AccTreeDB {
             txInfo.From.push(tx.TxHash)
           }
         }
-        balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
+        balance = balance.minus(tx.Value).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
-        data1[0][tx.TokenName] = balance
-        self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
+        self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
           } else {
             // update account tx.TxTo
-            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+            self.getAccInfo(tx.TxTo, (err, data2) => {
               if (err) {
-                data2 = []
-                data2[0] = {}
                 balance = new Big(INIT_BALANCE)
-                nonce = '1'
+                nonce = '0'
                 txInfo = { From: [], To: [tx.TxHash] }
               } else {
-                if (data2[0][tx.TokenName] === undefined) {
-                  balance = new Big(INIT_BALANCE)
-                } else {
-                  balance = new Big(data2[0][tx.TokenName])
-                }
-                nonce = (parseInt(data2[1]) + 1).toString()
+                balance = new Big(data2[0])
+                nonce = data2[1]
                 txInfo = data2[2]
                 if (typeof txInfo === 'string') {
                   txInfo = JSON.parse(txInfo)
@@ -284,8 +270,7 @@ class AccTreeDB {
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
-              data2[0][tx.TokenName] = balance
-              self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
+              self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
                 } else {
@@ -307,21 +292,6 @@ class AccTreeDB {
 
   async revertBlock (block) {
     let txs = block.Transactions
-    block.Transactions.forEach((tx, index) => {
-      if (typeof tx === 'string') {
-        block.Transactions[index] = JSON.parse(tx)
-      }
-      if (!this._typeCheck(block.Transactions[index].Value)) {
-        block.Transactions[index].Value = '0'
-      }
-      if (!this._typeCheck(block.Transactions[index].TxFee)) {
-        block.Transactions[index].TxFee = '0'
-      }
-      if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
-      }
-    })
-
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
     })
@@ -336,18 +306,14 @@ class AccTreeDB {
       }
 
       // update account tx.TxFrom
-      self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
+      self.getAccInfo(tx.TxFrom, (err, data1) => {
         let nonce = ''
         let balance = ''
         let txInfo = {}
         if (err) {
           resolve()
         } else {
-          if (data1[0][tx.TokenName] === undefined) {
-            balance = new Big(INIT_BALANCE)
-          } else {
-            balance = new Big(data1[0][tx.TokenName])
-          }
+          balance = new Big(data1[0])
           nonce = (parseInt(data1[1]) - 1).toString()
 
           txInfo = data1[2]
@@ -359,16 +325,15 @@ class AccTreeDB {
               return hash !== tx.TxHash
             })
           }
-          balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
+          balance = balance.plus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
-          data1[0][tx.TokenName] = balance
         }
-        self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
+        self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
           } else {
             // update account tx.TxTo
-            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+            self.getAccInfo(tx.TxTo, (err, data2) => {
               nonce = ''
               balance = ''
               txInfo = {}
@@ -376,12 +341,8 @@ class AccTreeDB {
               if (err) {
                 resolve()
               } else {
-                if (data2[0][tx.TokenName] === undefined) {
-                  balance = new Big(INIT_BALANCE)
-                } else {
-                  balance = new Big(data2[0][tx.TokenName])
-                }
-                nonce = (parseInt(data2[1]) - 1).toString()
+                balance = new Big(data2[0])
+                nonce = data2[1]
 
                 txInfo = data2[2]
                 if (typeof txInfo === 'string') {
@@ -394,9 +355,8 @@ class AccTreeDB {
                 }
                 balance = balance.minus(tx.Value).toFixed(DEC_NUM)
                 balance = parseFloat(balance).toString()
-                data2[0][tx.TokenName] = balance
               }
-              self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
+              self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
                 } else {
