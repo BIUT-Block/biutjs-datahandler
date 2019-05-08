@@ -8,15 +8,27 @@ class SmartContractTxDB {
    * @param  {Object} config - contains the relative path for storing database
    */
   constructor (config) {
-    if (typeof config.DBPath !== 'string' || config.DBPath === '') {
-      throw new Error('Needs a valid config input for creating or loading smart contract db')
+    if(config.chainName === 'SEC'){
+      if (typeof config.dbconfig.SecDBPath !== 'string' || config.dbconfig.SecDBPath === '') {
+        throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
+      }
+  
+      mkdirp.sync(config.dbconfig.SecDBPath + '/smartContractTx')
+  
+      let smartContractDBPath = path.join(config.dbconfig.SecDBPath, './smartContract')
+  
+      this._initDB(smartContractDBPath)
+    } else if(config.chainName === 'SEN'){
+      if (typeof config.dbconfig.SenDBPath !== 'string' || config.dbconfig.SenDBPath === '') {
+        throw new Error('Needs a valid config input for creating or loading SEN smart contract db')
+      }
+  
+      mkdirp.sync(config.dbconfig.SenDBPath + '/smartContractTx')
+  
+      let smartContractDBPath = path.join(config.dbconfig.SenDBPath, './smartContract')
+  
+      this._initDB(smartContractDBPath)
     }
-
-    mkdirp.sync(config.DBPath + '/smartContractTx')
-
-    let smartContractDBPath = path.join(config.DBPath, './smartContract')
-
-    this._initDB(smartContractDBPath)
   }
 
   /**
