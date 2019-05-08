@@ -31,6 +31,22 @@ The databases contain following methods:
     * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
     * [.findTx(userAddress, callback)](#TokenBlockChainDB+findTx) ⇒ <code>None</code>
 
+<a name="TxBlockChainDB"></a>
+
+## TxBlockChainDB
+**Kind**: global class  
+
+* [TxBlockChainDB](#TxBlockChainDB)
+    * [new TxBlockChainDB(config)](#new_TxBlockChainDB_new)
+    * [.writeTxBlockToDB(txData, callback)](#TxBlockChainDB+writeTxBlockToDB) ⇒ <code>None</code>
+    * [.isTxBlockChainDBEmpty(callback)](#TxBlockChainDB+isTxBlockChainDBEmpty) ⇒ <code>None</code>
+    * [.getTxBlockChainDB(callback)](#TxBlockChainDB+getTxBlockChainDB) ⇒ <code>None</code>
+    * [.getTxBlockFromDB(blockHashArray, callback)](#TxBlockChainDB+getTxBlockFromDB) ⇒ <code>None</code>
+    * [.getTxChain(minBlockNumber, maxBlockNumber, callback)](#TxBlockChainDB+getTxChain) ⇒ <code>None</code>
+    * [.delBlocksFromHeight(blockHeight, callback)](#TxBlockChainDB+delBlocksFromHeight) ⇒ <code>None</code>
+    * [.addUpdateBlock(pos, blockArray, callback)](#TokenBlockChainDB+addUpdateBlock) ⇒ <code>None</code>
+    * [.findTxForUser(userAddress, callback)](#TokenBlockChainDB+findTxForUser) ⇒ <code>None</code>
+
 <a name="AccountDB"></a>
 
 ## AccountDB
@@ -172,6 +188,113 @@ Find a previous transactions for a user by transaction hash
 | Param | Type | Description |
 | --- | --- | --- |
 | txHash | <code>String</code> | transaction hash |
+| callback | <code>function</code> | callback function, callback arguments (txArray, err) |
+
+<br><br>
+
+## TxBlockChainDB Methods
+
+<a name="new_TxBlockChainDB_new"></a>
+
+### new TxBlockChainDB(config)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| config | <code>Object</code> | contains the relative path for storing database |
+
+<a name="TxBlockChainDB+writeTxBlockToDB"></a>
+
+### txBlockChainDB.writeTxBlockToDB(txData, callback) ⇒ <code>None</code>
+Write single tx block or full transaction chain data to database
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| txData | <code>Array, Object</code> | single tx block data or full transaction block chain data |
+| callback | <code>function</code> | callback function, returns error if exist |
+
+<a name="TxBlockChainDB+isTxBlockChainDBEmpty"></a>
+
+### txBlockChainDB.isTxBlockChainDBEmpty(callback) ⇒ <code>None</code>
+Check whether the transaction block chain database is empty
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, emptyFlag) |
+
+<a name="TxBlockChainDB+getTxBlockChainDB"></a>
+
+### txBlockChainDB.getTxBlockChainDB(callback) ⇒ <code>None</code>
+Get all the block datas from transaction block chain database
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="TxBlockChainDB+getTxBlockFromDB"></a>
+
+### txBlockChainDB.getTxBlockFromDB(blockHashArray, callback) ⇒ <code>None</code>
+Get transaction blocks according to block hash values
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHashArray | <code>String, Array</code> | block hash values, string or array format |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+<a name="TxBlockChainDB+getTxChain"></a>
+
+### txBlockChainDB.getTxChain(minBlockNumber, maxBlockNumber, callback) ⇒ <code>None</code>
+Get transaction block chain data, from number 'minBlockNumber' to number 'maxBlockNumber'
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minBlockNumber | <code>Integer</code> | minimum block number |
+| maxBlockNumber | <code>Integer</code> | maximum block number |
+| callback | <code>function</code> | callback function, callback arguments (err, block object array) |
+
+### txBlockChainDB.delBlocksFromHeight(blockHeight, callback) ⇒ <code>None</code>
+Delete blocks which have a higher height than the input 'blockHeight' argument
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blockHeight | <code>Integer</code> | blocks with larger height will be deleted from database |
+| callback | <code>function</code> | callback function, callback arguments (err) |
+
+<a name="TxBlockChainDB+addUpdateBlock"></a>
+
+### txBlockChainDB.addUpdateBlock(pos, blockArray, callback) ⇒ <code>None</code>
+Add new blocks from a specific position if the blocks does not exist<br>
+Update old blocks from a specific position if the blocks already exist
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pos | <code>Integer</code> | block add/update starting position |
+| blockArray | <code>Array</code> | array of block data(json object) |
+| callback | <code>function</code> | callback function, callback arguments (err) |
+
+<a name="TxBlockChainDB+findTxForUser"></a>
+
+### TxBlockChainDB.findTxForUser(userAddress, callback) ⇒ <code>None</code>
+Find all previous transactions for a user
+
+**Kind**: instance method of [<code>TxBlockChainDB</code>](#TxBlockChainDB)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userAddress | <code>String</code> | user account address |
 | callback | <code>function</code> | callback function, callback arguments (txArray, err) |
 
 <br><br>

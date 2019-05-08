@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const testData = require('../db-structure/accTree.js').testData
 
-const tokenJsonPath = path.join(__dirname, '../db-structure/tokenchain.json')
+const accTreeJson = path.join(__dirname, '../db-structure/accTree.json')
 
 describe('Account Tree block chain database class test', () => {
   const config = {
@@ -14,7 +14,7 @@ describe('Account Tree block chain database class test', () => {
 
   it('Clear DB test', (done) => {
     let address = '28f6af3bf89b7de2b5177f7747650d7321027055'
-    let data = [1.2, 0]
+    let data = [{ SEC: '1.2', SEN: '1.5' }, 0]
     let root1 = accTree.getRoot()
     accTree.putAccInfo(address, data, (err) => {
       if (err) {
@@ -67,22 +67,25 @@ describe('Account Tree block chain database class test', () => {
   })
 
   it('_updateWithTx functionality test', (done) => {
-    let txs = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2].Transactions
+    let txs = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2].Transactions
     accTree._updateWithTx(txs[0]).then(() => {
-      let addr = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
-      accTree.getAccInfo(addr, (err, data) => {
+      accTree.getAllDB((err, data) => {
         if (err) {
           console.log(err)
           expect.fail()
         } else {
-          expect(data).to.deep.equal([
-            '999',
-            '1',
-            {
-              From: ['8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374'],
-              To: []
-            }
-          ])
+          expect(data).to.deep.equal({
+            '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': [
+              {
+                SEN: '999.216'
+              },
+              '2',
+              {
+                From: ['8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374'],
+                To: ['8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374']
+              }
+            ]
+          })
           done()
         }
       })
@@ -98,11 +101,11 @@ describe('Account Tree block chain database class test', () => {
         console.log(err)
         expect.fail()
       } else {
-        let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[0]
+        let block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[0]
         accTree.updateWithBlock(block).then(() => {
-          block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[1]
+          block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[1]
           accTree.updateWithBlock(block).then(() => {
-            block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+            block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2]
             accTree.updateWithBlock(block).then(() => {
               accTree.getRoots((err, array) => {
                 if (err) {
@@ -110,8 +113,8 @@ describe('Account Tree block chain database class test', () => {
                   expect.fail()
                 } else {
                   expect(array).to.deep.equal(['56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-                                               '7aed57cc4144f1d5129390c72e036e15def10374eda35e49c01a668299489b14',
-                                               'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1'])
+                                               '463c2765ae14f0c751609e34dd928bd8321819d5344737c3a83b186c96b6e3ae',
+                                               '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d'])
                   done()
                 }
               })
@@ -137,7 +140,7 @@ describe('Account Tree block chain database class test', () => {
         console.log(err)
         expect.fail()
       } else {
-        let blockchain = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))
+        let blockchain = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))
         accTree.updateWithBlockChain(blockchain).then(() => {
           accTree.getRoots((err, array) => {
             if (err) {
@@ -145,42 +148,19 @@ describe('Account Tree block chain database class test', () => {
               expect.fail()
             } else {
               expect(array).to.deep.equal([ '56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421',
-                                            '7aed57cc4144f1d5129390c72e036e15def10374eda35e49c01a668299489b14',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1',
-                                            'ff075f75a22a75e60c952cc1533ab4661c480bb1209a4c3695702a693c2e34f1' ])
-              accTree.getAccInfo('1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju', (err, info) => {
-                if (err) {
-                  console.log(err)
-                  expect.fail()
-                } else {
-                  expect(info).to.deep.equal([ '999',
-                      '5',
-                      { From:
-                        [ '401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d',
-                          '8e10bfb36a8b6b2c81a17d8818863eeabab315baca38adb1b4f029bfe56f9374',
-                          '511570b94bcf98061265974f74b29fbe5e179c47fc22b1eb7505901fe97f8c3f',
-                          'adc1464538bb2ecbba627692d58db9958b76ed8bfdbc5b52d644596e9e3c3eec',
-                          'f3701c2a94590a353a6b91c3fdc058f22fbd262d282fac4ae55272e41af0efd2' ],
-                        To:
-                        [ '401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d',
-                          '511570b94bcf98061265974f74b29fbe5e179c47fc22b1eb7505901fe97f8c3f',
-                          'adc1464538bb2ecbba627692d58db9958b76ed8bfdbc5b52d644596e9e3c3eec',
-                          'f3701c2a94590a353a6b91c3fdc058f22fbd262d282fac4ae55272e41af0efd2' ]
-                      }
-                    ]
-                  )
-                  done()
-                }
-              })
+                                            '463c2765ae14f0c751609e34dd928bd8321819d5344737c3a83b186c96b6e3ae',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d',
+                                            '877d5b72fb86720a5a670c90bca984f07c130d433c9023c3c4bf365b48a0236d' ])
+              done()
             }
           })
         }).catch((err) => {
@@ -192,22 +172,28 @@ describe('Account Tree block chain database class test', () => {
   })
 
   it('revertBlock functionality test', (done) => {
-    let block = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2]
+    let block = JSON.parse(fs.readFileSync(accTreeJson, 'utf8'))[2]
     accTree.revertBlock(block).then(() => {
-      let addr = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
-      accTree.getAccInfo(addr, (err, data) => {
+      accTree.getAllDB((err, data) => {
         if (err) {
           console.log(err)
           expect.fail()
         } else {
-          expect(data).to.deep.equal([
-            '1000',
-            '1',
-            {
-              From: ['401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d'],
-              To: ['401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d']
-            }
-          ])
+          expect(data).to.deep.equal({
+            '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju': [
+              {
+                ABC: '1000',
+                BEC: '1000',
+                SEC: '1000',
+                SEN: '1000'
+              },
+              '2',
+              {
+                From: ['401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d'],
+                To: ['401407fa4423c317f9c4d288e08c69c6853fea934ce53a094281358c1ef6526d']
+              }
+            ]
+          })
           accTree.clearDB((err) => {
             if (err) {
               expect.fail()
