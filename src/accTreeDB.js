@@ -1,12 +1,14 @@
 const mkdirp = require('mkdirp')
 const path = require('path')
-const Big = require('big.js')
+const Big = require('bignumber.js')
 const Tree = require('merkle-patricia-tree')
 const level = require('level')
 const dataHandlerUtil = require('./util.js')
 
 const DEC_NUM = 8
 const INIT_BALANCE = '1000'
+Big.config({ ROUNDING_MODE: 0 })
+Big.set({ ROUNDING_MODE: Big.ROUND_DOWN })
 
 class AccTreeDB {
   /**
@@ -160,7 +162,7 @@ class AccTreeDB {
     this.tree.get(accAddress, (err, value) => {
       if (err) return callback(err)
       try {
-        if (value === null) {
+        if (value === null || value === undefined) {
           callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
         } else {
           callback(null, JSON.parse(value.toString()))
