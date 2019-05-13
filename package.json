@@ -1,7 +1,7 @@
 {
-  "name": "@biut-block/biutjs-datahandler",
+  "name": "@sec-block/secjs-datahandler",
   "version": "1.1.46",
-  "description": "biut blockchain data handler lib",
+  "description": "sec blockchain data handler lib",
   "main": "src/index.js",
   "directories": {
     "example": "example",
@@ -12,19 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BIUT-Block/biutjs-datahandler"
+    "url": "git+https://github.com/SEC-Block/secjs-datahandler"
   },
   "keywords": [
-    "biut",
+    "sec",
     "blockchain",
     "datahandler"
   ],
   "author": "Weihan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BIUT-Block/biutjs-datahandler/issues"
+    "url": "https://github.com/SEC-Block/secjs-datahandler/issues"
   },
-  "homepage": "https://github.com/BIUT-Block/biutjs-datahandler#README",
+  "homepage": "https://github.com/SEC-Block/secjs-datahandler#README",
   "dependencies": {
     "big.js": "^5.2.2",
     "chai": "^4.2.0",

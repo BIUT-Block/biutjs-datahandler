@@ -8,14 +8,14 @@ class SmartContractTxDB {
    * @param  {Object} config - contains the relative path for storing database
    */
   constructor (config) {
-    if(config.chainName === 'BIUT'){
-      if (typeof config.dbconfig.BiutDBPath !== 'string' || config.dbconfig.BiutDBPath === '') {
-        throw new Error('Needs a valid config input for creating or loading BIUT smart contract db')
+    if(config.chainName === 'SEC'){
+      if (typeof config.dbconfig.SecDBPath !== 'string' || config.dbconfig.SecDBPath === '') {
+        throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
       }
   
-      mkdirp.sync(config.dbconfig.BiutDBPath + '/smartContractTx')
+      mkdirp.sync(config.dbconfig.SecDBPath + '/smartContractTx')
   
-      let smartContractDBPath = path.join(config.dbconfig.BiutDBPath, './smartContract')
+      let smartContractDBPath = path.join(config.dbconfig.SecDBPath, './smartContract')
   
       this._initDB(smartContractDBPath)
     } else if(config.chainName === 'SEN'){

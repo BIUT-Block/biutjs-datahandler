@@ -10,23 +10,23 @@ describe('Transaction block chain database class test', () => {
     'DBPath': '../data/',
     'ID': '12345'
   }
-  const biutDataTest = new TxBlockChainDB(config)
+  const secDataTest = new TxBlockChainDB(config)
 
   describe('writeTxBlockToDB() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          dataHandlerUtil._getJsonDB(biutDataTest.txBlockChainDB, 1, function (err, value) {
+          dataHandlerUtil._getJsonDB(secDataTest.txBlockChainDB, 1, function (err, value) {
             if (err) {
               expect.fail()
             } else {
               expect(value.TimeStamp).to.equal(1530297318)
             }
           })
-          dataHandlerUtil._getJsonDB(biutDataTest.txBlockChainDB, '85aec575af965c0f6daa3179152be5f37977968882a6f48f952fca790305265f', function (err, value) {
+          dataHandlerUtil._getJsonDB(secDataTest.txBlockChainDB, '85aec575af965c0f6daa3179152be5f37977968882a6f48f952fca790305265f', function (err, value) {
             if (err) {
               expect.fail()
             } else {
@@ -42,11 +42,11 @@ describe('Transaction block chain database class test', () => {
   describe('isTxBlockChainDBEmpty() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          biutDataTest.isTxBlockChainDBEmpty((err, emptyFlag) => {
+          secDataTest.isTxBlockChainDBEmpty((err, emptyFlag) => {
             if (err) {
               expect.fail()
             } else {
@@ -62,11 +62,11 @@ describe('Transaction block chain database class test', () => {
   describe('getTxBlockChainDB() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          biutDataTest.getTxBlockChainDB((err, value) => {
+          secDataTest.getTxBlockChainDB((err, value) => {
             if (err) {
               expect.fail()
             } else {
@@ -87,11 +87,11 @@ describe('Transaction block chain database class test', () => {
       ]
 
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          biutDataTest.getTxBlockFromDB(txBlockHashArray, (err, value) => {
+          secDataTest.getTxBlockFromDB(txBlockHashArray, (err, value) => {
             if (err) {
               expect.fail()
             } else {
@@ -107,11 +107,11 @@ describe('Transaction block chain database class test', () => {
   describe('getTxChain() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           expect.fail()
         } else {
-          biutDataTest.getTxChain(0, 3, (err, value) => {
+          secDataTest.getTxChain(0, 3, (err, value) => {
             if (err) {
               expect.fail()
             } else {
@@ -127,17 +127,17 @@ describe('Transaction block chain database class test', () => {
   describe('delBlocksFromHeight() function test', () => {
     it('functionality correctness test', (done) => {
       let data = JSON.parse(fs.readFileSync(txJsonPath, 'utf8'))
-      biutDataTest.writeTxBlockToDB(data, function (err) {
+      secDataTest.writeTxBlockToDB(data, function (err) {
         if (err) {
           console.log(err)
           expect.fail()
         } else {
-          biutDataTest.delBlocksFromHeight(6, (err) => {
+          secDataTest.delBlocksFromHeight(6, (err) => {
             if (err) {
               console.log(err)
               expect.fail()
             } else {
-              biutDataTest.getTxBlockChainDB((err, value) => {
+              secDataTest.getTxBlockChainDB((err, value) => {
                 if (err) {
                   expect.fail()
                 } else {
@@ -157,12 +157,12 @@ describe('Transaction block chain database class test', () => {
       let json = { Number: 1, Hash: '04c7123071429bbfcfb6ffd22501bdcc575f8df820041d63d8c16b94a9696ecf' }
       let pos = 2
       let blockArray = [json, json, json]
-      biutDataTest.addUpdateBlock(pos, blockArray, (err) => {
+      secDataTest.addUpdateBlock(pos, blockArray, (err) => {
         if (err) {
           console.log(err)
           expect.fail()
         } else {
-          biutDataTest.getTxBlockChainDB((err, value) => {
+          secDataTest.getTxBlockChainDB((err, value) => {
             if (err) {
               expect.fail()
             } else {
@@ -178,7 +178,7 @@ describe('Transaction block chain database class test', () => {
   describe('findTxForUser() function test', () => {
     it('functionality correctness test', (done) => {
       let userAddress = '1CmqKHsdhqJhkoWm9w5ALJXTPemxL339ju'
-      biutDataTest.findTxForUser(userAddress, (err, txArray) => {
+      secDataTest.findTxForUser(userAddress, (err, txArray) => {
         if (err) {
           console.log(err)
           expect.fail()
