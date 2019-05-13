@@ -209,7 +209,7 @@ class AccTreeDB {
         block.Transactions[index].TxFee = '0'
       }
       if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
+        block.Transactions[index].TokenName = 'BIUT'
       }
     })
 
@@ -320,7 +320,7 @@ class AccTreeDB {
         block.Transactions[index].TxFee = '0'
       }
       if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
+        block.Transactions[index].TokenName = 'BIUT'
       }
     })
 

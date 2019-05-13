@@ -14,7 +14,7 @@ describe('Account Tree block chain database class test', () => {
 
   it('Clear DB test', (done) => {
     let address = '28f6af3bf89b7de2b5177f7747650d7321027055'
-    let data = [{ SEC: '1.2', SEN: '1.5' }, 0]
+    let data = [{ BIUT: '1.2', SEN: '1.5' }, 0]
     let root1 = accTree.getRoot()
     accTree.putAccInfo(address, data, (err) => {
       if (err) {
@@ -184,7 +184,7 @@ describe('Account Tree block chain database class test', () => {
               {
                 ABC: '1000',
                 BEC: '1000',
-                SEC: '1000',
+                BIUT: '1000',
                 SEN: '1000'
               },
               '2',
