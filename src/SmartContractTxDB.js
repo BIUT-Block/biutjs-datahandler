@@ -67,7 +67,7 @@ class SmartContractTxDB {
       callback(null, buffer)
     }).on('end', function () {
       // console.log('Stream ended')
-      callback(null, buffer)
+      //callback(null, buffer)
     })
   }
 

@@ -163,7 +163,11 @@ class AccTreeDB {
       if (err) return callback(err)
       try {
         if (value === null || value === undefined) {
-          callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+          if (tokenName === 'All') {
+            callback(null, [{'SEC': INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+          } else {
+            callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+          }
         } else {
           callback(null, JSON.parse(value.toString()))
         }
