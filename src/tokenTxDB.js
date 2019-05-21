@@ -44,6 +44,21 @@ class TokenTxDB {
     })
   }
 
+  getTxAmount (callback) {
+    let length = 0
+    this.tokenTxDB.createReadStream().on('data', function (data) {
+      length = length + 1
+    }).on('error', function (err) {
+      // console.log('Stream occurs an error when trying to read all data!')
+      callback(err, null)
+    }).on('close', function () {
+      // console.log('Stream closed')
+    }).on('end', function () {
+      // console.log('Stream ended')
+      callback(null, length)
+    })
+  }
+  
   getAllTxs (callback) {
     dataHandlerUtil._getAllDataInDB(this.tokenTxDB, callback)
   }
@@ -64,8 +79,8 @@ class TokenTxDB {
     })
   }
 
-  writeTx (tx, callback) {
-    this._writeTx(tx).then(() => {
+  writeTx (tx, block, callback) {
+    this._writeTx(tx, block).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
@@ -112,11 +127,13 @@ class TokenTxDB {
     })
   }
 
-  async _writeTx (tx) {
+  async _writeTx (tx, block) {
     try {
       if (typeof tx === 'string') {
         tx = JSON.parse(tx)
       }
+      tx.BlockNumber = block.Number
+      tx.BlockHash = block.Hash
       await dataHandlerUtil._putJsonDBPromise(this.tokenTxDB, tx.TxHash, tx)
     } catch (e) {
       throw e
@@ -144,7 +161,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(block.Transactions, async (tx) => {
-      await this._writeTx(tx)
+      await this._writeTx(tx, block)
     })
   }
 
