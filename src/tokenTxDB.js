@@ -79,8 +79,8 @@ class TokenTxDB {
     })
   }
 
-  writeTx (tx, callback) {
-    this._writeTx(tx).then(() => {
+  writeTx (tx, blockNumber, callback) {
+    this._writeTx(tx, blockNumber).then(() => {
       callback()
     }).catch((err) => {
       callback(err)
@@ -127,11 +127,12 @@ class TokenTxDB {
     })
   }
 
-  async _writeTx (tx) {
+  async _writeTx (tx, blockNumber) {
     try {
       if (typeof tx === 'string') {
         tx = JSON.parse(tx)
       }
+      tx.BlockNumber = blockNumber
       await dataHandlerUtil._putJsonDBPromise(this.tokenTxDB, tx.TxHash, tx)
     } catch (e) {
       throw e
@@ -159,7 +160,7 @@ class TokenTxDB {
     }
 
     await dataHandlerUtil._asyncForEach(block.Transactions, async (tx) => {
-      await this._writeTx(tx)
+      await this._writeTx(tx, block.Number)
     })
   }
 
