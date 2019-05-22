@@ -354,7 +354,7 @@ class TokenBlockChainDB {
             data.value['Transactions'][0] = JSON.parse(data.value['Transactions'][0])
           }
 
-          if (data.value['Transactions'][0].TxFrom === '0000000000000000000000000000000000000000') {
+          if ((data.value['Transactions'][0].TxFrom === '0000000000000000000000000000000000000000') && (data.value['Number'] !== 0)) {
             rewardAmount = rewardAmount + parseFloat(data.value['Transactions'][0].Value)
           }
         }
