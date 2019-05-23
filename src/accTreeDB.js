@@ -6,9 +6,12 @@ const level = require('level')
 const dataHandlerUtil = require('./util.js')
 
 const DEC_NUM = 8
-const INIT_BALANCE = '1000'
 Big.config({ ROUNDING_MODE: 0 })
 Big.set({ ROUNDING_MODE: Big.ROUND_DOWN })
+let INIT_BALANCE = '0'
+if (process.env.netType === 'test' || process.env.netType === 'develop') {
+  INIT_BALANCE = '1000'
+}
 
 class AccTreeDB {
   /**
