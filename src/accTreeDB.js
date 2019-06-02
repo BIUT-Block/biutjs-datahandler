@@ -32,6 +32,7 @@ class AccTreeDB {
     let accTreeDBPath = path.join(config.DBPath, './accTree')
 
     this._initDB(accTreeDBPath, root)
+    this.chainName = config.chainName
   }
 
   /**
@@ -167,9 +168,9 @@ class AccTreeDB {
       try {
         if (value === null || value === undefined) {
           if (tokenName === 'All') {
-            callback(null, [{'SEC': INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+            callback(null, [{[this.chainName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
           } else {
-            callback(null, [{[tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+            callback(null, [{[this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
           }
         } else {
           callback(null, JSON.parse(value.toString()))
@@ -216,7 +217,7 @@ class AccTreeDB {
         block.Transactions[index].TxFee = '0'
       }
       if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
+        block.Transactions[index].TokenName = this.chainName
       }
     })
 
@@ -327,7 +328,7 @@ class AccTreeDB {
         block.Transactions[index].TxFee = '0'
       }
       if (block.Transactions[index].TokenName === undefined) {
-        block.Transactions[index].TokenName = 'SEC'
+        block.Transactions[index].TokenName = this.chainName
       }
     })
 
