@@ -119,7 +119,8 @@ class AccTreeDB {
           reject(err)
         } else {
           if (blockNum > roots.length) {
-            return reject(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
+            console.error(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
+            return resolve()
           }
           roots[blockNum] = newRoot
           self.accTreeDB.put('Roots', roots, (err) => {
@@ -142,7 +143,8 @@ class AccTreeDB {
           reject(err)
         } else {
           if (blockNum > roots.length) {
-            return reject(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
+            console.error(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
+            return resolve()
           }
           roots[blockNum] = undefined
           self.accTreeDB.put('Roots', roots, (err) => {
