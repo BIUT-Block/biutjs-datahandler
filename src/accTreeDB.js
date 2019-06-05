@@ -64,13 +64,7 @@ class AccTreeDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tree, (err) => {
-      if (err) {
-        callback(err)
-      } else {
-        this._clearRoots(callback)
-      }
-    })
+    dataHandlerUtil._clearDB(this.tree, callback)
   }
 
   getAllDB (callback) {
@@ -90,77 +84,9 @@ class AccTreeDB {
     return this.tree.root.toString('hex')
   }
 
-  getRoots (callback) {
-    this.accTreeDB.get('Roots', (err, value) => {
-      if (err) {
-        callback(null, [])
-      } else {
-        if (typeof value === 'string') {
-          value = value.split(',')
-        }
-        if (!Array.isArray(value)) {
-          value = [value]
-        }
-        callback(null, value)
-      }
-    })
-  }
-
   checkRoot (root, callback) {
     root = '0x' + root
     this.tree.checkRoot(root, callback)
-  }
-
-  _updateRoots (blockNum, newRoot) {
-    let self = this
-    return new Promise(function (resolve, reject) {
-      self.getRoots((err, roots) => {
-        if (err) {
-          reject(err)
-        } else {
-          if (blockNum > roots.length) {
-            console.error(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
-            return resolve()
-          }
-          roots[blockNum] = newRoot
-          self.accTreeDB.put('Roots', roots, (err) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve()
-            }
-          })
-        }
-      })
-    })
-  }
-
-  _removeRoots (blockNum) {
-    let self = this
-    return new Promise(function (resolve, reject) {
-      self.getRoots((err, roots) => {
-        if (err) {
-          reject(err)
-        } else {
-          if (blockNum > roots.length) {
-            console.error(new Error(`blockNumber ${blockNum} exceeds the length of roots array (${roots.length})`), null)
-            return resolve()
-          }
-          roots[blockNum] = undefined
-          self.accTreeDB.put('Roots', roots, (err) => {
-            if (err) {
-              reject(err)
-            } else {
-              resolve()
-            }
-          })
-        }
-      })
-    })
-  }
-
-  _clearRoots (callback) {
-    dataHandlerUtil._clearDB(this.accTreeDB, callback)
   }
 
   getAccInfo (accAddress, callback) {
@@ -219,7 +145,6 @@ class AccTreeDB {
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
     })
-    await this._updateRoots(block.Number, this.getRoot())
   }
 
   _updateWithTx (tx) {
@@ -300,7 +225,6 @@ class AccTreeDB {
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
     })
-    await this._removeRoots(block.Number)
   }
 
   _revertTx (tx) {
