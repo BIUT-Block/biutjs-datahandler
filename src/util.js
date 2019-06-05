@@ -169,10 +169,12 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
 exports._getHashList = function (db, callback) {
   let hashList = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length === exports.HASH_LENGTH) {
+    if (data.key.length !== exports.HASH_LENGTH) {
+      data.value = JSON.parse(data.value)
       hashList.push({
-        Number: parseInt(data.value, 10),
-        Hash: data.key
+        Number: parseInt(data.key, 10),
+        Hash: data.value.Hash,
+        ParentHash: data.value.ParentHash
       })
     }
   }).on('error', function (err) {
