@@ -101,7 +101,11 @@ class AccTreeDB {
             callback(null, [{[this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
           }
         } else {
-          callback(null, JSON.parse(value.toString()))
+          let valueJson = JSON.parse(value.toString())
+          if (!(this.chainName in valueJson)) {
+            valueJson[0][this.chainName] = INIT_BALANCE
+          }
+          callback(null, valueJson)
         }
       } catch (e) {
         callback(e, null)
