@@ -96,9 +96,9 @@ class AccTreeDB {
       try {
         if (value === null || value === undefined) {
           if (tokenName === 'All') {
-            callback(null, [{[this.chainName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+            callback(null, [{[this.chainName]: INIT_BALANCE}, '0', { 'From': [], 'To': [] }])
           } else {
-            callback(null, [{[this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE}, '0', { 'From': [] }, { 'To': [] }])
+            callback(null, [{[this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE}, '0', { 'From': [], 'To': [] }])
           }
         } else {
           let valueJson = JSON.parse(value.toString())
