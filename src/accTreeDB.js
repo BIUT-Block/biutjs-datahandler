@@ -177,6 +177,8 @@ class AccTreeDB {
         }
         balance = balance.minus(tx.Value).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
+        txInfo.From.sort()
+        txInfo.To.sort()
         self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
@@ -200,6 +202,8 @@ class AccTreeDB {
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
+              txInfo.From.sort()
+              txInfo.To.sort()
               self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
@@ -257,6 +261,8 @@ class AccTreeDB {
           balance = balance.plus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
         }
+        txInfo.From.sort()
+        txInfo.To.sort()
         self.putAccInfo(tx.TxFrom, [balance, nonce, txInfo], (err) => {
           if (err) {
             reject(err)
@@ -285,6 +291,8 @@ class AccTreeDB {
                 balance = balance.minus(tx.Value).toFixed(DEC_NUM)
                 balance = parseFloat(balance).toString()
               }
+              txInfo.From.sort()
+              txInfo.To.sort()
               self.putAccInfo(tx.TxTo, [balance, nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
