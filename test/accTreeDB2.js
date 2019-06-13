@@ -36,7 +36,10 @@ updateTx(txs[0], 0, 10000, (err) => {
   else {
     accTree.clearDB((e) => {
       console.log(e)
-      console.log('finish')
+      console.log(accTree.checkRoot('1234', (e, res) => {
+        console.log(e)
+        console.log(res)
+      }))
     })
   }
 })

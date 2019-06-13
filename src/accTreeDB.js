@@ -22,28 +22,29 @@ class AccTreeDB {
       throw new Error('Needs a valid config input for creating or loading accTree db')
     }
 
-    let root = config.StateRoot
-    if (root !== undefined && (typeof root !== 'string' || root.length !== 64)) {
+    this.root = config.StateRoot
+    if (this.root !== undefined && (typeof this.root !== 'string' || this.root.length !== 64)) {
       throw new Error('Needs a valid state root input for creating or loading merkle tree')
     }
 
-    mkdirp.sync(config.DBPath + '/accTree')
-
-    this.accTreeDBPath = path.join(config.DBPath, './accTree')
-
-    this._initDB(root)
+    this._initDB(config.DBPath)
   }
 
   /**
    * Load or create databases
    */
-  _initDB (stateRoot) {
+  _initDB (dbPath = undefined) {
+    if (dbPath !== undefined) {
+      this.accTreeDBPath = path.join(dbPath, './accTree')
+    }
+    mkdirp.sync(this.accTreeDBPath)
+
     try {
       this.accTreeDB = level(this.accTreeDBPath)
-      if (stateRoot === undefined) {
+      if (this.root === undefined) {
         this.tree = new Tree(this.accTreeDB)
       } else {
-        this.tree = new Tree(this.accTreeDB, '0x' + stateRoot)
+        this.tree = new Tree(this.accTreeDB, '0x' + this.root)
       }
     } catch (error) {
       // Could be invalid db path or invalid state root
@@ -64,7 +65,13 @@ class AccTreeDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.accTreeDB, this.accTreeDBPath, callback)
+    dataHandlerUtil._clearDB(this.accTreeDB, this.accTreeDBPath, (err) => {
+      if (err) return callback(err)
+      else {
+        this._initDB()
+        callback()
+      }
+    })
   }
 
   getAllDB (callback) {

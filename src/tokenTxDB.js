@@ -32,7 +32,13 @@ class TokenTxDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tokenTxDB, this.tokenTxDBPath, callback)
+    dataHandlerUtil._clearDB(this.tokenTxDB, this.tokenTxDBPath, (err) => {
+      if (err) return callback(err)
+      else {
+        this._initDB()
+        callback()
+      }
+    })
   }
 
   isTxExist (txHash, callback) {

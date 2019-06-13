@@ -32,7 +32,13 @@ class SmartContractTxDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.smartContractDB, this.smartContractDBPath, callback)
+    dataHandlerUtil._clearDB(this.smartContractDB, this.smartContractDBPath, (err) => {
+      if (err) return callback(err)
+      else {
+        this._initDB()
+        callback()
+      }
+    })
   }
 
   add (tokenName, contractAddress, callback) {
