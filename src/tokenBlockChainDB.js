@@ -36,7 +36,7 @@ class TokenBlockChainDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tokenBlockChainDB, callback)
+    dataHandlerUtil._clearDB(this.tokenBlockChainDB, this.tokenDBPath, callback)
   }
 
   /**

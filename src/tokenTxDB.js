@@ -14,17 +14,17 @@ class TokenTxDB {
 
     mkdirp.sync(config.DBPath + '/tokenTx')
 
-    let tokenTxDBPath = path.join(config.DBPath, './tokenTx')
+    this.tokenTxDBPath = path.join(config.DBPath, './tokenTx')
 
-    this._initDB(tokenTxDBPath)
+    this._initDB()
   }
 
   /**
    * Load or create database
    */
-  _initDB (tokenTxDBPath) {
+  _initDB () {
     try {
-      this.tokenTxDB = level(tokenTxDBPath)
+      this.tokenTxDB = level(this.tokenTxDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -32,7 +32,7 @@ class TokenTxDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tokenTxDB, callback)
+    dataHandlerUtil._clearDB(this.tokenTxDB, this.tokenTxDBPath, callback)
   }
 
   isTxExist (txHash, callback) {

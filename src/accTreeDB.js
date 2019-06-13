@@ -29,17 +29,17 @@ class AccTreeDB {
 
     mkdirp.sync(config.DBPath + '/accTree')
 
-    let accTreeDBPath = path.join(config.DBPath, './accTree')
+    this.accTreeDBPath = path.join(config.DBPath, './accTree')
 
-    this._initDB(accTreeDBPath, root)
+    this._initDB(root)
   }
 
   /**
    * Load or create databases
    */
-  _initDB (accTreeDBPath, stateRoot) {
+  _initDB (stateRoot) {
     try {
-      this.accTreeDB = level(accTreeDBPath)
+      this.accTreeDB = level(this.accTreeDBPath)
       if (stateRoot === undefined) {
         this.tree = new Tree(this.accTreeDB)
       } else {
@@ -64,7 +64,7 @@ class AccTreeDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tree, callback)
+    dataHandlerUtil._clearDB(this.accTreeDB, this.accTreeDBPath, callback)
   }
 
   getAllDB (callback) {

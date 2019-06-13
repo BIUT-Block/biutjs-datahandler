@@ -14,17 +14,17 @@ class SmartContractTxDB {
 
     mkdirp.sync(config.DBPath + '/smartContractTx')
 
-    let smartContractDBPath = path.join(config.DBPath, './smartContract')
+    this.smartContractDBPath = path.join(config.DBPath, './smartContract')
 
-    this._initDB(smartContractDBPath)
+    this._initDB()
   }
 
   /**
    * Load or create database
    */
-  _initDB (smartContractDBPath) {
+  _initDB () {
     try {
-      this.smartContractDB = level(smartContractDBPath)
+      this.smartContractDB = level(this.smartContractDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -32,7 +32,7 @@ class SmartContractTxDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.smartContractDB, callback)
+    dataHandlerUtil._clearDB(this.smartContractDB, this.smartContractDBPath, callback)
   }
 
   add (tokenName, contractAddress, callback) {

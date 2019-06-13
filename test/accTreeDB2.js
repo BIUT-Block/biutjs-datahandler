@@ -34,6 +34,9 @@ let txs = JSON.parse(fs.readFileSync(tokenJsonPath, 'utf8'))[2].Transactions
 updateTx(txs[0], 0, 10000, (err) => {
   if (err) return console.error(err)
   else {
-    console.log('finished')
+    accTree.clearDB((e) => {
+      console.log(e)
+      console.log('finish')
+    })
   }
 })
