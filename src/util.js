@@ -34,7 +34,13 @@ exports._clearDB = function (db, path, callback) {
   db.close((err) => {
     if (err) return callback(err)
     else {
-      rimraf(path, callback)
+      try {
+        rimraf.sync(path)
+        callback()
+      } catch (err) {
+        if (err) console.error('Warning: Removing Database, but not log files can not removed. ')
+        callback()
+      }
     }
   })
 }
