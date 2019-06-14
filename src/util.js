@@ -1,4 +1,5 @@
 const Promise = require('promise')
+const rimraf = require('rimraf') 
 
 exports.HASH_LENGTH = 64
 const dbOpts = {
@@ -29,21 +30,17 @@ exports._isDBEmpty = function (db, callback) {
   })
 }
 
-exports._clearDB = function (db, callback) {
-  exports._getAllKeysInDB(db, (err, keyArray) => {
-    if (err) {
-      callback(err)
-    } else {
-      let promiseList = []
-      keyArray.forEach((key) => {
-        promiseList.push(exports._delDBPromise(db, key))
-      })
-
-      Promise.all(promiseList).then(() => {
-        callback()
-      }).catch((err) => {
-        callback(err)
-      })
+exports._clearDB = function (db, path, callback) { 
+  db.close((err) => { 
+    if (err) return callback(err) 
+    else { 
+      try { 
+        rimraf.sync(path) 
+        callback() 
+      } catch (err) { 
+        if (err) console.error('Warning: Removing Database, but not log files can not removed. ') 
+        callback() 
+      } 
     }
   })
 }

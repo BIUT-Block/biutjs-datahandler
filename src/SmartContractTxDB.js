@@ -15,9 +15,9 @@ class SmartContractTxDB {
   
       mkdirp.sync(config.dbconfig.SecDBPath + '/smartContractTx')
   
-      let smartContractDBPath = path.join(config.dbconfig.SecDBPath, './smartContract')
+      this.smartContractDBPath = path.join(config.dbconfig.SecDBPath, './smartContract')
   
-      this._initDB(smartContractDBPath)
+      this._initDB()
     } else if(config.chainName === 'SEN'){
       if (typeof config.dbconfig.SenDBPath !== 'string' || config.dbconfig.SenDBPath === '') {
         throw new Error('Needs a valid config input for creating or loading SEN smart contract db')
@@ -25,18 +25,18 @@ class SmartContractTxDB {
   
       mkdirp.sync(config.dbconfig.SenDBPath + '/smartContractTx')
   
-      let smartContractDBPath = path.join(config.dbconfig.SenDBPath, './smartContract')
+      this.smartContractDBPath = path.join(config.dbconfig.SenDBPath, './smartContract')
   
-      this._initDB(smartContractDBPath)
+      this._initDB()
     }
   }
 
   /**
    * Load or create database
    */
-  _initDB (smartContractDBPath) {
+  _initDB () {
     try {
-      this.smartContractDB = level(smartContractDBPath)
+      this.smartContractDB = level(this.smartContractDBPath)
     } catch (error) {
       // Could be invalid db path
       throw new Error(error)
@@ -44,7 +44,13 @@ class SmartContractTxDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.smartContractDB, callback)
+    dataHandlerUtil._clearDB(this.smartContractDB, this.smartContractDBPath, (err) => {
+      if (err) return callback(err)
+      else {
+        this._initDB()
+        callback()
+      }
+    })
   }
 
   add (tokenName, contractAddress, callback) {

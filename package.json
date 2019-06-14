@@ -32,7 +32,8 @@
     "level": "^4.0.0",
     "merkle-patricia-tree": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "promise": "^8.0.2"
+    "promise": "^8.0.2",
+    "rimraf": "^2.6.3"
   },
   "devDependencies": {}
 }

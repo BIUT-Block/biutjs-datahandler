@@ -22,29 +22,34 @@ class AccTreeDB {
       throw new Error('Needs a valid config input for creating or loading accTree db')
     }
 
-    let root = config.StateRoot
-    if (root !== undefined && (typeof root !== 'string' || root.length !== 64)) {
+    this.root = config.StateRoot
+    if (this.root !== undefined && (typeof this.root !== 'string' || this.root.length !== 64)) {
       throw new Error('Needs a valid state root input for creating or loading merkle tree')
     }
 
     mkdirp.sync(config.DBPath + '/accTree')
 
-    let accTreeDBPath = path.join(config.DBPath, './accTree')
+    this.accTreeDBPath = path.join(config.DBPath, './accTree')
 
-    this._initDB(accTreeDBPath, root)
+    this._initDB(config.DBPath)
     this.chainName = config.chainName
   }
 
   /**
    * Load or create databases
    */
-  _initDB (accTreeDBPath, stateRoot) {
+  _initDB (dbPath = undefined) {
+    if (dbPath !== undefined) {
+      this.accTreeDBPath = path.join(dbPath, './accTree')
+    }
+    mkdirp.sync(this.accTreeDBPath)
+
     try {
-      this.accTreeDB = level(accTreeDBPath)
-      if (stateRoot === undefined) {
+      this.accTreeDB = level(this.accTreeDBPath)
+      if (this.root === undefined) {
         this.tree = new Tree(this.accTreeDB)
       } else {
-        this.tree = new Tree(this.accTreeDB, '0x' + stateRoot)
+        this.tree = new Tree(this.accTreeDB, '0x' + this.root)
       }
     } catch (error) {
       // Could be invalid db path or invalid state root
@@ -65,7 +70,13 @@ class AccTreeDB {
   }
 
   clearDB (callback) {
-    dataHandlerUtil._clearDB(this.tree, callback)
+    dataHandlerUtil._clearDB(this.accTreeDB, this.accTreeDBPath, (err) => {
+      if (err) return callback(err)
+      else {
+        this._initDB()
+        callback()
+      }
+    })
   }
 
   getAllDB (callback) {
@@ -196,6 +207,8 @@ class AccTreeDB {
         balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
         data1[0][tx.TokenName] = balance
+        txInfo.From.sort()
+        txInfo.To.sort()        
         self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
           if (err) {
             reject(err)
@@ -226,6 +239,8 @@ class AccTreeDB {
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
               data2[0][tx.TokenName] = balance
+              txInfo.From.sort()
+              txInfo.To.sort()              
               self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
@@ -303,6 +318,8 @@ class AccTreeDB {
           balance = parseFloat(balance).toString()
           data1[0][tx.TokenName] = balance
         }
+        txInfo.From.sort()
+        txInfo.To.sort()        
         self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
           if (err) {
             reject(err)
@@ -336,6 +353,8 @@ class AccTreeDB {
                 balance = parseFloat(balance).toString()
                 data2[0][tx.TokenName] = balance
               }
+              txInfo.From.sort()
+              txInfo.To.sort()              
               self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
                 if (err) {
                   reject(err)
