@@ -125,14 +125,14 @@ class AccTreeDB {
   }
 
   putAccInfo (accAddress, infoArray, callback) {
-    if (typeof infoArray !== 'string') {
-      infoArray = JSON.stringify(infoArray)
+    if (accAddress !== '0000000000000000000000000000000000000000') {    
+      if (typeof infoArray !== 'string') {
+        infoArray = JSON.stringify(infoArray)
+      }
+      this.tree.put(accAddress, infoArray, callback)
+    } else {
+      callback()
     }
-    this.tree.put(accAddress, infoArray, callback)
-  }
-
-  delAccInfo (accAddress, callback) {
-    this.tree.del(accAddress, callback)
   }
 
   async updateWithBlockChain (blockchain) {
