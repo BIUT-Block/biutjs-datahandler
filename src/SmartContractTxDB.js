@@ -8,27 +8,15 @@ class SmartContractTxDB {
    * @param  {Object} config - contains the relative path for storing database
    */
   constructor(config) {
-    if (config.chainName === 'SEC') {
-      if (typeof config.dbconfig.SecDBPath !== 'string' || config.dbconfig.SecDBPath === '') {
+      if (typeof config.DBPath !== 'string' || config.DBPath === '') {
         throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
       }
 
-      mkdirp.sync(config.dbconfig.SecDBPath + '/smartContractTx')
+      mkdirp.sync(config.DBPath + '/smartContractTx')
 
       this.smartContractDBPath = path.join(config.dbconfig.SecDBPath, './smartContract')
 
       this._initDB()
-    } else if (config.chainName === 'SEN') {
-      if (typeof config.dbconfig.SenDBPath !== 'string' || config.dbconfig.SenDBPath === '') {
-        throw new Error('Needs a valid config input for creating or loading SEN smart contract db')
-      }
-
-      mkdirp.sync(config.dbconfig.SenDBPath + '/smartContractTx')
-
-      this.smartContractDBPath = path.join(config.dbconfig.SenDBPath, './smartContract')
-
-      this._initDB()
-    }
   }
 
   /**
@@ -57,6 +45,10 @@ class SmartContractTxDB {
     dataHandlerUtil._putDB(this.smartContractDB, contractAddress, tokenInfo, callback)
   }
 
+  deleteTokenMap(contractAddress, callback) {
+    dataHandlerUtil._delDB(this.smartContractDB, contractAddress, callback)
+  }
+
   getContractAddress(tokenName, callback) {
     let buffer = ''
     let readStream = this.smartContractDB.createReadStream()
@@ -80,7 +72,11 @@ class SmartContractTxDB {
   getTokenName(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(err, null)
+        if(err.type='NotFoundError'){
+          callback(null, null)
+        } else {
+          callback(err, null)          
+        }
       } else {
         callback(null, value.tokenName)
       }
@@ -89,30 +85,62 @@ class SmartContractTxDB {
   getSourceCode(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(err, null)
+        if(err.type='NotFoundError'){
+          callback(null, null)
+        } else {
+          callback(err, null)          
+        }
       } else {
         callback(null, value.sourceCode)
       }
     })
   }
-  getDepositBalance(contractAddress, callback) {
+  getApprove(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(err, null)
+        if(err.type='NotFoundError'){
+          callback(null, null)
+        } else {
+          callback(err, null)          
+        }
       } else {
-        callback(null, value.depositBalance)
+        callback(null, value.approve)
       }
     })
   }
+
   getTokenInfo(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(err, null)
+        if(err.type='NotFoundError'){
+          callback(null, null)
+        } else {
+          callback(err, null)          
+        }
       } else {
         callback(null, value)
       }
     })
-  }    
+  }
+
+  updateWithBlock(block, callback){
+    let promiseList = []
+    block.Transactions.forEach((tx) => {
+      promiseList.push(this._updateWithTx(tx))
+    })
+
+    Promise.all(promiseList).then((transactionsList) => {
+      block.Transactions = transactionsList
+      callback(null, block)
+    }).catch((err) => {
+      callback(err, null)
+    })
+  }
+
+  _updateWithTx(tx){
+    let self=this
+    
+  }
 }
 
 module.exports = SmartContractTxDB

@@ -149,7 +149,7 @@ class AccTreeDB {
 
   async updateWithBlock (block) {
     // parse block.Transactions
-    block.Transactions.forEach((tx, index) => {
+/*     block.Transactions.forEach((tx, index) => {
       if (typeof tx === 'string') {
         block.Transactions[index] = JSON.parse(tx)
       }
@@ -162,7 +162,7 @@ class AccTreeDB {
       if (block.Transactions[index].TokenName === undefined) {
         block.Transactions[index].TokenName = this.chainName
       }
-    })
+    }) */
 
     let txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
@@ -176,7 +176,6 @@ class AccTreeDB {
       if (typeof tx !== 'object') {
         return reject(new Error('Invalid input type, should be object'))
       }
-
       // update account tx.TxFrom
       self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = ''
@@ -263,7 +262,7 @@ class AccTreeDB {
 
   async revertBlock (block) {
     let txs = block.Transactions
-    block.Transactions.forEach((tx, index) => {
+/*     block.Transactions.forEach((tx, index) => {
       if (typeof tx === 'string') {
         block.Transactions[index] = JSON.parse(tx)
       }
@@ -276,7 +275,7 @@ class AccTreeDB {
       if (block.Transactions[index].TokenName === undefined) {
         block.Transactions[index].TokenName = this.chainName
       }
-    })
+    }) */
 
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
