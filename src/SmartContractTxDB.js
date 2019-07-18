@@ -82,6 +82,7 @@ class SmartContractTxDB {
       }
     })
   }
+
   getSourceCode(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
@@ -95,6 +96,7 @@ class SmartContractTxDB {
       }
     })
   }
+
   getApprove(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
@@ -119,6 +121,20 @@ class SmartContractTxDB {
         }
       } else {
         callback(null, value)
+      }
+    })
+  }
+
+  getTimeLock(contractAddress, callback) {
+    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+      if(err){
+        if(err.type='NotFoundError'){
+          callback(null, null)
+        } else {
+          callback(err, null)          
+        }
+      } else {
+        callback(null, value.timeLock)
       }
     })
   }
