@@ -8,15 +8,15 @@ class SmartContractTxDB {
    * @param  {Object} config - contains the relative path for storing database
    */
   constructor(config) {
-      if (typeof config.DBPath !== 'string' || config.DBPath === '') {
-        throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
-      }
+    if (typeof config.DBPath !== 'string' || config.DBPath === '') {
+      throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
+    }
 
-      mkdirp.sync(config.DBPath + '/smartContractTx')
+    mkdirp.sync(config.DBPath + '/smartContractTx')
 
-      this.smartContractDBPath = path.join(config.DBPath, './smartContract')
+    this.smartContractDBPath = path.join(config.DBPath, './smartContract')
 
-      this._initDB()
+    this._initDB()
   }
 
   /**
@@ -71,8 +71,12 @@ class SmartContractTxDB {
 
   getTokenName(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
-      if(err){
-        callback(err, null)
+      if (err) {
+        if (err.name === 'NotFoundError') {
+          callback(null, null)
+        } else {
+          callback(err, null)
+        }
       } else {
         callback(null, value.tokenName)
       }
@@ -81,8 +85,12 @@ class SmartContractTxDB {
 
   getSourceCode(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
-      if(err){
-        callback(err, null)        
+      if (err) {
+        if (err.name === 'NotFoundError') {
+          callback(null, null)
+        } else {
+          callback(err, null)
+        }
       } else {
         callback(null, value.sourceCode)
       }
@@ -91,8 +99,12 @@ class SmartContractTxDB {
 
   getApprove(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
-      if(err){
-        callback(err, null)
+      if (err) {
+        if (err.name === 'NotFoundError') {
+          callback(null, null)
+        } else {
+          callback(err, null)
+        }
       } else {
         callback(null, value.approve)
       }
@@ -101,8 +113,12 @@ class SmartContractTxDB {
 
   getTokenInfo(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
-      if(err){
-        callback(err, null)
+      if (err) {
+        if (err.name === 'NotFoundError') {
+          callback(null, null)
+        } else {
+          callback(err, null)
+        }
       } else {
         callback(null, value)
       }
@@ -111,31 +127,16 @@ class SmartContractTxDB {
 
   getTimeLock(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
-      if(err){
-        callback(err, null)
+      if (err) {
+        if (err.name === 'NotFoundError') {
+          callback(null, null)
+        } else {
+          callback(err, null)
+        }
       } else {
         callback(null, value.timeLock)
       }
     })
-  }
-
-  updateWithBlock(block, callback){
-    let promiseList = []
-    block.Transactions.forEach((tx) => {
-      promiseList.push(this._updateWithTx(tx))
-    })
-
-    Promise.all(promiseList).then((transactionsList) => {
-      block.Transactions = transactionsList
-      callback(null, block)
-    }).catch((err) => {
-      callback(err, null)
-    })
-  }
-
-  _updateWithTx(tx){
-    let self=this
-    
   }
 }
 
