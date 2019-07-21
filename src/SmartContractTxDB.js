@@ -12,7 +12,7 @@ class SmartContractTxDB {
       throw new Error('Needs a valid config input for creating or loading SEC smart contract db')
     }
 
-    mkdirp.sync(config.DBPath + '/smartContractTx')
+    mkdirp.sync(config.DBPath + '/smartContract')
 
     this.smartContractDBPath = path.join(config.DBPath, './smartContract')
 
@@ -42,7 +42,7 @@ class SmartContractTxDB {
   }
 
   addTokenMap(tokenInfo, contractAddress, callback) {
-    dataHandlerUtil._putDB(this.smartContractDB, contractAddress, tokenInfo, callback)
+    dataHandlerUtil._putJsonDB(this.smartContractDB, contractAddress, tokenInfo, callback)
   }
 
   deleteTokenMap(contractAddress, callback) {
@@ -70,7 +70,7 @@ class SmartContractTxDB {
   }
 
   getTokenName(contractAddress, callback) {
-    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
         if (err.name === 'NotFoundError') {
           callback(null, null)
@@ -84,7 +84,7 @@ class SmartContractTxDB {
   }
 
   getSourceCode(contractAddress, callback) {
-    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
         if (err.name === 'NotFoundError') {
           callback(null, null)
@@ -98,7 +98,7 @@ class SmartContractTxDB {
   }
 
   getApprove(contractAddress, callback) {
-    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
         if (err.name === 'NotFoundError') {
           callback(null, null)
@@ -112,7 +112,7 @@ class SmartContractTxDB {
   }
 
   getTokenInfo(contractAddress, callback) {
-    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
         if (err.name === 'NotFoundError') {
           callback(null, null)
@@ -126,7 +126,7 @@ class SmartContractTxDB {
   }
 
   getTimeLock(contractAddress, callback) {
-    dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
+    dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
         if (err.name === 'NotFoundError') {
           callback(null, null)
