@@ -14,7 +14,7 @@ class SmartContractTxDB {
 
       mkdirp.sync(config.DBPath + '/smartContractTx')
 
-      this.smartContractDBPath = path.join(config.dbconfig.DBPath, './smartContract')
+      this.smartContractDBPath = path.join(config.DBPath, './smartContract')
 
       this._initDB()
   }
