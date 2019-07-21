@@ -72,7 +72,7 @@ class SmartContractTxDB {
   getTokenName(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(null, null)
+        callback(err, null)
       } else {
         callback(null, value.tokenName)
       }
@@ -82,7 +82,7 @@ class SmartContractTxDB {
   getSourceCode(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(null, null)        
+        callback(err, null)        
       } else {
         callback(null, value.sourceCode)
       }
@@ -92,7 +92,7 @@ class SmartContractTxDB {
   getApprove(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(null, null)
+        callback(err, null)
       } else {
         callback(null, value.approve)
       }
@@ -102,7 +102,7 @@ class SmartContractTxDB {
   getTokenInfo(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(null, null)
+        callback(err, null)
       } else {
         callback(null, value)
       }
@@ -112,7 +112,7 @@ class SmartContractTxDB {
   getTimeLock(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        callback(null, null)
+        callback(err, null)
       } else {
         callback(null, value.timeLock)
       }
