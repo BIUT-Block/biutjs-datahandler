@@ -72,11 +72,7 @@ class SmartContractTxDB {
   getTokenName(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        if(err.type='NotFoundError'){
-          callback(null, null)
-        } else {
-          callback(err, null)          
-        }
+        callback(null, null)
       } else {
         callback(null, value.tokenName)
       }
@@ -86,11 +82,7 @@ class SmartContractTxDB {
   getSourceCode(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        if(err.type='NotFoundError'){
-          callback(null, null)
-        } else {
-          callback(err, null)          
-        }
+        callback(null, null)        
       } else {
         callback(null, value.sourceCode)
       }
@@ -100,11 +92,7 @@ class SmartContractTxDB {
   getApprove(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        if(err.type='NotFoundError'){
-          callback(null, null)
-        } else {
-          callback(err, null)          
-        }
+        callback(null, null)
       } else {
         callback(null, value.approve)
       }
@@ -114,11 +102,7 @@ class SmartContractTxDB {
   getTokenInfo(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        if(err.type='NotFoundError'){
-          callback(null, null)
-        } else {
-          callback(err, null)          
-        }
+        callback(null, null)
       } else {
         callback(null, value)
       }
@@ -128,11 +112,7 @@ class SmartContractTxDB {
   getTimeLock(contractAddress, callback) {
     dataHandlerUtil._getDB(this.smartContractDB, contractAddress, (err, value) => {
       if(err){
-        if(err.type='NotFoundError'){
-          callback(null, null)
-        } else {
-          callback(err, null)          
-        }
+        callback(null, null)
       } else {
         callback(null, value.timeLock)
       }
