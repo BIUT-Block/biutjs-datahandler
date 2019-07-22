@@ -61,7 +61,6 @@ class AccTreeDB {
     if (root !== undefined && (typeof root !== 'string' || root.length !== 64)) {
       throw new Error('Needs a valid state root input to construct a new merkle tree')
     }
-
     if (root === undefined) {
       this.tree = new Tree(this.accTreeDB)
     } else {
@@ -194,7 +193,6 @@ class AccTreeDB {
             balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) + 1).toString()
-
           txInfo = data1[2]
           if (typeof txInfo === 'string') {
             txInfo = JSON.parse(txInfo)
@@ -207,7 +205,7 @@ class AccTreeDB {
         balance = parseFloat(balance).toString()
         data1[0][tx.TokenName] = balance
         txInfo.From.sort()
-        txInfo.To.sort()        
+        txInfo.To.sort()
         self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
           if (err) {
             reject(err)

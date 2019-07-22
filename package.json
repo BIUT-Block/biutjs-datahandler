@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/BIUT-Block/biutjs-datahandler#README",
   "dependencies": {
-    "big.js": "^5.2.2",
+    "bignumber.js": "^8.1.1",
     "chai": "^4.2.0",
     "fs": "0.0.1-security",
     "level": "^4.0.0",
