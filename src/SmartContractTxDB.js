@@ -22,7 +22,7 @@ class SmartContractTxDB {
   /**
    * Load or create database
    */
-  _initDB() {
+  _initDB () {
     try {
       this.smartContractDB = level(this.smartContractDBPath)
     } catch (error) {
@@ -31,7 +31,7 @@ class SmartContractTxDB {
     }
   }
 
-  clearDB(callback) {
+  clearDB (callback) {
     dataHandlerUtil._clearDB(this.smartContractDB, this.smartContractDBPath, (err) => {
       if (err) return callback(err)
       else {

@@ -1,5 +1,5 @@
 const Promise = require('promise')
-const rimraf = require('rimraf') 
+const rimraf = require('rimraf')
 
 exports.HASH_LENGTH = 64
 const dbOpts = {
@@ -30,17 +30,17 @@ exports._isDBEmpty = function (db, callback) {
   })
 }
 
-exports._clearDB = function (db, path, callback) { 
-  db.close((err) => { 
-    if (err) return callback(err) 
-    else { 
-      try { 
-        rimraf.sync(path) 
-        callback() 
-      } catch (err) { 
-        if (err) console.error('Warning: Removing Database, but not log files can not removed. ') 
-        callback() 
-      } 
+exports._clearDB = function (db, path, callback) {
+  db.close((err) => {
+    if (err) return callback(err)
+    else {
+      try {
+        rimraf.sync(path)
+        callback()
+      } catch (err) {
+        if (err) console.error('Warning: Removing Database, but not log files can not removed. ')
+        callback()
+      }
     }
   })
 }
@@ -166,11 +166,11 @@ exports._getAllBlockHeightsInDB = function (db, callback) {
 exports._getHashList = function (db, callback) {
   let hashList = []
   db.createReadStream().on('data', function (data) {
-    if (data.key.length !== exports.HASH_LENGTH) { 
-      data.value = JSON.parse(data.value) 
+    if (data.key.length !== exports.HASH_LENGTH) {
+      data.value = JSON.parse(data.value)
       hashList.push({
-        Number: parseInt(data.key, 10), 
-        Hash: data.value.Hash, 
+        Number: parseInt(data.key, 10),
+        Hash: data.value.Hash,
         ParentHash: data.value.ParentHash
       })
     }

@@ -27,10 +27,6 @@ class AccTreeDB {
       throw new Error('Needs a valid state root input for creating or loading merkle tree')
     }
 
-    mkdirp.sync(config.DBPath + '/accTree')
-
-    this.accTreeDBPath = path.join(config.DBPath, './accTree')
-
     this._initDB(config.DBPath)
     this.chainName = config.chainName
   }
