@@ -108,6 +108,11 @@ class AccTreeDB {
           }
         } else {
           let valueJson = JSON.parse(value.toString())
+          if(typeof valueJson[0] === 'string') {
+            valueJson[0] = {
+              [this.chainName]: valueJson[0]
+            }
+          }
           if (!(this.chainName in valueJson[0])) {
             valueJson[0][this.chainName] = INIT_BALANCE
           }
