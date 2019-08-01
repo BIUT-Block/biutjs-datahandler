@@ -69,6 +69,26 @@ class SmartContractTxDB {
     })
   }
 
+  getCreatorContract(creatorAddress, callback) {
+    let buffer = ''
+    let readStream = this.smartContractDB.createReadStream()
+    readStream.on('data', function (data) {
+      if (data.value.creator === creatorAddress) {
+        buffer = data.key
+        readStream.destroy()
+      }
+    }).on('error', function (err) {
+      // console.log('Stream occurs an error when trying to read all data!')
+      callback(err, null)
+    }).on('close', function () {
+      // console.log('Stream closed')
+      callback(null, buffer)
+    }).on('end', function () {
+      // console.log('Stream ended')
+      //callback(null, buffer)
+    })
+  }
+
   getTokenName(contractAddress, callback) {
     dataHandlerUtil._getJsonDB(this.smartContractDB, contractAddress, (err, value) => {
       if (err) {
