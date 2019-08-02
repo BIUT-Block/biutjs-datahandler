@@ -70,11 +70,11 @@ class SmartContractTxDB {
   }
 
   getCreatorContract(creatorAddress, callback) {
-    let buffer = ''
+    let buffer = []
     let readStream = this.smartContractDB.createReadStream()
     readStream.on('data', function (data) {
       if (data.value.creator === creatorAddress) {
-        buffer = data.key
+        buffer.push(data.key)
         readStream.destroy()
       }
     }).on('error', function (err) {
