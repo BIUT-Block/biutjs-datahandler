@@ -74,7 +74,7 @@ class SmartContractTxDB {
     let readStream = this.smartContractDB.createReadStream()
     readStream.on('data', function (data) {
       if (data.value.creator === creatorAddress) {
-        buffer.push(data.key)
+        buffer.push({contractAddress: data.key, contractInfo: data.value})
         readStream.destroy()
       }
     }).on('error', function (err) {
