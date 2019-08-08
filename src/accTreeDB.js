@@ -10,7 +10,7 @@ Big.config({ ROUNDING_MODE: 0 })
 Big.set({ ROUNDING_MODE: Big.ROUND_DOWN })
 let INIT_BALANCE = '0'
 if (process.env.netType === 'test' || process.env.netType === 'develop') {
-  INIT_BALANCE = '1000'
+  INIT_BALANCE = '600000'
 }
 
 class AccTreeDB {
