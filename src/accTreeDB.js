@@ -202,7 +202,7 @@ class AccTreeDB {
             txInfo.From.push(tx.TxHash)
           }
         }
-        balance = balance.minus(tx.Value).minus(tx.TxFee).toFixed(DEC_NUM)
+        balance = balance.minus(tx.Value).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
         data1[0][tx.TokenName] = balance
         txInfo.From.sort()
@@ -312,7 +312,7 @@ class AccTreeDB {
               return hash !== tx.TxHash
             })
           }
-          balance = balance.plus(tx.Value).plus(tx.TxFee).toFixed(DEC_NUM)
+          balance = balance.plus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
           data1[0][tx.TokenName] = balance
         }
