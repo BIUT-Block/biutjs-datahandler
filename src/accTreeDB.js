@@ -275,7 +275,7 @@ class AccTreeDB {
     let self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
-        reject(new Error('Invalid input type, should be object'))
+        return reject(new Error('Invalid input type, should be object'))
       }
 
       // update account tx.TxFrom
@@ -284,7 +284,7 @@ class AccTreeDB {
         let balance = ''
         // let txInfo = {}
         if (err) {
-          resolve()
+          return resolve()
         } else {
           if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
@@ -311,7 +311,7 @@ class AccTreeDB {
         // self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
         self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
           if (err) {
-            reject(err)
+            return reject(err)
           } else {
             // update account tx.TxTo
             self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
@@ -319,7 +319,7 @@ class AccTreeDB {
               balance = ''
               // txInfo = {}
               if (err) {
-                resolve()
+                return resolve()
               } else {
                 if (data2[0][tx.TokenName] === undefined) {
                   balance = new Big(INIT_BALANCE)
@@ -346,14 +346,14 @@ class AccTreeDB {
               // self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
               self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
                 if (err) {
-                  reject(err)
+                  return reject(err)
                 } else {
                   self.accDB.delTx(tx, (err) => {
                     if (err) {
                       console.error(err)
-                      reject(err)
+                      return reject(err)
                     } else {
-                      resolve()
+                      return resolve()
                     }
                   })
                 }
