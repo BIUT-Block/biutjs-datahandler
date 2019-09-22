@@ -111,7 +111,7 @@ class AccTreeDB {
             callback(null, [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { 'From': [], 'To': [] }])
           }
         } else {
-          let valueJson = JSON.parse(value.toString())
+          let valueJson = JSON.parse(value.toString()) || [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { 'From': [], 'To': [] }]
           if (typeof valueJson[0] === 'string') {
             valueJson[0] = {
               [this.chainName]: valueJson[0]
@@ -121,9 +121,12 @@ class AccTreeDB {
             valueJson[0][this.chainName] = INIT_BALANCE
           }
           this.accDB.getAcc(accAddress, (err, accData) => {
-            if (err) return callback(err)
-            valueJson.push(accData)
-            callback(null, valueJson)
+            if (err) {
+              return callback(null, valueJson)
+            } else {
+              valueJson.push(accData)
+              callback(null, valueJson)
+            }
           })
         }
       } catch (e) {
@@ -280,11 +283,14 @@ class AccTreeDB {
 
       // update account tx.TxFrom
       self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
-        let nonce = ''
-        let balance = ''
+        let nonce = '1'
+        let balance = new Big(INIT_BALANCE)
         // let txInfo = {}
         if (err) {
-          return resolve()
+          data1 = []
+          balance = new Big(INIT_BALANCE)
+          data1[0][tx.TokenName] = balance
+          nonce = '1'
         } else {
           if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
@@ -311,15 +317,18 @@ class AccTreeDB {
         // self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
         self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
           if (err) {
-            return reject(err)
+            reject(err)
           } else {
             // update account tx.TxTo
             self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-              nonce = ''
-              balance = ''
+              nonce = '1'
+              balance = new Big(INIT_BALANCE)
               // txInfo = {}
               if (err) {
-                return resolve()
+                data1 = []
+                balance = new Big(INIT_BALANCE)
+                data1[0][tx.TokenName] = balance
+                nonce = '1'
               } else {
                 if (data2[0][tx.TokenName] === undefined) {
                   balance = new Big(INIT_BALANCE)
