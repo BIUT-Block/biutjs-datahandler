@@ -320,8 +320,8 @@ class AccTreeDB {
         })
       })
       self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-        nonce = '1'
-        balance = new Big(INIT_BALANCE)
+        let nonce = '1'
+        let balance = new Big(INIT_BALANCE)
         // txInfo = {}
         if (err) {
           reject(err)
