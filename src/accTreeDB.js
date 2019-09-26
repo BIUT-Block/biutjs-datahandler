@@ -280,17 +280,13 @@ class AccTreeDB {
       if (typeof tx !== 'object') {
         return reject(new Error('Invalid input type, should be object'))
       }
-
       // update account tx.TxFrom
       self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = '1'
         let balance = new Big(INIT_BALANCE)
         // let txInfo = {}
         if (err) {
-          data1 = []
-          balance = new Big(INIT_BALANCE)
-          data1[0][tx.TokenName] = balance
-          nonce = '1'
+          reject(err)
         } else {
           if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
@@ -298,7 +294,6 @@ class AccTreeDB {
             balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) - 1).toString()
-
           // txInfo = data1[2]
           // if (typeof txInfo === 'string') {
           //   txInfo = JSON.parse(txInfo)
@@ -320,56 +315,55 @@ class AccTreeDB {
             reject(err)
           } else {
             // update account tx.TxTo
-            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-              nonce = '1'
-              balance = new Big(INIT_BALANCE)
-              // txInfo = {}
-              if (err) {
-                data1 = []
-                balance = new Big(INIT_BALANCE)
-                data1[0][tx.TokenName] = balance
-                nonce = '1'
-              } else {
-                if (data2[0][tx.TokenName] === undefined) {
-                  balance = new Big(INIT_BALANCE)
-                } else {
-                  balance = new Big(data2[0][tx.TokenName])
-                }
-                nonce = (parseInt(data2[1]) - 1).toString()
-
-                // txInfo = data2[2]
-                // if (typeof txInfo === 'string') {
-                //   txInfo = JSON.parse(txInfo)
-                // }
-                // if (txInfo.To.indexOf(tx.TxHash) > -1) {
-                //   txInfo.To = txInfo.To.filter((hash) => {
-                //     return hash !== tx.TxHash
-                //   })
-                // }
-                balance = balance.minus(tx.Value).toFixed(DEC_NUM)
-                balance = parseFloat(balance).toString()
-                data2[0][tx.TokenName] = balance
-              }
-              // txInfo.From.sort()
-              // txInfo.To.sort()
-              // self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
-              self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
-                if (err) {
-                  return reject(err)
-                } else {
-                  self.accDB.delTx(tx, (err) => {
-                    if (err) {
-                      console.error(err)
-                      return reject(err)
-                    } else {
-                      return resolve()
-                    }
-                  })
-                }
-              })
-            })
+            resolve()
           }
         })
+      })
+      self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+        nonce = '1'
+        balance = new Big(INIT_BALANCE)
+        // txInfo = {}
+        if (err) {
+          reject(err)
+        } else {
+          if (data2[0][tx.TokenName] === undefined) {
+            balance = new Big(INIT_BALANCE)
+          } else {
+            balance = new Big(data2[0][tx.TokenName])
+          }
+          nonce = (parseInt(data2[1]) - 1).toString()
+
+          // txInfo = data2[2]
+          // if (typeof txInfo === 'string') {
+          //   txInfo = JSON.parse(txInfo)
+          // }
+          // if (txInfo.To.indexOf(tx.TxHash) > -1) {
+          //   txInfo.To = txInfo.To.filter((hash) => {
+          //     return hash !== tx.TxHash
+          //   })
+          // }
+          balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+          balance = parseFloat(balance).toString()
+          data2[0][tx.TokenName] = balance
+        }
+        // txInfo.From.sort()
+        // txInfo.To.sort()
+        // self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
+        self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve()
+          }
+        })
+      })
+      self.accDB.delTx(tx, (err) => {
+        if (err) {
+          console.error(err)
+          reject(err)
+        } else {
+          resolve()
+        }
       })
     })
   }
