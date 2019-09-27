@@ -106,12 +106,12 @@ class AccTreeDB {
       try {
         if (value === null || value === undefined) {
           if (tokenName === 'All') {
-            callback(null, [{ [this.chainName]: INIT_BALANCE }, '0', { 'From': [], 'To': [] }])
+            callback(null, [{ [this.chainName]: INIT_BALANCE }, '0', { From: [], To: [] }])
           } else {
-            callback(null, [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { 'From': [], 'To': [] }])
+            callback(null, [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { From: [], To: [] }])
           }
         } else {
-          let valueJson = JSON.parse(value.toString()) || [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { 'From': [], 'To': [] }]
+          const valueJson = JSON.parse(value.toString()) || [{ [this.chainName]: INIT_BALANCE, [tokenName]: INIT_BALANCE }, '0', { From: [], To: [] }]
           if (typeof valueJson[0] === 'string') {
             valueJson[0] = {
               [this.chainName]: valueJson[0]
@@ -160,14 +160,14 @@ class AccTreeDB {
   }
 
   async updateWithBlock (block) {
-    let txs = block.Transactions
+    const txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
     })
   }
 
   _updateWithTx (tx) {
-    let self = this
+    const self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
         return reject(new Error('Invalid input type, should be object'))
@@ -185,7 +185,6 @@ class AccTreeDB {
           data1[0] = {}
           balance = new Big(INIT_BALANCE)
           nonce = '1'
-          // txInfo = { From: [tx.TxHash], To: [] }
         } else {
           if (data1[0][tx.TokenName] === undefined) {
             balance = new Big(INIT_BALANCE)
@@ -193,32 +192,20 @@ class AccTreeDB {
             balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) + 1).toString()
-          // txInfo = data1[2]
-          // if (typeof txInfo === 'string') {
-          //   txInfo = JSON.parse(txInfo)
-          // }
-          // if (txInfo.From.indexOf(tx.TxHash) < 0) {
-          //   txInfo.From.push(tx.TxHash)
-          // }
         }
         balance = balance.minus(tx.Value).toFixed(DEC_NUM)
         balance = parseFloat(balance).toString()
         data1[0][tx.TokenName] = balance
-        // txInfo.From.sort()
-        // txInfo.To.sort()
-        // self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
         self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
           if (err) {
             reject(err)
           } else {
-            // update account tx.TxTo
             self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
               if (err) {
                 data2 = []
                 data2[0] = {}
                 balance = new Big(INIT_BALANCE)
                 nonce = '1'
-                // txInfo = { From: [], To: [tx.TxHash] }
               } else {
                 if (data2[0][tx.TokenName] === undefined) {
                   balance = new Big(INIT_BALANCE)
@@ -226,20 +213,10 @@ class AccTreeDB {
                   balance = new Big(data2[0][tx.TokenName])
                 }
                 nonce = (parseInt(data2[1]) + 1).toString()
-                // txInfo = data2[2]
-                // if (typeof txInfo === 'string') {
-                //   txInfo = JSON.parse(txInfo)
-                // }
-                // if (txInfo.To.indexOf(tx.TxHash) < 0) {
-                //   txInfo.To.push(tx.TxHash)
-                // }
               }
               balance = balance.plus(tx.Value).toFixed(DEC_NUM)
               balance = parseFloat(balance).toString()
               data2[0][tx.TokenName] = balance
-              // txInfo.From.sort()
-              // txInfo.To.sort()
-              // self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
               self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
                 if (err) {
                   reject(err)
@@ -268,23 +245,21 @@ class AccTreeDB {
   }
 
   async revertBlock (block) {
-    let txs = block.Transactions
+    const txs = block.Transactions
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._revertTx(tx)
     })
   }
 
   _revertTx (tx) {
-    let self = this
+    const self = this
     return new Promise(function (resolve, reject) {
       if (typeof tx !== 'object') {
         return reject(new Error('Invalid input type, should be object'))
       }
-      // update account tx.TxFrom
       self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = '1'
         let balance = new Big(INIT_BALANCE)
-        // let txInfo = {}
         if (err) {
           reject(err)
         } else {
@@ -294,30 +269,17 @@ class AccTreeDB {
             balance = new Big(data1[0][tx.TokenName])
           }
           nonce = (parseInt(data1[1]) - 1).toString()
-          // txInfo = data1[2]
-          // if (typeof txInfo === 'string') {
-          //   txInfo = JSON.parse(txInfo)
-          // }
-          // if (txInfo.From.indexOf(tx.TxHash) > -1) {
-          //   txInfo.From = txInfo.From.filter((hash) => {
-          //     return hash !== tx.TxHash
-          //   })
-          // }
           balance = balance.plus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
           data1[0][tx.TokenName] = balance
+          self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
         }
-        // txInfo.From.sort()
-        // txInfo.To.sort()
-        // self.putAccInfo(tx.TxFrom, [data1[0], nonce, txInfo], (err) => {
-        self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            // update account tx.TxTo
-            resolve()
-          }
-        })
       })
       self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
         let nonce = '1'
@@ -332,30 +294,17 @@ class AccTreeDB {
             balance = new Big(data2[0][tx.TokenName])
           }
           nonce = (parseInt(data2[1]) - 1).toString()
-
-          // txInfo = data2[2]
-          // if (typeof txInfo === 'string') {
-          //   txInfo = JSON.parse(txInfo)
-          // }
-          // if (txInfo.To.indexOf(tx.TxHash) > -1) {
-          //   txInfo.To = txInfo.To.filter((hash) => {
-          //     return hash !== tx.TxHash
-          //   })
-          // }
           balance = balance.minus(tx.Value).toFixed(DEC_NUM)
           balance = parseFloat(balance).toString()
           data2[0][tx.TokenName] = balance
+          self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
         }
-        // txInfo.From.sort()
-        // txInfo.To.sort()
-        // self.putAccInfo(tx.TxTo, [data2[0], nonce, txInfo], (err) => {
-        self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve()
-          }
-        })
       })
       self.accDB.delTx(tx, (err) => {
         if (err) {
