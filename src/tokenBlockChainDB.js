@@ -155,7 +155,7 @@ class TokenBlockChainDB {
    */
   getTokenChain (minBlockNumber, maxBlockNumber, callback) {
     if (minBlockNumber > maxBlockNumber) {
-      throw new Error('invalid block numbers')
+      return callback(new Error('invalid block numbers'), null)
     }
 
     let promise = this._getTokenChain(minBlockNumber, maxBlockNumber)
