@@ -73,7 +73,7 @@ class AccTreeDB {
       if (err) return callback(err)
       else {
         this._initDB()
-        callback()
+        this.accDB.clearDB(callback)
       }
     })
   }
@@ -137,15 +137,14 @@ class AccTreeDB {
   }
 
   putAccInfo (accAddress, infoArray, callback) {
-    // if (accAddress !== '0000000000000000000000000000000000000000') {
-    if (typeof infoArray !== 'string') {
-      infoArray = JSON.stringify(infoArray)
+    if (accAddress !== '0000000000000000000000000000000000000000') {
+      if (typeof infoArray !== 'string') {
+        infoArray = JSON.stringify(infoArray)
+      }
+      this.tree.put(accAddress, infoArray, callback)
+    } else {
+      callback()
     }
-    // console.log(infoArray)
-    this.tree.put(accAddress, infoArray, callback)
-    // } else {
-    //   callback()
-    // }
   }
 
   async updateWithBlockChain (blockchain) {
@@ -162,6 +161,7 @@ class AccTreeDB {
 
   async updateWithBlock (block) {
     const txs = block.Transactions
+    console.log(block.Number)
     await dataHandlerUtil._asyncForEach(txs, async (tx) => {
       await this._updateWithTx(tx)
     })
@@ -180,7 +180,6 @@ class AccTreeDB {
       self.getAccInfo(tx.TxFrom, tx.TokenName, (err, data1) => {
         let nonce = ''
         let balance = ''
-        // let txInfo = {}
         if (err) {
           data1 = []
           data1[0] = {}
@@ -205,48 +204,102 @@ class AccTreeDB {
               console.error(err)
               reject(err)
             } else {
-              resolve()
+              self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+                if (err) {
+                  data2 = []
+                  data2[0] = {}
+                  data2[2] = { From: [], To: [] }
+                  balance = new Big(INIT_BALANCE)
+                  nonce = '1'
+                } else {
+                  if (data2[0][tx.TokenName] === undefined) {
+                    console.error('undefined in accTreeDB found')
+                    balance = new Big(INIT_BALANCE)
+                  } else {
+                    balance = new Big(data2[0][tx.TokenName])
+                  }
+                  nonce = (parseInt(data2[1]) + 1).toString()
+                }
+                if (data2[2].To.indexOf(tx.TxHash) < 0) {
+                  balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+                  balance = parseFloat(balance).toString()
+                  data2[0][tx.TokenName] = balance
+                  self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+                    if (err) {
+                      console.error(err)
+                      reject(err)
+                    } else {
+                      self.accDB.writeTx(tx, (err) => {
+                        if (err) {
+                          console.error(err)
+                          reject(err)
+                        } else {
+                          resolve()
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  self.accDB.writeTx(tx, (err) => {
+                    if (err) {
+                      console.error(err)
+                      reject(err)
+                    } else {
+                      resolve()
+                    }
+                  })
+                }
+              })
+            }
+          })
+        } else {
+          self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+            if (err) {
+              data2 = []
+              data2[0] = {}
+              data2[2] = { From: [], To: [] }
+              balance = new Big(INIT_BALANCE)
+              nonce = '1'
+            } else {
+              if (data2[0][tx.TokenName] === undefined) {
+                console.error('undefined in accTreeDB found')
+                balance = new Big(INIT_BALANCE)
+              } else {
+                balance = new Big(data2[0][tx.TokenName])
+              }
+              nonce = (parseInt(data2[1]) + 1).toString()
+            }
+            if (data2[2].To.indexOf(tx.TxHash) < 0) {
+              balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+              balance = parseFloat(balance).toString()
+              data2[0][tx.TokenName] = balance
+              self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+                if (err) {
+                  console.error(err)
+                  reject(err)
+                } else {
+                  self.accDB.writeTx(tx, (err) => {
+                    if (err) {
+                      console.error(err)
+                      reject(err)
+                    } else {
+                      return resolve()
+                    }
+                  })
+                }
+              })
+            } else {
+              self.accDB.writeTx(tx, (err) => {
+                if (err) {
+                  console.error(err)
+                  reject(err)
+                } else {
+                  return resolve()
+                }
+              })
             }
           })
         }
-        self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-          if (err) {
-            data2 = []
-            data2[0] = {}
-            data2[2] = { From: [], To: [] }
-            balance = new Big(INIT_BALANCE)
-            nonce = '1'
-          } else {
-            if (data2[0][tx.TokenName] === undefined) {
-              console.error('undefined in accTreeDB found')
-              balance = new Big(INIT_BALANCE)
-            } else {
-              balance = new Big(data2[0][tx.TokenName])
-            }
-            nonce = (parseInt(data2[1]) + 1).toString()
-          }
-          if (data2[2].To.indexOf(tx.TxHash) < 0) {
-            balance = balance.plus(tx.Value).toFixed(DEC_NUM)
-            balance = parseFloat(balance).toString()
-            data2[0][tx.TokenName] = balance
-            self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
-              if (err) {
-                console.error(err)
-                reject(err)
-              } else {
-                resolve()
-              }
-            })
-          }
-          self.accDB.writeTx(tx, (err) => {
-            if (err) {
-              console.error(err)
-              reject(err)
-            } else {
-              resolve()
-            }
-          })
-        })
       })
     })
   }
@@ -275,41 +328,91 @@ class AccTreeDB {
         let balance = new Big(INIT_BALANCE)
         if (err) {
           console.error(err)
-          reject(err)
-        } else {
-          if (data1[2].From.indexOf(tx.TxHash) > -1) {
-            if (data1[0][tx.TokenName] === undefined) {
-              console.error('undefined in accTreeDB found')
-              balance = new Big(INIT_BALANCE)
-            } else {
-              balance = new Big(data1[0][tx.TokenName])
+          data1 = {}
+          data1[0] = {}
+          data1[2] = { From: [], To: [] }
+          balance = new Big(INIT_BALANCE)
+          nonce = '1'
+        }
+        if (data1[2].From.indexOf(tx.TxHash) > -1) {
+          if (data1[0][tx.TokenName] === undefined) {
+            console.error('undefined in accTreeDB found')
+            balance = new Big(INIT_BALANCE)
+          } else {
+            balance = new Big(data1[0][tx.TokenName])
+          }
+          nonce = (parseInt(data1[1]) - 1).toString()
+          balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+          balance = parseFloat(balance).toString()
+          data1[0][tx.TokenName] = balance
+          self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+            if (err) {
+              console.error(err)
             }
-            nonce = (parseInt(data1[1]) - 1).toString()
-            balance = balance.plus(tx.Value).toFixed(DEC_NUM)
-            balance = parseFloat(balance).toString()
-            data1[0][tx.TokenName] = balance
-            self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+              let nonce = '1'
+              let balance = new Big(INIT_BALANCE)
+              // txInfo = {}
               if (err) {
                 console.error(err)
-                reject(err)
+                data2 = {}
+                data2[0] = {}
+                data2[2] = { From: [], To: [] }
+                balance = new Big(INIT_BALANCE)
+                nonce = '1'
+              }
+              if (data2[2].To.indexOf(tx.TxHash) > -1) {
+                if (data2[0][tx.TokenName] === undefined) {
+                  console.error('undefined in accTreeDB found')
+                  balance = new Big(INIT_BALANCE)
+                } else {
+                  balance = new Big(data2[0][tx.TokenName])
+                }
+                nonce = (parseInt(data2[1]) - 1).toString()
+                balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+                balance = parseFloat(balance).toString()
+                data2[0][tx.TokenName] = balance
+                self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+                  if (err) {
+                    console.error(err)
+                  }
+                  self.accDB.delTx(tx, (err) => {
+                    if (err) {
+                      console.error(err)
+                      return reject(err)
+                    } else {
+                      return resolve()
+                    }
+                  })
+                })
               } else {
-                resolve()
+                console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} To List`))
+                self.accDB.delTx(tx, (err) => {
+                  if (err) {
+                    console.error(err)
+                    return reject(err)
+                  } else {
+                    return resolve()
+                  }
+                })
               }
             })
-          } else {
-            console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} From List`))
-            reject(err)
-          }
-        }
-        self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-          let nonce = '1'
-          let balance = new Big(INIT_BALANCE)
-          // txInfo = {}
-          if (err) {
-            console.error(err)
-            reject(err)
-          } else {
-            if (data1[2].To.indexOf(tx.TxHash) > -1) {
+          })
+        } else {
+          console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} From List`))
+          self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+            let nonce = '1'
+            let balance = new Big(INIT_BALANCE)
+            // txInfo = {}
+            if (err) {
+              console.error(err)
+              data2 = {}
+              data2[0] = {}
+              data2[2] = { From: [], To: [] }
+              balance = new Big(INIT_BALANCE)
+              nonce = '1'
+            }
+            if (data2[2].To.indexOf(tx.TxHash) > -1) {
               if (data2[0][tx.TokenName] === undefined) {
                 console.error('undefined in accTreeDB found')
                 balance = new Big(INIT_BALANCE)
@@ -323,25 +426,29 @@ class AccTreeDB {
               self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
                 if (err) {
                   console.error(err)
-                  reject(err)
-                } else {
-                  resolve()
                 }
+                self.accDB.delTx(tx, (err) => {
+                  if (err) {
+                    console.error(err)
+                    return reject(err)
+                  } else {
+                    return resolve()
+                  }
+                })
               })
             } else {
               console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} To List`))
-              reject(err)
-            }
-          }
-          self.accDB.delTx(tx, (err) => {
-            if (err) {
-              console.error(err)
-              reject(err)
-            } else {
-              resolve()
+              self.accDB.delTx(tx, (err) => {
+                if (err) {
+                  console.error(err)
+                  return reject(err)
+                } else {
+                  return resolve()
+                }
+              })
             }
           })
-        })
+        }
       })
     })
   }
