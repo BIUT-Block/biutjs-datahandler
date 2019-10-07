@@ -122,6 +122,7 @@ class AccTreeDB {
           }
           this.accDB.getAcc(accAddress, (err, accData) => {
             if (err) {
+              valueJson.push({ From: [], To: [] })
               return callback(null, valueJson)
             } else {
               valueJson.push(accData)
@@ -183,6 +184,7 @@ class AccTreeDB {
         if (err) {
           data1 = []
           data1[0] = {}
+          data1[2] = { From: [], To: [] }
           balance = new Big(INIT_BALANCE)
           nonce = '1'
         } else {
@@ -194,50 +196,56 @@ class AccTreeDB {
           }
           nonce = (parseInt(data1[1]) + 1).toString()
         }
-        balance = balance.minus(tx.Value).toFixed(DEC_NUM)
-        balance = parseFloat(balance).toString()
-        data1[0][tx.TokenName] = balance
-        self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+        if (data1[2].From.indexOf(tx.TxHash) < 0) {
+          balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+          balance = parseFloat(balance).toString()
+          data1[0][tx.TokenName] = balance
+          self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+            if (err) {
+              console.error(err)
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
+        }
+        self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
           if (err) {
-            console.error(err)
-            reject(err)
+            data2 = []
+            data2[0] = {}
+            data2[2] = { From: [], To: [] }
+            balance = new Big(INIT_BALANCE)
+            nonce = '1'
           } else {
-            self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+            if (data2[0][tx.TokenName] === undefined) {
+              console.error('undefined in accTreeDB found')
+              balance = new Big(INIT_BALANCE)
+            } else {
+              balance = new Big(data2[0][tx.TokenName])
+            }
+            nonce = (parseInt(data2[1]) + 1).toString()
+          }
+          if (data2[2].To.indexOf(tx.TxHash) < 0) {
+            balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+            balance = parseFloat(balance).toString()
+            data2[0][tx.TokenName] = balance
+            self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
               if (err) {
-                data2 = []
-                data2[0] = {}
-                balance = new Big(INIT_BALANCE)
-                nonce = '1'
+                console.error(err)
+                reject(err)
               } else {
-                if (data2[0][tx.TokenName] === undefined) {
-                  console.error('undefined in accTreeDB found')
-                  balance = new Big(INIT_BALANCE)
-                } else {
-                  balance = new Big(data2[0][tx.TokenName])
-                }
-                nonce = (parseInt(data2[1]) + 1).toString()
+                resolve()
               }
-              balance = balance.plus(tx.Value).toFixed(DEC_NUM)
-              balance = parseFloat(balance).toString()
-              data2[0][tx.TokenName] = balance
-              self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
-                if (err) {
-                  console.error(err)
-                  reject(err)
-                } else {
-                  self.accDB.writeTx(tx, (err) => {
-                    if (err) {
-                      console.error(err)
-                      console.error(err)
-                      reject(err)
-                    } else {
-                      resolve()
-                    }
-                  })
-                }
-              })
             })
           }
+          self.accDB.writeTx(tx, (err) => {
+            if (err) {
+              console.error(err)
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
         })
       })
     })
@@ -269,17 +277,63 @@ class AccTreeDB {
           console.error(err)
           reject(err)
         } else {
-          if (data1[0][tx.TokenName] === undefined) {
-            console.error('undefined in accTreeDB found')
-            balance = new Big(INIT_BALANCE)
+          if (data1[2].From.indexOf(tx.TxHash) > -1) {
+            if (data1[0][tx.TokenName] === undefined) {
+              console.error('undefined in accTreeDB found')
+              balance = new Big(INIT_BALANCE)
+            } else {
+              balance = new Big(data1[0][tx.TokenName])
+            }
+            nonce = (parseInt(data1[1]) - 1).toString()
+            balance = balance.plus(tx.Value).toFixed(DEC_NUM)
+            balance = parseFloat(balance).toString()
+            data1[0][tx.TokenName] = balance
+            self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+              if (err) {
+                console.error(err)
+                reject(err)
+              } else {
+                resolve()
+              }
+            })
           } else {
-            balance = new Big(data1[0][tx.TokenName])
+            console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} From List`))
+            reject(err)
           }
-          nonce = (parseInt(data1[1]) - 1).toString()
-          balance = balance.plus(tx.Value).toFixed(DEC_NUM)
-          balance = parseFloat(balance).toString()
-          data1[0][tx.TokenName] = balance
-          self.putAccInfo(tx.TxFrom, [data1[0], nonce], (err) => {
+        }
+        self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
+          let nonce = '1'
+          let balance = new Big(INIT_BALANCE)
+          // txInfo = {}
+          if (err) {
+            console.error(err)
+            reject(err)
+          } else {
+            if (data1[2].To.indexOf(tx.TxHash) > -1) {
+              if (data2[0][tx.TokenName] === undefined) {
+                console.error('undefined in accTreeDB found')
+                balance = new Big(INIT_BALANCE)
+              } else {
+                balance = new Big(data2[0][tx.TokenName])
+              }
+              nonce = (parseInt(data2[1]) - 1).toString()
+              balance = balance.minus(tx.Value).toFixed(DEC_NUM)
+              balance = parseFloat(balance).toString()
+              data2[0][tx.TokenName] = balance
+              self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
+                if (err) {
+                  console.error(err)
+                  reject(err)
+                } else {
+                  resolve()
+                }
+              })
+            } else {
+              console.error(new Error(`Can not find TxHash ${tx.TxHash} in AccDB ${tx.TxFrom} To List`))
+              reject(err)
+            }
+          }
+          self.accDB.delTx(tx, (err) => {
             if (err) {
               console.error(err)
               reject(err)
@@ -287,44 +341,7 @@ class AccTreeDB {
               resolve()
             }
           })
-        }
-      })
-      self.getAccInfo(tx.TxTo, tx.TokenName, (err, data2) => {
-        let nonce = '1'
-        let balance = new Big(INIT_BALANCE)
-        // txInfo = {}
-        if (err) {
-          console.error(err)
-          reject(err)
-        } else {
-          if (data2[0][tx.TokenName] === undefined) {
-            console.error('undefined in accTreeDB found')
-            balance = new Big(INIT_BALANCE)
-          } else {
-            balance = new Big(data2[0][tx.TokenName])
-          }
-          nonce = (parseInt(data2[1]) - 1).toString()
-          balance = balance.minus(tx.Value).toFixed(DEC_NUM)
-          balance = parseFloat(balance).toString()
-          data2[0][tx.TokenName] = balance
-          self.putAccInfo(tx.TxTo, [data2[0], nonce], (err) => {
-            if (err) {
-              console.error(err)
-              reject(err)
-            } else {
-              resolve()
-            }
-          })
-        }
-      })
-      self.accDB.delTx(tx, (err) => {
-        if (err) {
-          console.error(err)
-          console.error(err)
-          reject(err)
-        } else {
-          resolve()
-        }
+        })
       })
     })
   }
