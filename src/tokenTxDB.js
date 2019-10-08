@@ -64,7 +64,7 @@ class TokenTxDB {
       callback(null, length)
     })
   }
-
+  
   getAllTxs (callback) {
     dataHandlerUtil._getAllDataInDB(this.tokenTxDB, callback)
   }
