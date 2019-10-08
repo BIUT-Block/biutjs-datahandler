@@ -1,6 +1,6 @@
 {
   "name": "@biut-block/biutjs-datahandler",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "biut blockchain data handler lib",
   "main": "src/index.js",
   "directories": {
