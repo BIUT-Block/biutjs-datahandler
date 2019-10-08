@@ -33,7 +33,7 @@
     "merkle-patricia-tree": "^3.0.0",
     "mkdirp": "^0.5.1",
     "promise": "^8.0.2",
-    "rimraf": "^2.6.3"
+    "rimraf": "^2.7.1"
   },
   "devDependencies": {}
 }
